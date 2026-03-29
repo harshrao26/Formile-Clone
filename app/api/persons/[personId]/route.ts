@@ -13,7 +13,11 @@ export async function DELETE(
   try {
     await dbConnect();
     const { personId } = await params;
-    const person = await Person.findByIdAndDelete(personId);
+    
+    const filter: any = { _id: personId };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const person = await Person.findOneAndDelete(filter);
     if (!person) return NextResponse.json({ error: 'Person not found' }, { status: 404 });
     return NextResponse.json({ message: 'Person deleted' });
   } catch (error) {

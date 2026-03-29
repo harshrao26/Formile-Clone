@@ -13,7 +13,10 @@ export async function GET(
   try {
     await dbConnect();
     const { id } = await params;
-    const company = await Company.findById(id);
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+    
+    const company = await Company.findOne(filter);
     if (!company) return NextResponse.json({ error: 'Company not found' }, { status: 404 });
     return NextResponse.json(company);
   } catch (error) {
@@ -33,7 +36,11 @@ export async function PUT(
     await dbConnect();
     const { id } = await params;
     const body = await request.json();
-    const company = await Company.findByIdAndUpdate(id, body, { new: true });
+    
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const company = await Company.findOneAndUpdate(filter, body, { new: true });
     if (!company) return NextResponse.json({ error: 'Company not found' }, { status: 404 });
     return NextResponse.json(company);
   } catch (error) {
@@ -52,7 +59,11 @@ export async function DELETE(
   try {
     await dbConnect();
     const { id } = await params;
-    const company = await Company.findByIdAndDelete(id);
+    
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const company = await Company.findOneAndDelete(filter);
     if (!company) return NextResponse.json({ error: 'Company not found' }, { status: 404 });
     return NextResponse.json({ message: 'Company deleted' });
   } catch (error) {

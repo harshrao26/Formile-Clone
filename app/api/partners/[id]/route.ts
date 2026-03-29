@@ -14,7 +14,10 @@ export async function GET(
   try {
     await dbConnect();
     const { id } = await params;
-    const partner = await Partner.findById(id).populate('companyId', 'name').populate('formId', 'name');
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const partner = await Partner.findOne(filter).populate('companyId', 'name').populate('formId', 'name');
     if (!partner) return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
     return NextResponse.json(partner);
   } catch (error) {
@@ -35,6 +38,9 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
     if (body.slug) {
       const existingPartner = await Partner.findOne({ slug: body.slug.toLowerCase(), _id: { $ne: id } });
       if (existingPartner) {
@@ -43,7 +49,7 @@ export async function PUT(
       body.slug = body.slug.toLowerCase();
     }
 
-    const partner = await Partner.findByIdAndUpdate(id, body, { new: true });
+    const partner = await Partner.findOneAndUpdate(filter, body, { new: true });
     if (!partner) return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
     return NextResponse.json(partner);
   } catch (error) {
@@ -62,7 +68,11 @@ export async function DELETE(
   try {
     await dbConnect();
     const { id } = await params;
-    const partner = await Partner.findByIdAndDelete(id);
+    
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const partner = await Partner.findOneAndDelete(filter);
     if (!partner) return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
     return NextResponse.json({ message: 'Partner deleted' });
   } catch (error) {

@@ -4,6 +4,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 // Each template has a name and remembers which standard fields are active,
 // along with any custom fields unique to this form.
 export interface IFormTemplate extends Document {
+  adminId: mongoose.Types.ObjectId;
   name: string;
   activeFields: string[]; // e.g. ["full_name", "email", "phone", "custom_123"]
   customFields: {
@@ -24,6 +25,7 @@ const CustomFieldSchema = new Schema({
 }, { _id: false });
 
 const FormTemplateSchema = new Schema<IFormTemplate>({
+  adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   name: { type: String, required: true },
   activeFields: { type: [String], default: [] },
   customFields: { type: [CustomFieldSchema], default: [] },

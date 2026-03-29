@@ -22,11 +22,15 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20');
 
     const filter: Record<string, any> = {};
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
     if (partnerId) filter.partnerId = partnerId;
     if (personId) filter.personId = personId;
 
     if (companyId) {
-      const partners = await Partner.find({ companyId }).select('_id');
+      const partnersFilter: any = { companyId };
+      if (auth.role !== 'superadmin') partnersFilter.adminId = auth.adminId;
+      const partners = await Partner.find(partnersFilter).select('_id');
       filter.partnerId = { $in: partners.map(p => p._id) };
     }
 

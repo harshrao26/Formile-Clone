@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IFormField extends Document {
+  adminId: Types.ObjectId;
   label: string;
   fieldKey: string;
   type: 'text' | 'email' | 'tel' | 'number' | 'select' | 'textarea';
@@ -14,6 +15,7 @@ export interface IFormField extends Document {
 }
 
 const FormFieldSchema = new Schema<IFormField>({
+  adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   label: { type: String, required: true },
   fieldKey: { type: String, required: true },
   type: {

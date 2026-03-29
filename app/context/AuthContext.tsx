@@ -2,10 +2,17 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+interface AuthUser {
+  name: string;
+  email: string;
+  role: 'superadmin' | 'user';
+  adminId: string;
+}
+
 interface AuthContextType {
   token: string | null;
-  admin: { name: string; email: string } | null;
-  login: (token: string, admin: { name: string; email: string }) => void;
+  admin: AuthUser | null;
+  login: (token: string, admin: AuthUser) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -14,7 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
-  const [admin, setAdmin] = useState<{ name: string; email: string } | null>(null);
+  const [admin, setAdmin] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -22,12 +29,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const savedAdmin = localStorage.getItem('formile-admin');
     if (savedToken && savedAdmin) {
       setToken(savedToken);
-      setAdmin(JSON.parse(savedAdmin));
+      try {
+        setAdmin(JSON.parse(savedAdmin));
+      } catch (e) {
+        localStorage.removeItem('formile-admin');
+      }
     }
     setIsLoading(false);
   }, []);
 
-  const login = (newToken: string, adminData: { name: string; email: string }) => {
+  const login = (newToken: string, adminData: AuthUser) => {
     setToken(newToken);
     setAdmin(adminData);
     localStorage.setItem('formile-token', newToken);

@@ -12,11 +12,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Admin already exists' }, { status: 400 });
     }
 
-    const hashedPassword = await bcryptjs.hash('Admin@123456', 12);
+    const hashedPassword = await bcryptjs.hash('Abid@9721@Khan', 12);
     const admin = await Admin.create({
       email: 'admin@formile.com',
       password: hashedPassword,
       name: 'Admin',
+      role: 'superadmin',
     });
 
     return NextResponse.json({ message: 'Admin created', admin: { email: admin.email, name: admin.name } });

@@ -12,6 +12,11 @@ export async function GET(request: NextRequest) {
     const activeOnly = searchParams.get('active');
 
     const filter: Record<string, unknown> = {};
+    const auth = verifyAuth(request);
+    if (auth && auth.role !== 'superadmin') {
+      filter.adminId = auth.adminId;
+    }
+
     if (partnerId) {
       filter.$or = [{ partnerId }, { partnerId: null }];
     }
@@ -39,7 +44,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Label and fieldKey are required' }, { status: 400 });
     }
 
-    const field = await FormField.create(body);
+    const field = await FormField.create({
+      ...body,
+      adminId: auth.adminId
+    });
     return NextResponse.json(field, { status: 201 });
   } catch (error) {
     console.error('Create field error:', error);

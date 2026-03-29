@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Signup successful',
-      admin: { id: admin._id, name: admin.name, email: admin.email },
+      admin: { id: admin._id, name: admin.name, email: admin.email, role: admin.role },
     });
   } catch (error) {
     console.error('Signup verification error:', error);

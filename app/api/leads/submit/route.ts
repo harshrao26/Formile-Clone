@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
 
     const lead = await LeadSubmission.create({
       token,
+      adminId: partner.adminId,
       partnerId: partner._id,
       personId: person?._id || null,
       formData,

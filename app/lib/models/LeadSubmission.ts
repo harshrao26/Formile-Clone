@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface ILeadSubmission extends Document {
+  adminId: Types.ObjectId;
   token: string;
   partnerId: Types.ObjectId;
   personId?: Types.ObjectId;
@@ -11,6 +12,7 @@ export interface ILeadSubmission extends Document {
 }
 
 const LeadSubmissionSchema = new Schema<ILeadSubmission>({
+  adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   token: { type: String, required: true, unique: true },
   partnerId: { type: Schema.Types.ObjectId, ref: 'Partner', required: true },
   personId: { type: Schema.Types.ObjectId, ref: 'Person', default: null },

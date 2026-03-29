@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
 
   try {
     await dbConnect();
-    const companies = await Company.find({}).sort({ createdAt: -1 });
+    const filter = auth.role === 'superadmin' ? {} : { adminId: auth.adminId };
+    const companies = await Company.find(filter).sort({ createdAt: -1 });
     return NextResponse.json(companies);
   } catch (error) {
     console.error('Get companies error:', error);
@@ -29,7 +30,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Name and original URL are required' }, { status: 400 });
     }
 
-    const company = await Company.create({ name, originalUrl });
+    const company = await Company.create({ 
+      name, 
+      originalUrl, 
+      adminId: auth.adminId 
+    });
     return NextResponse.json(company, { status: 201 });
   } catch (error) {
     console.error('Create company error:', error);

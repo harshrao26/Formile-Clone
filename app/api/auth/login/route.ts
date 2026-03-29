@@ -24,11 +24,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const token = createToken({ adminId: admin._id.toString(), email: admin.email });
+    const token = createToken({ adminId: admin._id.toString(), email: admin.email, role: admin.role });
 
     return NextResponse.json({
       token,
-      admin: { name: admin.name, email: admin.email },
+      admin: { name: admin.name, email: admin.email, role: admin.role },
     });
   } catch (error) {
     console.error('Login error:', error);

@@ -10,6 +10,7 @@ function getSecret(): string {
 export interface AuthPayload {
   adminId: string;
   email: string;
+  role: 'superadmin' | 'user';
 }
 
 export function verifyAuth(request: NextRequest): AuthPayload | null {

@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
 
   try {
     await dbConnect();
-    const forms = await FormTemplate.find({}).sort({ createdAt: -1 });
+    const filter = auth.role === 'superadmin' ? {} : { adminId: auth.adminId };
+    const forms = await FormTemplate.find(filter).sort({ createdAt: -1 });
     return NextResponse.json(forms);
   } catch (error) {
     console.error('Fetch forms error:', error);
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
 
     const newForm = await FormTemplate.create({
       name,
+      adminId: auth.adminId,
       activeFields: activeFields || [],
       customFields: [],
     });

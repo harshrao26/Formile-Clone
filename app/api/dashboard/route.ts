@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
 
   try {
     await dbConnect();
+    const filter = auth.role === 'superadmin' ? {} : { adminId: auth.adminId };
 
     const [
       totalLeads,
@@ -20,16 +21,17 @@ export async function GET(request: NextRequest) {
       totalCompanies,
       totalPersons,
       totalFields,
-      recentLeads,
+      recentLeadsResults,
     ] = await Promise.all([
-      LeadSubmission.countDocuments(),
-      Partner.countDocuments(),
-      Company.countDocuments(),
-      Person.countDocuments(),
-      FormField.countDocuments(),
-      LeadSubmission.find({})
+      LeadSubmission.countDocuments(filter),
+      Partner.countDocuments(filter),
+      Company.countDocuments(filter),
+      Person.countDocuments(filter),
+      FormField.countDocuments(filter),
+      LeadSubmission.find(filter)
         .populate('partnerId', 'name slug')
         .populate('personId', 'name slug')
+        .populate(auth.role === 'superadmin' ? { path: 'adminId', select: 'name email' } : [])
         .sort({ submittedAt: -1 })
         .limit(5)
         .lean(),
@@ -43,7 +45,7 @@ export async function GET(request: NextRequest) {
         totalPersons,
         totalFields,
       },
-      recentLeads,
+      recentLeads: recentLeadsResults,
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);

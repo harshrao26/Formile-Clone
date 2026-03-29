@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/app/lib/mongodb';
 import Partner from '@/app/lib/models/Partner';
 import { verifyAuth } from '@/app/lib/auth';
-import FormTemplate from '@/app/lib/models/FormTemplate';
+import { Types } from 'mongoose';
 
 export async function GET(request: NextRequest) {
   const auth = verifyAuth(request);
@@ -10,7 +10,10 @@ export async function GET(request: NextRequest) {
 
   try {
     await dbConnect();
+    const matchStage = auth.role === 'superadmin' ? {} : { adminId: new Types.ObjectId(auth.adminId) };
+    
     const partners = await Partner.aggregate([
+      { $match: matchStage },
       { $sort: { createdAt: -1 } },
       {
         $lookup: {
@@ -75,7 +78,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Slug already exists' }, { status: 400 });
     }
 
-    const partner = await Partner.create({ name, email, slug: slug.toLowerCase(), companyId, formId });
+    const partner = await Partner.create({ 
+      name, 
+      email, 
+      slug: slug.toLowerCase(), 
+      companyId, 
+      formId,
+      adminId: auth.adminId
+    });
     return NextResponse.json(partner, { status: 201 });
   } catch (error) {
     console.error('Create partner error:', error);

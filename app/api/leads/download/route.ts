@@ -22,10 +22,14 @@ export async function GET(request: NextRequest) {
     const format = searchParams.get('format') || 'xlsx';
 
     const filter: Record<string, any> = {};
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
     if (partnerId) {
       filter.partnerId = partnerId;
     } else if (companyId) {
-      const partners = await Partner.find({ companyId }).select('_id');
+      const partnersFilter: any = { companyId };
+      if (auth.role !== 'superadmin') partnersFilter.adminId = auth.adminId;
+      const partners = await Partner.find(partnersFilter).select('_id');
       filter.partnerId = { $in: partners.map(p => p._id) };
     }
     

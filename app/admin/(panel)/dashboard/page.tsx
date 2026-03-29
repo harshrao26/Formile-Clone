@@ -30,10 +30,12 @@ interface RecentLead {
 }
 
 export default function DashboardPage() {
-  const { token } = useAuth();
+  const { token, admin } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
-  const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
+  const [recentLeads, setRecentLeads] = useState<(RecentLead & { adminId?: { name: string; email: string } })[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const isSuperadmin = admin?.role === 'superadmin';
 
   useEffect(() => {
     if (!token) return;
@@ -52,7 +54,7 @@ export default function DashboardPage() {
     const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = downloadUrl;
-    a.download = `leads-all-${Date.now()}.xlsx`;
+    a.download = `leads-${isSuperadmin ? 'global' : 'tenant'}-${Date.now()}.xlsx`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -76,7 +78,21 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+          <p className="text-white/40 mt-1">
+            {isSuperadmin 
+              ? 'Platform-wide overview and global statistics' 
+              : 'Overview of your lead generation performance'}
+          </p>
+        </div>
+        {isSuperadmin && (
+          <div className="px-4 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-full">
+            <span className="text-orange-500 text-xs font-bold tracking-wider uppercase">Superadmin View</span>
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         {statCards.map((card) => {
@@ -102,7 +118,7 @@ export default function DashboardPage() {
             className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg text-xs font-medium text-white/70 hover:text-white transition"
           >
             <Download className="w-4 h-4" />
-            Export All Leads
+            {isSuperadmin ? 'Export Global Data' : 'Export All Leads'}
           </button>
         </div>
         {recentLeads.length === 0 ? (
@@ -113,6 +129,7 @@ export default function DashboardPage() {
               <thead>
                 <tr className="border-b border-white/[0.06]">
                   <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Token</th>
+                  {isSuperadmin && <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Admin (Owner)</th>}
                   <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Partner</th>
                   <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Person</th>
                   <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Data</th>
@@ -125,9 +142,17 @@ export default function DashboardPage() {
                     <td className="py-3 px-4">
                       <span className="text-orange-400 font-mono text-xs">{lead.token.substring(0, 12)}...</span>
                     </td>
+                    {isSuperadmin && (
+                      <td className="py-3 px-4">
+                        <div className="flex flex-col">
+                          <span className="text-white/80 text-sm">{lead.adminId?.name || 'Unknown'}</span>
+                          <span className="text-white/30 text-[10px]">{lead.adminId?.email || '-'}</span>
+                        </div>
+                      </td>
+                    )}
                     <td className="py-3 px-4 text-white/70 text-sm">{lead.partnerId?.name || '-'}</td>
                     <td className="py-3 px-4 text-white/70 text-sm">{lead.personId?.name || '-'}</td>
-                    <td className="py-3 px-4 text-white/50 text-xs">
+                    <td className="py-3 px-4 text-white/50 text-xs text-ellipsis overflow-hidden max-w-[200px] whitespace-nowrap">
                       {Object.entries(lead.formData || {}).slice(0, 2).map(([k, v]) => `${k}: ${v}`).join(', ')}
                     </td>
                     <td className="py-3 px-4 text-white/40 text-xs">{new Date(lead.submittedAt).toLocaleString()}</td>

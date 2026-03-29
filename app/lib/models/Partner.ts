@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IPartner extends Document {
+  adminId: Types.ObjectId;
   name: string;
   email: string;
   slug: string;
@@ -11,6 +12,7 @@ export interface IPartner extends Document {
 }
 
 const PartnerSchema = new Schema<IPartner>({
+  adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
   slug: { type: String, required: true, unique: true, lowercase: true },

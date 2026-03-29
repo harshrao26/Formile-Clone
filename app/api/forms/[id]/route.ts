@@ -15,7 +15,10 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
     
-    const form = await FormTemplate.findByIdAndUpdate(id, body, { new: true });
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const form = await FormTemplate.findOneAndUpdate(filter, body, { new: true });
     if (!form) return NextResponse.json({ error: 'Form not found' }, { status: 404 });
     
     return NextResponse.json(form);
@@ -35,7 +38,11 @@ export async function DELETE(
   try {
     await dbConnect();
     const { id } = await params;
-    const form = await FormTemplate.findByIdAndDelete(id);
+
+    const filter: any = { _id: id };
+    if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    const form = await FormTemplate.findOneAndDelete(filter);
     if (!form) return NextResponse.json({ error: 'Form not found' }, { status: 404 });
     return NextResponse.json({ message: 'Form deleted successfully' });
   } catch (error) {
