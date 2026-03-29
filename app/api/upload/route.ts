@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     // We can do an Unsigned upload if no secret is available
     if (!apiKey || !apiSecret) {
-      const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "formile-clone";
+      const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "genforge-studio";
       const unsignedFormData = new FormData();
       unsignedFormData.append("file", file);
       unsignedFormData.append("upload_preset", uploadPreset);

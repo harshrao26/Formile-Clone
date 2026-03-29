@@ -25,14 +25,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('formile-token');
-    const savedAdmin = localStorage.getItem('formile-admin');
+    const savedToken = localStorage.getItem('genforge-token');
+    const savedAdmin = localStorage.getItem('genforge-admin');
     if (savedToken && savedAdmin) {
       setToken(savedToken);
       try {
         setAdmin(JSON.parse(savedAdmin));
       } catch (e) {
-        localStorage.removeItem('formile-admin');
+        localStorage.removeItem('genforge-admin');
       }
     }
     setIsLoading(false);
@@ -41,15 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (newToken: string, adminData: AuthUser) => {
     setToken(newToken);
     setAdmin(adminData);
-    localStorage.setItem('formile-token', newToken);
-    localStorage.setItem('formile-admin', JSON.stringify(adminData));
+    localStorage.setItem('genforge-token', newToken);
+    localStorage.setItem('genforge-admin', JSON.stringify(adminData));
   };
 
   const logout = () => {
     setToken(null);
     setAdmin(null);
-    localStorage.removeItem('formile-token');
-    localStorage.removeItem('formile-admin');
+    localStorage.removeItem('genforge-token');
+    localStorage.removeItem('genforge-admin');
   };
 
   return (

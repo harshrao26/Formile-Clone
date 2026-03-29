@@ -49,14 +49,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className="w-64 bg-[#111111] border-r border-white/[0.06] flex flex-col">
         <div className="p-6 border-b border-white/[0.06]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white fill-white" />
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-8 h-8 rounded-lg bg-[#0a0a0a] flex items-center justify-center border border-white/5">
+              <img src="/logo.png" alt="Genforge" className="w-5 h-5 object-contain" />
             </div>
-            <div>
-              <h2 className="text-white font-bold text-lg">Formile</h2>
-              <p className="text-white/30 text-xs">Admin Panel</p>
-            </div>
+            <span className="font-bold text-lg tracking-tight text-white uppercase">Genforge Studio</span>
           </div>
         </div>
 

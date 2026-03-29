@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcryptjs.hash('Abid@9721@Khan', 12);
     const admin = await Admin.create({
-      email: 'admin@formile.com',
+      email: 'admin@genforge.studio',
       password: hashedPassword,
       name: 'Admin',
       role: 'superadmin',

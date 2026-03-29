@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendLeadNotification = async (partnerEmail: string, partnerName: string, formData: Record<string, string>) => {
   const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
-  const fromName = process.env.SMTP_FROM_NAME || 'Formile Clone';
+  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const tableRows = Object.entries(formData)
@@ -56,7 +56,7 @@ export const sendLeadNotification = async (partnerEmail: string, partnerName: st
 };
 
 export const sendUserConfirmation = async (userEmail: string, heading: string) => {
-  const fromName = process.env.SMTP_FROM_NAME || 'Formile Clone';
+  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const html = `
@@ -86,7 +86,7 @@ export const sendUserConfirmation = async (userEmail: string, heading: string) =
 };
 
 export const sendOTPEmail = async (userEmail: string, otp: string, type: 'signup' | 'reset') => {
-  const fromName = process.env.SMTP_FROM_NAME || 'Formile Clone';
+  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const title = type === 'signup' ? 'Verify Your Email' : 'Reset Your Password';

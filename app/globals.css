@@ -12,6 +12,26 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-500 to-orange-600;
+  }
+
+  .border-glow {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.1);
+  }
+
+  .border-glow:hover {
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.2);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -20,7 +40,7 @@
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Poppins, Helvetica, sans-serif;
+  background: var(--background);
+  font-family: var(--font-genforge), Arial, Helvetica, sans-serif;
 }

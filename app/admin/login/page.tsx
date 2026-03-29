@@ -43,19 +43,23 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0 right-0">
+        <img 
+          src="/bg2.avif" 
+          alt="background" 
+          className="w-full h-full object-cover blur-[8px]  "
+        />
+       </div>
 
-      <div className="relative w-full max-w-md mx-4">
-        <div className="bg-[#141414] border border-white/10 rounded-2xl p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow-orange-500/20">
-              <Zap className="w-8 h-8 text-white fill-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">Formile Admin</h1>
+      <div className="relative w-full max-w-md mx-4 z-10">
+        <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-10 shadow-2xl">
+          <div className="flex flex-col items-center mb-8">
+          <div className="w-16 h-16 bg-[#0a0a0a] rounded-2xl flex items-center justify-center border border-white/5 shadow-2xl mb-4 group hover:border-orange-500/30 transition-all duration-500">
+            <img src="/logo.png" alt="Genforge" className="w-10 h-10 object-contain" />
+          </div>
+            <h1 className="text-2xl font-bold text-white">Genforge Studio</h1>
             <p className="text-white/50 mt-1">Sign in to your admin panel</p>
           </div>
 
@@ -73,7 +77,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                placeholder="admin@formile.com"
+                placeholder="admin@genforge.studio"
                 required
               />
             </div>

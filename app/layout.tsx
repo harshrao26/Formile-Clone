@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/app/context/AuthContext";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+const genforgeFont = localFont({
+  src: "../public/font.ttf",
+  variable: "--font-genforge",
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Formile - Lead Capture & Referral System",
-  description: "Capture leads, manage partner links, and track referrals with ease.",
+  title: "Genforge Studio - Lead Capture & Referral System",
+  description: "Advanced lead generation and management platform for high-growth companies.",
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${poppins.variable} h-full antialiased font-[family-name:var(--font-poppins)]`}
+      className={`${genforgeFont.variable} h-full antialiased font-[family-name:var(--font-genforge)]`}
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>{children}</AuthProvider>
