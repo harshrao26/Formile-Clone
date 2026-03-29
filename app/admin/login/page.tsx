@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Zap, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -89,6 +90,15 @@ export default function AdminLoginPage() {
               />
             </div>
 
+            <div className="flex items-center justify-end">
+              <Link
+                href="/admin/forgot-password"
+                className="text-sm font-medium text-orange-500 hover:text-orange-400 transition"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -103,6 +113,14 @@ export default function AdminLoginPage() {
                 'Sign In'
               )}
             </button>
+
+            <p className="text-center text-white/40 text-sm">
+              Don't have an account?{' '}
+              <Link href="/admin/register" className="text-orange-500 hover:text-orange-400 font-medium">
+                Create Account
+              </Link>
+            </p>
+
           </form>
         </div>
       </div>

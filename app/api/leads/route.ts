@@ -15,12 +15,30 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const partnerId = searchParams.get('partnerId');
     const personId = searchParams.get('personId');
+    const companyId = searchParams.get('companyId');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
 
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, any> = {};
     if (partnerId) filter.partnerId = partnerId;
     if (personId) filter.personId = personId;
+
+    if (companyId) {
+      const partners = await Partner.find({ companyId }).select('_id');
+      filter.partnerId = { $in: partners.map(p => p._id) };
+    }
+
+    if (startDate || endDate) {
+      filter.submittedAt = {};
+      if (startDate) filter.submittedAt.$gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        filter.submittedAt.$lte = end;
+      }
+    }
 
     const total = await LeadSubmission.countDocuments(filter);
     const leads = await LeadSubmission.find(filter)

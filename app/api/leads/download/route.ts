@@ -17,9 +17,11 @@ export async function GET(request: NextRequest) {
     const partnerId = searchParams.get('partnerId');
     const companyId = searchParams.get('companyId');
     const personId = searchParams.get('personId');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
     const format = searchParams.get('format') || 'xlsx';
 
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, any> = {};
     if (partnerId) {
       filter.partnerId = partnerId;
     } else if (companyId) {
@@ -28,6 +30,16 @@ export async function GET(request: NextRequest) {
     }
     
     if (personId) filter.personId = personId;
+
+    if (startDate || endDate) {
+      filter.submittedAt = {};
+      if (startDate) filter.submittedAt.$gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        filter.submittedAt.$lte = end;
+      }
+    }
 
     const leads = await LeadSubmission.find(filter)
       .populate('partnerId', 'name slug email')

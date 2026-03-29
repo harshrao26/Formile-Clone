@@ -28,6 +28,11 @@ interface Partner {
   name: string;
 }
 
+interface Company {
+  _id: string;
+  name: string;
+}
+
 interface Pagination {
   total: number;
   page: number;
@@ -39,9 +44,13 @@ export default function LeadsPage() {
   const { token } = useAuth();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [partners, setPartners] = useState<Partner[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState<Pagination>({ total: 0, page: 1, limit: 20, totalPages: 1 });
   const [filterPartner, setFilterPartner] = useState('');
+  const [filterCompany, setFilterCompany] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [downloading, setDownloading] = useState(false);
 
   const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -49,6 +58,10 @@ export default function LeadsPage() {
   const fetchLeads = async (page = 1) => {
     let url = `/api/leads?page=${page}&limit=20`;
     if (filterPartner) url += `&partnerId=${filterPartner}`;
+    if (filterCompany) url += `&companyId=${filterCompany}`;
+    if (startDate) url += `&startDate=${startDate}`;
+    if (endDate) url += `&endDate=${endDate}`;
+    
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     setLeads(data.leads);
@@ -61,21 +74,30 @@ export default function LeadsPage() {
     setPartners(await res.json());
   };
 
+  const fetchCompanies = async () => {
+    const res = await fetch('/api/companies', { headers: { Authorization: `Bearer ${token}` } });
+    setCompanies(await res.json());
+  };
+
   useEffect(() => {
     if (token) {
       fetchPartners();
+      fetchCompanies();
       fetchLeads();
     }
   }, [token]);
 
   useEffect(() => {
     if (token) fetchLeads(1);
-  }, [filterPartner]);
+  }, [filterPartner, filterCompany, startDate, endDate]);
 
   const handleDownload = async (format: string) => {
     setDownloading(true);
     let url = `/api/leads/download?format=${format}`;
     if (filterPartner) url += `&partnerId=${filterPartner}`;
+    if (filterCompany) url += `&companyId=${filterCompany}`;
+    if (startDate) url += `&startDate=${startDate}`;
+    if (endDate) url += `&endDate=${endDate}`;
     
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     const blob = await res.blob();
@@ -127,20 +149,61 @@ export default function LeadsPage() {
         </div>
       </div>
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-4 mb-6">
-        <div className="flex items-center gap-4">
-          <Filter className="w-4 h-4 text-white/40" />
-          <label className="text-white/50 text-sm">Filter by Partner:</label>
-          <select
-            value={filterPartner}
-            onChange={(e) => setFilterPartner(e.target.value)}
-            className="px-4 py-2 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-          >
-            <option value="" className="bg-[#1a1a1a]">All Partners</option>
-            {partners.map((p) => (
-              <option key={p._id} value={p._id} className="bg-[#1a1a1a]">{p.name}</option>
-            ))}
-          </select>
+      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="space-y-2">
+            <label className="text-white/50 text-xs font-medium uppercase tracking-wider flex items-center gap-2">
+              <Filter className="w-3 h-3" />
+              By Company
+            </label>
+            <select
+              value={filterCompany}
+              onChange={(e) => { setFilterCompany(e.target.value); setFilterPartner(''); }}
+              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+            >
+              <option value="">All Companies</option>
+              {companies.map((c) => (
+                <option key={c._id} value={c._id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-white/50 text-xs font-medium uppercase tracking-wider flex items-center gap-2">
+              <Filter className="w-3 h-3" />
+              By Partner
+            </label>
+            <select
+              value={filterPartner}
+              onChange={(e) => { setFilterPartner(e.target.value); setFilterCompany(''); }}
+              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+            >
+              <option value="">All Partners</option>
+              {partners.map((p) => (
+                <option key={p._id} value={p._id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-white/50 text-xs font-medium uppercase tracking-wider">Start Date</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition [color-scheme:dark]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-white/50 text-xs font-medium uppercase tracking-wider">End Date</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition [color-scheme:dark]"
+            />
+          </div>
         </div>
       </div>
 

@@ -84,3 +84,41 @@ export const sendUserConfirmation = async (userEmail: string, heading: string) =
     return { success: false, error };
   }
 };
+
+export const sendOTPEmail = async (userEmail: string, otp: string, type: 'signup' | 'reset') => {
+  const fromName = process.env.SMTP_FROM_NAME || 'Formile Clone';
+  const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+
+  const title = type === 'signup' ? 'Verify Your Email' : 'Reset Your Password';
+  const action = type === 'signup' ? 'completing your registration' : 'resetting your password';
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; padding: 40px; text-align: center; color: #333;">
+      <h2 style="color: #f97316; margin-bottom: 20px;">${title}</h2>
+      <p style="font-size: 16px; margin-bottom: 30px;">
+        Use the code below for ${action}. This code will expire in 10 minutes.
+      </p>
+      <div style="background: #f4f4f4; padding: 20px; font-size: 32px; font-weight: bold; letter-spacing: 5px; border-radius: 8px; margin-bottom: 30px;">
+        ${otp}
+      </div>
+      <p style="font-size: 12px; color: #999;">
+        If you didn't request this, please ignore this email.
+      </p>
+      <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;" />
+      <p style="font-weight: bold; color: #333;">${fromName} Team</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: userEmail,
+      subject: `${otp} is your ${type} code`,
+      html,
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+};
+
