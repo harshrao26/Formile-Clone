@@ -32,7 +32,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     if (!isLoading && !token) {
       router.push('/admin/login');
     }
-  }, [token, isLoading, router]);
+    // Redirect superadmins to their dedicated control center
+    if (!isLoading && admin?.role === 'superadmin') {
+      router.push('/admin/superadmin/overview');
+    }
+  }, [token, admin, isLoading, router]);
 
   if (isLoading) {
     return (
