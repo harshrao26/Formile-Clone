@@ -11,7 +11,9 @@ import {
   Check, 
   Users, 
   X,
-  ExternalLink
+  ExternalLink,
+  Download,
+  BarChart3
 } from 'lucide-react';
 
 interface Partner {
@@ -21,6 +23,8 @@ interface Partner {
   slug: string;
   companyId: { _id: string; name: string } | null;
   formId?: { _id: string; name: string } | null;
+  views: number;
+  leadsCount: number;
   createdAt: string;
 }
 
@@ -95,6 +99,20 @@ export default function PartnersPage() {
     setTimeout(() => setCopyMsg(''), 2000);
   };
 
+  const exportLeads = async (partnerId?: string, partnerName?: string) => {
+    const url = partnerId ? `/api/leads/download?partnerId=${partnerId}` : '/api/leads/download';
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    const filename = partnerName ? `leads-${partnerName.replace(/\s+/g, '-').toLowerCase()}` : 'leads-all';
+    a.download = `${filename}-${Date.now()}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -107,22 +125,31 @@ export default function PartnersPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-white">Partners</h1>
-        <button
-          onClick={() => { setShowForm(!showForm); setEditId(null); setFormData({ name: '', email: '', slug: '', companyId: '', formId: '' }); }}
-          className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition flex items-center gap-2"
-        >
-          {showForm ? (
-            <>
-              <X className="w-4 h-4" />
-              Cancel
-            </>
-          ) : (
-            <>
-              <PlusCircle className="w-4 h-4" />
-              Add Partner
-            </>
-          )}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => exportLeads()}
+            className="px-4 py-2 bg-white/5 border border-white/10 text-white rounded-xl text-sm font-medium hover:bg-white/10 transition flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Export All Leads
+          </button>
+          <button
+            onClick={() => { setShowForm(!showForm); setEditId(null); setFormData({ name: '', email: '', slug: '', companyId: '', formId: '' }); }}
+            className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition flex items-center gap-2"
+          >
+            {showForm ? (
+              <>
+                <X className="w-4 h-4" />
+                Cancel
+              </>
+            ) : (
+              <>
+                <PlusCircle className="w-4 h-4" />
+                Add Partner
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -162,7 +189,7 @@ export default function PartnersPage() {
             <thead>
               <tr className="border-b border-white/[0.06]">
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Name</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Email</th>
+                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Analytics (Hits / Leads / Conv%)</th>
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Slug / Link</th>
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Company</th>
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Form</th>
@@ -172,8 +199,28 @@ export default function PartnersPage() {
             <tbody>
               {partners.map((p) => (
                 <tr key={p._id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition">
-                  <td className="py-4 px-6 text-white font-medium">{p.name}</td>
-                  <td className="py-4 px-6 text-white/60 text-sm">{p.email}</td>
+                  <td className="py-4 px-6">
+                    <div className="text-white font-medium">{p.name}</div>
+                    <div className="text-white/30 text-xs mt-0.5">{p.email}</div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-4">
+                      <div className="text-center">
+                        <div className="text-white font-semibold text-sm">{p.views || 0}</div>
+                        <div className="text-[10px] text-white/30 uppercase font-bold tracking-tighter">Hits</div>
+                      </div>
+                      <div className="text-center border-l border-white/10 pl-4">
+                        <div className="text-orange-400 font-semibold text-sm">{p.leadsCount || 0}</div>
+                        <div className="text-[10px] text-white/30 uppercase font-bold tracking-tighter">Leads</div>
+                      </div>
+                      <div className="text-center border-l border-white/10 pl-4">
+                        <div className="text-green-400 font-semibold text-sm">
+                          {p.views > 0 ? ((p.leadsCount / p.views) * 100).toFixed(1) : '0'}%
+                        </div>
+                        <div className="text-[10px] text-white/30 uppercase font-bold tracking-tighter">Conv</div>
+                      </div>
+                    </div>
+                  </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
                       <span className="text-orange-400 font-mono text-sm">/p/{p.slug}</span>
@@ -198,6 +245,13 @@ export default function PartnersPage() {
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <button 
+                        onClick={() => exportLeads(p._id, p.name)} 
+                        className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                        title="Download Leads"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
                       <Link 
                         href={`/admin/partners/${p._id}/persons`} 
                         className="p-2 text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"

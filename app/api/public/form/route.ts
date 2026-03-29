@@ -18,6 +18,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
     }
 
+    // Increment views atomically
+    await Partner.updateOne({ _id: partner._id }, { $inc: { views: 1 } });
+
     let activeFields = ['full_name', 'email', 'phone'];
     let customFields: any[] = [];
     let heading = 'Claim Your Offer';

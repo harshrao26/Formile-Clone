@@ -8,7 +8,8 @@ import {
   Trash2, 
   ExternalLink, 
   X,
-  PlusCircle
+  PlusCircle,
+  Download
 } from 'lucide-react';
 
 interface Company {
@@ -61,6 +62,20 @@ export default function CompaniesPage() {
     setFormData({ name: company.name, originalUrl: company.originalUrl });
     setEditId(company._id);
     setShowForm(true);
+  };
+
+  const exportCompanyLeads = async (companyId: string, companyName: string) => {
+    const res = await fetch(`/api/leads/download?companyId=${companyId}`, { 
+      headers: { Authorization: `Bearer ${token}` } 
+    });
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = `leads-${companyName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   if (loading) {
@@ -147,6 +162,13 @@ export default function CompaniesPage() {
                   <td className="py-4 px-6 text-white/40 text-sm">{new Date(company.createdAt).toLocaleDateString()}</td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <button 
+                        onClick={() => exportCompanyLeads(company._id, company.name)} 
+                        className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                        title="Download Company Leads"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
                       <button 
                         onClick={() => handleEdit(company)} 
                         className="p-2 text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors"

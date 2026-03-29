@@ -79,13 +79,13 @@ export default function LeadCaptureForm() {
       }
 
       setToken(data.token);
-      setSubmitted(true);
 
       if (data.redirectUrl) {
-        setTimeout(() => {
-          window.location.href = data.redirectUrl;
-        }, 3000);
+        window.location.href = data.redirectUrl;
+        return; // Stop here, we are navigating
       }
+      
+      setSubmitted(true);
     } catch {
       setError('Something went wrong');
     } finally {

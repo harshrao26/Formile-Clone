@@ -15,11 +15,18 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const partnerId = searchParams.get('partnerId');
+    const companyId = searchParams.get('companyId');
     const personId = searchParams.get('personId');
     const format = searchParams.get('format') || 'xlsx';
 
     const filter: Record<string, unknown> = {};
-    if (partnerId) filter.partnerId = partnerId;
+    if (partnerId) {
+      filter.partnerId = partnerId;
+    } else if (companyId) {
+      const partners = await Partner.find({ companyId }).select('_id');
+      filter.partnerId = { $in: partners.map(p => p._id) };
+    }
+    
     if (personId) filter.personId = personId;
 
     const leads = await LeadSubmission.find(filter)

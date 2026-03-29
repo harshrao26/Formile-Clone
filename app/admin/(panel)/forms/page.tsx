@@ -190,17 +190,24 @@ export default function FormsPage() {
     fetchForms();
   };
 
-  const updateAppearance = async (key: string, value: string | null) => {
+  const updateAppearanceLocal = (key: string, value: string) => {
     if (!editingForm) return;
-    const updatedForm = { ...editingForm, [key]: value };
-    setEditingForm(updatedForm); // Optimistic UI
-    
+    setEditingForm({ ...editingForm, [key]: value });
+  };
+
+  const updateAppearanceApi = async (key: string, value: string | null) => {
+    if (!editingForm) return;
     await fetch(`/api/forms/${editingForm._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ [key]: value })
     });
-    fetchForms(); // sync background
+    fetchForms();
+  };
+
+  const updateAppearance = async (key: string, value: string | null) => {
+    updateAppearanceLocal(key, value || "");
+    await updateAppearanceApi(key, value);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,20 +217,21 @@ export default function FormsPage() {
     setIsUploading(true);
     const uploadData = new FormData();
     uploadData.append('file', file);
-    uploadData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'formile-clone');
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dekoldk8g'}/image/upload`, {
+      const res = await fetch('/api/upload', {
         method: 'POST',
         body: uploadData,
       });
       const data = await res.json();
-      if (data.secure_url) {
+      if (res.ok && data.secure_url) {
         updateAppearance('backgroundImage', data.secure_url);
+      } else {
+        throw new Error(data.error || 'Upload failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload failed', error);
-      alert('Failed to upload image. Check console or env keys.');
+      alert(`Failed to upload image: ${error.message}`);
     } finally {
       setIsUploading(false);
     }
@@ -258,9 +266,13 @@ export default function FormsPage() {
           {/* LEFT COLUMN: Builder */}
           <div>
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                {editingForm.name}
-              </h1>
+              <input 
+                value={editingForm.name}
+                onChange={(e) => updateAppearanceLocal('name', e.target.value)}
+                onBlur={(e) => updateAppearanceApi('name', e.target.value)}
+                className="w-full text-3xl font-bold bg-transparent border-0 text-white mb-2 p-0 focus:ring-0 focus:outline-none placeholder-white/20"
+                placeholder="Form Name"
+              />
               <p className="text-white/40">
                 Customize branding and select the fields you want to collect for this form.
               </p>
@@ -274,8 +286,10 @@ export default function FormsPage() {
                 <div>
                   <label className="block text-white/70 text-sm font-medium mb-2">Form Heading</label>
                   <input 
-                    value={editingForm.heading || 'Claim Your Offer'} 
-                    onChange={(e) => updateAppearance('heading', e.target.value)} 
+                    value={editingForm.heading || ''} 
+                    placeholder="Claim Your Offer"
+                    onChange={(e) => updateAppearanceLocal('heading', e.target.value)} 
+                    onBlur={(e) => updateAppearanceApi('heading', e.target.value)}
                     className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500" 
                   />
                 </div>
@@ -506,7 +520,7 @@ export default function FormsPage() {
 
   // LIST VIEW
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="  mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white">Forms</h1>

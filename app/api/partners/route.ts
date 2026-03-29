@@ -10,10 +10,47 @@ export async function GET(request: NextRequest) {
 
   try {
     await dbConnect();
-    const partners = await Partner.find({})
-      .populate('companyId', 'name')
-      .populate('formId', 'name')
-      .sort({ createdAt: -1 });
+    const partners = await Partner.aggregate([
+      { $sort: { createdAt: -1 } },
+      {
+        $lookup: {
+          from: 'leadsubmissions', // collection name in mongodb
+          localField: '_id',
+          foreignField: 'partnerId',
+          as: 'leads'
+        }
+      },
+      {
+        $lookup: {
+          from: 'companies',
+          localField: 'companyId',
+          foreignField: '_id',
+          as: 'companyId'
+        }
+      },
+      {
+        $unwind: { path: '$companyId', preserveNullAndEmptyArrays: true }
+      },
+      {
+        $lookup: {
+          from: 'formtemplates',
+          localField: 'formId',
+          foreignField: '_id',
+          as: 'formId'
+        }
+      },
+      {
+        $unwind: { path: '$formId', preserveNullAndEmptyArrays: true }
+      },
+      {
+        $addFields: {
+          leadsCount: { $size: '$leads' }
+        }
+      },
+      {
+        $project: { leads: 0 }
+      }
+    ]);
     return NextResponse.json(partners);
   } catch (error) {
     console.error('Get partners error:', error);

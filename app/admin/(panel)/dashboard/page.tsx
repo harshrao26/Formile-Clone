@@ -8,7 +8,8 @@ import {
   Building2, 
   UserCircle, 
   FileText,
-  ArrowUpRight
+  ArrowUpRight,
+  Download
 } from 'lucide-react';
 
 interface Stats {
@@ -44,6 +45,18 @@ export default function DashboardPage() {
       })
       .finally(() => setLoading(false));
   }, [token]);
+
+  const exportLeads = async () => {
+    const res = await fetch('/api/leads/download', { headers: { Authorization: `Bearer ${token}` } });
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = `leads-all-${Date.now()}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
 
   if (loading) {
     return (
@@ -82,7 +95,16 @@ export default function DashboardPage() {
       </div>
 
       <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6">
-        <h2 className="text-xl font-semibold text-white mb-4">Recent Leads</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-white">Recent Leads</h2>
+          <button 
+            onClick={exportLeads}
+            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg text-xs font-medium text-white/70 hover:text-white transition"
+          >
+            <Download className="w-4 h-4" />
+            Export All Leads
+          </button>
+        </div>
         {recentLeads.length === 0 ? (
           <p className="text-white/30 text-center py-8">No leads yet. Share your partner links to start capturing leads!</p>
         ) : (
