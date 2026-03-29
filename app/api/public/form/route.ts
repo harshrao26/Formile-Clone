@@ -18,15 +18,20 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
     }
 
-    // Default fields fallback in case formId is missing
     let activeFields = ['full_name', 'email', 'phone'];
     let customFields: any[] = [];
+    let heading = 'Claim Your Offer';
+    let theme = 'dark';
+    let backgroundImage = null;
     
     if (partner.formId) {
       const template = await FormTemplate.findById(partner.formId);
       if (template) {
         if (template.activeFields) activeFields = template.activeFields;
         if (template.customFields) customFields = template.customFields;
+        if (template.heading) heading = template.heading;
+        if (template.theme) theme = template.theme;
+        if (template.backgroundImage) backgroundImage = template.backgroundImage;
       }
     }
 
@@ -58,7 +63,13 @@ export async function GET(request: NextRequest) {
       return null;
     }).filter(Boolean);
 
-    return NextResponse.json({ fields: resolvedFields, companyId: partner.companyId });
+    return NextResponse.json({ 
+      fields: resolvedFields, 
+      companyId: partner.companyId,
+      heading,
+      theme,
+      backgroundImage
+    });
   } catch (error) {
     console.error('Public fetch form error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

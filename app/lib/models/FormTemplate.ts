@@ -11,6 +11,9 @@ export interface IFormTemplate extends Document {
     key: string;
     type: string;
   }[];
+  heading: string;
+  theme: string;
+  backgroundImage: string | null;
   createdAt: Date;
 }
 
@@ -24,6 +27,9 @@ const FormTemplateSchema = new Schema<IFormTemplate>({
   name: { type: String, required: true },
   activeFields: { type: [String], default: [] },
   customFields: { type: [CustomFieldSchema], default: [] },
+  heading: { type: String, default: 'Claim Your Offer' },
+  theme: { type: String, enum: ['dark', 'light'], default: 'dark' },
+  backgroundImage: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
 });
 

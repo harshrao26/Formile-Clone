@@ -24,6 +24,9 @@ export default function LeadCaptureForm() {
   const personSlug = (params.personSlug as string) || undefined;
 
   const [fields, setFields] = useState<FormField[]>([]);
+  const [heading, setHeading] = useState('Claim Your Offer');
+  const [theme, setTheme] = useState('dark');
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -37,6 +40,9 @@ export default function LeadCaptureForm() {
       .then((data) => {
         if(data.fields) {
           setFields(data.fields);
+          setHeading(data.heading || 'Claim Your Offer');
+          setTheme(data.theme || 'dark');
+          setBackgroundImage(data.backgroundImage || null);
           const initialData: Record<string, string> = {};
           data.fields.forEach((f: FormField) => { initialData[f.key] = ''; });
           setFormData(initialData);
@@ -121,21 +127,30 @@ export default function LeadCaptureForm() {
     );
   }
 
+  const isLight = theme === 'light';
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4">
-      <div className="absolute inset-0 overflow-hidden">
+    <div className={`min-h-screen flex items-center justify-center p-4 relative ${isLight ? 'bg-[#f4f4f5]' : 'bg-[#0a0a0a]'}`}>
+      {backgroundImage && (
+        <div className="absolute inset-0 z-0">
+          <img src={backgroundImage} alt="Background" className="w-full h-full object-cover opacity-30" />
+          <div className={`absolute inset-0 ${isLight ? 'bg-white/60' : 'bg-black/60'}`} />
+        </div>
+      )}
+
+      <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/8 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-600/8 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative w-full max-w-lg">
-        <div className="bg-[#141414] border border-white/10 rounded-2xl p-8 shadow-2xl">
+      <div className="relative w-full max-w-lg z-10">
+        <div className={`border rounded-2xl p-8 shadow-2xl ${isLight ? 'bg-white border-gray-200' : 'bg-[#141414] border-white/10'}`}>
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-500 mb-4 shadow-lg shadow-orange-500/20">
               <FilePlus className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Get Started</h1>
-            <p className="text-white/40 mt-1">Fill in your details below</p>
+            <h1 className={`text-2xl font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>{heading}</h1>
+            <p className={`mt-1 ${isLight ? 'text-gray-500' : 'text-white/40'}`}>Fill in your details below</p>
           </div>
 
           {error && (
@@ -148,7 +163,7 @@ export default function LeadCaptureForm() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {fields.map((field) => (
               <div key={field.key}>
-                <label className="block text-white/70 text-sm font-medium mb-2">
+                <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-gray-700' : 'text-white/70'}`}>
                   {field.label} {field.required && <span className="text-orange-400">*</span>}
                 </label>
                 {field.type === 'textarea' ? (
@@ -158,7 +173,7 @@ export default function LeadCaptureForm() {
                     placeholder={field.placeholder}
                     required={field.required}
                     rows={3}
-                    className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none ${isLight ? 'bg-white border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-[#1a1a1a] border-white/[0.06] text-white placeholder-white/25'}`}
                   />
                 ) : (
                   <input
@@ -167,7 +182,7 @@ export default function LeadCaptureForm() {
                     onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
                     placeholder={field.placeholder}
                     required={field.required}
-                    className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition ${isLight ? 'bg-white border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-[#1a1a1a] border-white/[0.06] text-white placeholder-white/25'}`}
                   />
                 )}
               </div>
@@ -197,7 +212,7 @@ export default function LeadCaptureForm() {
           </form>
         </div>
 
-        <p className="text-white/15 text-center text-xs mt-4">Powered by Formile</p>
+        <p className={`text-center text-xs mt-4 ${isLight ? 'text-gray-400' : 'text-white/15'}`}>Powered by Formile</p>
       </div>
     </div>
   );

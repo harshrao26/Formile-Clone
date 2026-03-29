@@ -20,6 +20,7 @@ interface Partner {
   email: string;
   slug: string;
   companyId: { _id: string; name: string } | null;
+  formId?: { _id: string; name: string } | null;
   createdAt: string;
 }
 
@@ -164,6 +165,7 @@ export default function PartnersPage() {
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Email</th>
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Slug / Link</th>
                 <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Company</th>
+                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Form</th>
                 <th className="text-right text-white/50 text-sm font-medium py-3 px-6">Actions</th>
               </tr>
             </thead>
@@ -185,6 +187,15 @@ export default function PartnersPage() {
                     </div>
                   </td>
                   <td className="py-4 px-6 text-white/40 text-sm">{p.companyId?.name || '-'}</td>
+                  <td className="py-4 px-6">
+                    {p.formId ? (
+                      <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/5 text-white/70 text-xs border border-white/10">
+                        {p.formId.name}
+                      </span>
+                    ) : (
+                      <span className="text-white/20 text-sm">-</span>
+                    )}
+                  </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Link 
