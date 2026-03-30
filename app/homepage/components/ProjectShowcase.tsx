@@ -13,7 +13,7 @@ export default function ProjectShowcase() {
           className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-screen -z-10 blur-xl"
       />
       
-      <div className="relative rounded-[48px] overflow-hidden border border-border shadow-2xl bg-background">
+      <div className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl bg-black">
         {/* Fake Browser Top Bar */}
         <div className="h-14 bg-[#151515] border-b border-white/5 flex items-center px-6 gap-2">
             <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -27,7 +27,7 @@ export default function ProjectShowcase() {
         {/* Browser Content Mockup */}
         <div className="aspect-[16/10] flex relative">
             {/* Sidebar (Explorer) */}
-            <div className="w-72 bg-background border-r border-white/5 p-8 space-y-8 hidden lg:block">
+            <div className="w-72 bg-black border-r border-white/5 p-8 space-y-8 hidden lg:block">
               <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase">
                   <Layout className="w-4 h-4" /> Explorer
               </div>
@@ -47,7 +47,7 @@ export default function ProjectShowcase() {
             {/* Main Editor Content */}
             <div className="flex-1 p-10 bg-[#0d0d0d] font-mono text-[14px] leading-relaxed text-white/50 overflow-hidden">
               <div className="flex items-center gap-4 mb-10 text-xs">
-                  <div className="px-4 py-2 bg-white/5 rounded-lg border border-border text-white font-bold flex items-center gap-2">
+                  <div className="px-4 py-2 bg-white/5 rounded-lg border border-white/10 text-white font-bold flex items-center gap-2">
                     <span className="text-blue-400">⚛</span> Home.tsx
                   </div>
                   <div className="px-4 py-2 text-white/30 font-medium">package.json</div>
@@ -66,7 +66,7 @@ export default function ProjectShowcase() {
             </div>
 
             {/* Floating "Gemini/AI" Assistant */}
-            <div className="absolute left-10 bottom-10 w-[340px] glass-card rounded-3xl p-8 border-border shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-background/90 backdrop-blur-2xl animate-float">
+            <div className="absolute left-10 bottom-10 w-[340px] glass-card rounded-3xl p-8 border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-black/90 backdrop-blur-2xl animate-float">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
                   <img src="/logo.png" alt="Genforge" className="w-6 h-6 object-contain" />
@@ -93,7 +93,7 @@ export default function ProjectShowcase() {
 
             {/* Floating "Mobile" Preview */}
             <div className="absolute right-[-60px] top-1/2 -translate-y-1/2 w-[300px] aspect-[9/18.5] bg-black rounded-[56px] border-[8px] border-[#1a1a1a] shadow-[0_50px_100px_rgba(0,0,0,0.8)] overflow-hidden hidden xl:block animate-float-delayed">
-              <div className="absolute top-0 inset-x-0 h-12 bg-background flex items-center px-6 gap-4">
+              <div className="absolute top-0 inset-x-0 h-12 bg-black flex items-center px-6 gap-4">
                   <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-white/50 uppercase">Android</div>
                   <div className="text-[10px] font-bold text-white/30 uppercase">Web</div>
               </div>
@@ -103,8 +103,8 @@ export default function ProjectShowcase() {
                     <img src="/logo.png" alt="Genforge" className="w-16 h-16 object-contain" />
                   </div>
                   <div className="w-full space-y-4">
-                    <div className="w-full h-14 bg-black/10 backdrop-blur-md rounded-2xl border border-border" />
-                    <div className="w-full h-14 bg-black/10 backdrop-blur-md rounded-2xl border border-border" />
+                    <div className="w-full h-14 bg-black/10 backdrop-blur-md rounded-2xl border border-white/10" />
+                    <div className="w-full h-14 bg-black/10 backdrop-blur-md rounded-2xl border border-white/10" />
                   </div>
               </div>
             </div>

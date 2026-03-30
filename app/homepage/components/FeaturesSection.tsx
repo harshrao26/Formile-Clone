@@ -82,7 +82,7 @@ export default function FeaturesSection() {
           {features.map((f, i) => (
             <div
               key={i}
-              className="group p-7 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-border transition-all duration-500 cursor-default"
+              className="group p-7 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 cursor-default"
             >
               <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
                 <f.icon className={`w-6 h-6 ${f.iconColor}`} />

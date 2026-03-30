@@ -5,7 +5,7 @@ import { Zap } from 'lucide-react';
 export default function AiSection() {
   return (
     <section className="py-44 px-6 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto glass-card rounded-[48px] p-16 md:p-24 flex flex-col lg:flex-row items-center gap-16 border-white/5 relative bg-background overflow-hidden">
+      <div className="max-w-6xl mx-auto glass-card rounded-[48px] p-16 md:p-24 flex flex-col lg:flex-row items-center gap-16 border-white/5 relative bg-black overflow-hidden">
         <img 
           src="/bg3.avif" 
           alt="ai-texture" 
@@ -32,15 +32,15 @@ export default function AiSection() {
           
           <div className="relative z-10 space-y-6">
             <div className="flex justify-end items-center gap-4">
-              <div className="bg-background rounded-2xl p-4 text-sm font-medium border border-white/5 text-white/80 max-w-[80%] shadow-2xl">
+              <div className="bg-black rounded-2xl p-4 text-sm font-medium border border-white/5 text-white/80 max-w-[80%] shadow-2xl">
                 the real estate form conversion is low, can you optimize it?
               </div>
-              <div className="w-10 h-10 rounded-full bg-white/10 border border-border overflow-hidden flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-white/10 border border-white/10 overflow-hidden flex-shrink-0">
                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-full h-full object-cover" />
               </div>
             </div>
             
-            <div className="glass-card rounded-[32px] p-10 border-border shadow-2xl space-y-8 bg-background/90 backdrop-blur-3xl relative">
+            <div className="glass-card rounded-[32px] p-10 border-white/10 shadow-2xl space-y-8 bg-black/90 backdrop-blur-3xl relative">
               {/* Blue Star Decor */}
               <div className="absolute -left-12 top-1/2 -translate-y-1/2 z-20">
                  <div className="w-12 h-12 bg-blue-500 rounded-full blur-[20px] opacity-50 absolute inset-0" />

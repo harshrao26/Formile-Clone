@@ -59,7 +59,7 @@ export default function FaqSection() {
             <div
               key={i}
               className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                open === i ? 'border-border bg-white/[0.04]' : 'border-white/5 bg-white/[0.02]'
+                open === i ? 'border-white/10 bg-white/[0.04]' : 'border-white/5 bg-white/[0.02]'
               }`}
             >
               <button

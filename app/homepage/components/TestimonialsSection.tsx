@@ -63,7 +63,7 @@ export default function TestimonialsSection() {
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="p-8 rounded-[28px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-border transition-all duration-500 flex flex-col gap-6"
+              className="p-8 rounded-[28px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 flex flex-col gap-6"
             >
               <p className="text-white/70 text-base leading-relaxed flex-1">"{t.text}"</p>
               <div className="flex items-center gap-4">

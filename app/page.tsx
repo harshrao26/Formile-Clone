@@ -15,7 +15,7 @@ import Footer from './homepage/components/Footer';
 
 export default function HomePage() {
   return (
-    <div className="dark min-h-screen bg-[#000000] text-foreground selection:bg-orange-500/30 selection:text-orange-200 overflow-x-hidden font-sans relative">
+    <div className="dark min-h-screen bg-[#000000] text-white selection:bg-orange-500/30 selection:text-orange-200 overflow-x-hidden font-sans relative">
       {/* Global Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <img

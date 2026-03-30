@@ -36,7 +36,7 @@ export default function CtaSection() {
             </Link>
             <Link
               href="/admin/login"
-              className="px-10 py-5 rounded-full font-bold text-lg border border-border text-white/70 hover:text-white hover:border-white/20 transition-all"
+              className="px-10 py-5 rounded-full font-bold text-lg border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition-all"
             >
               Sign In
             </Link>

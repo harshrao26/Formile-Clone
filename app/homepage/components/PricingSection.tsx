@@ -91,12 +91,12 @@ export default function PricingSection() {
               className={`relative flex flex-col rounded-[32px] p-8 border transition-all duration-500 ${
                 plan.highlight
                   ? 'bg-white text-black border-white shadow-[0_0_80px_rgba(255,255,255,0.08)] scale-[1.03]'
-                  : 'bg-white/[0.03] text-white border-white/5 hover:border-border'
+                  : 'bg-white/[0.03] text-white border-white/5 hover:border-white/10'
               }`}
             >
               {plan.badge && (
                 <div className={`absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest ${
-                    plan.highlight ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-white/10 text-white/60 border border-border'
+                    plan.highlight ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-white/10 text-white/60 border border-white/10'
                   }`}>
                   {plan.badge}
                 </div>
@@ -131,7 +131,7 @@ export default function PricingSection() {
                 className={`w-full text-center py-4 rounded-2xl font-bold text-sm transition-all duration-300 active:scale-95 ${
                   plan.highlight
                     ? 'bg-black text-white hover:bg-black/80'
-                    : 'bg-white/5 text-white border border-border hover:bg-white/10'
+                    : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
                 }`}
               >
                 {plan.cta}

@@ -4,7 +4,7 @@ import { Zap } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="py-32 px-6 border-t border-white/5 bg-background">
+    <footer className="py-32 px-6 border-t border-white/5 bg-black">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
         <div className="flex items-center gap-2">
           <img src="/logo.png" alt="Genforge Studio" className="w-8 h-8 object-contain" />
