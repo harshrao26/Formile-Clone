@@ -35,7 +35,11 @@ export default function LeadCaptureForm() {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-    fetch(`/api/public/form?partnerSlug=${partnerSlug}`)
+    const searchParams = new URL(window.location.href).searchParams;
+    const formId = searchParams.get('f');
+    const apiUrl = `/api/public/form?partnerSlug=${partnerSlug}${formId ? `&formId=${formId}` : ''}`;
+    
+    fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
         if(data.fields) {

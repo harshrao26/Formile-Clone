@@ -67,10 +67,27 @@ export async function POST(request: NextRequest) {
 
   try {
     await dbConnect();
-    const { name, email, slug, companyId, formId } = await request.json();
+    let { name, email, slug, companyId, formId, companyName, redirectUrl } = await request.json();
 
-    if (!name || !email || !slug || !companyId || !formId) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    if (!name || !slug || !formId) {
+      return NextResponse.json({ error: 'Name, Slug, and Form ID are required' }, { status: 400 });
+    }
+
+    if (!companyId && companyName) {
+      const Company = (await import('@/app/lib/models/Company')).default;
+      let company = await Company.findOne({ name: companyName, adminId: auth.adminId });
+      if (!company) {
+        company = await Company.create({ 
+          name: companyName, 
+          adminId: auth.adminId,
+          originalUrl: redirectUrl || 'https://genforgestudio.com' // Use provided redirect or platform home
+        });
+      }
+      companyId = company._id;
+    }
+
+    if (!companyId) {
+      return NextResponse.json({ error: 'Company ID or Company Name is required' }, { status: 400 });
     }
 
     const existingPartner = await Partner.findOne({ slug: slug.toLowerCase() });
@@ -80,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     const partner = await Partner.create({ 
       name, 
-      email, 
+      email: email || '', 
       slug: slug.toLowerCase(), 
       companyId, 
       formId,

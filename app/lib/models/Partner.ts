@@ -14,7 +14,7 @@ export interface IPartner extends Document {
 const PartnerSchema = new Schema<IPartner>({
   adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   name: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: false, default: '' },
   slug: { type: String, required: true, unique: true, lowercase: true },
   companyId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   formId: { type: Schema.Types.ObjectId, ref: 'FormTemplate' },
@@ -24,4 +24,8 @@ const PartnerSchema = new Schema<IPartner>({
 
 PartnerSchema.index({ slug: 1 });
 
-export default mongoose.models.Partner || mongoose.model<IPartner>('Partner', PartnerSchema);
+if (mongoose.models.Partner) {
+  delete (mongoose.models as any).Partner;
+}
+
+export default mongoose.model<IPartner>('Partner', PartnerSchema);

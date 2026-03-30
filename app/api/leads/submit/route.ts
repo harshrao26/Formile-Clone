@@ -45,8 +45,16 @@ export async function POST(request: NextRequest) {
 
     // Get the company's original URL and form heading
     await partner.populate(['companyId', 'formId']);
-    const redirectUrl = (partner.companyId as unknown as { originalUrl: string })?.originalUrl || '';
-    const formHeading = (partner.formId as unknown as { heading: string })?.heading || 'Claim Your Offer';
+    const template = partner.formId as any;
+    
+    // Legacy scrub: replace formile.com with genforgestudio.com
+    let fallbackUrl = (partner.companyId as any)?.originalUrl || 'https://genforgestudio.com';
+    if (fallbackUrl.includes('formile.com')) {
+      fallbackUrl = 'https://genforgestudio.com';
+    }
+
+    const redirectUrl = template?.redirectUrl || fallbackUrl;
+    const formHeading = template?.heading || 'Claim Your Offer';
 
     // Trigger Email Notifications (Non-blocking or at least error-safe)
     try {

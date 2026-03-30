@@ -15,6 +15,8 @@ export interface IFormTemplate extends Document {
   heading: string;
   theme: string;
   backgroundImage: string | null;
+  redirectUrl: string | null;
+  partnerId: mongoose.Types.ObjectId | null;
   createdAt: Date;
 }
 
@@ -32,6 +34,8 @@ const FormTemplateSchema = new Schema<IFormTemplate>({
   heading: { type: String, default: 'Claim Your Offer' },
   theme: { type: String, enum: ['dark', 'light'], default: 'dark' },
   backgroundImage: { type: String, default: null },
+  redirectUrl: { type: String, default: null },
+  partnerId: { type: Schema.Types.ObjectId, ref: 'Partner', default: null },
   createdAt: { type: Date, default: Date.now },
 });
 

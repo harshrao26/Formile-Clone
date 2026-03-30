@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/AuthContext";
-import { PlusCircle, Trash2, ArrowLeft, FileText, Moon, Sun, Upload } from "lucide-react";
+import { PlusCircle, Trash2, ArrowLeft, FileText, Moon, Sun, Upload, Copy, Check, ExternalLink, X } from "lucide-react";
 
 interface FormTemplate {
   _id: string;
@@ -12,6 +12,19 @@ interface FormTemplate {
   heading?: string;
   theme?: string;
   backgroundImage?: string | null;
+  redirectUrl?: string | null;
+  partnerId?: string | null;
+}
+
+interface Partner {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+interface Company {
+  _id: string;
+  name: string;
 }
 
 const PREDEFINED_FIELDS = [
@@ -37,12 +50,23 @@ export default function FormsPage() {
 
   // Editor View State
   const [editingForm, setEditingForm] = useState<FormTemplate | null>(null);
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [newCustomFieldName, setNewCustomFieldName] = useState("");
   const [newCustomFieldType, setNewCustomFieldType] = useState("text");
   const [addingField, setAddingField] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // New Partner Modal State
+  const [isAddingPartner, setIsAddingPartner] = useState(false);
+  const [isSavingPartner, setIsSavingPartner] = useState(false);
+  const [newPartnerData, setNewPartnerData] = useState({
+    name: '',
+    slug: ''
+  });
 
   const fetchForms = async () => {
     const res = await fetch("/api/forms", {
@@ -54,8 +78,26 @@ export default function FormsPage() {
     setLoading(false);
   };
 
+  const fetchPartners = async () => {
+    const res = await fetch("/api/partners", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setPartners(await res.json());
+  };
+
+  const fetchCompanies = async () => {
+    const res = await fetch("/api/companies", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setCompanies(await res.json());
+  };
+
   useEffect(() => {
-    if (token) fetchForms();
+    if (token) {
+      fetchForms();
+      fetchPartners();
+      fetchCompanies();
+    }
   }, [token]);
 
   useEffect(() => {
@@ -69,30 +111,34 @@ export default function FormsPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isDirty]);
 
-  const handleCreateForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newFormName.trim()) return;
+  const handleCreateForm = async () => {
     setSaving(true);
+    const tempName = `New Form ${forms.length + 1}`;
+    
+    try {
+      const res = await fetch("/api/forms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: tempName,
+          activeFields: ["full_name", "email", "phone"],
+        }),
+      });
 
-    const res = await fetch("/api/forms", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: newFormName,
-        activeFields: ["full_name", "email", "phone"],
-      }), // default active fields
-    });
-
-    if (res.ok) {
-      const newForm = await res.json();
-      setForms([newForm, ...forms]);
-      setNewFormName("");
-      setShowCreateData(false);
+      if (res.ok) {
+        const newForm = await res.json();
+        setForms([newForm, ...forms]);
+        setEditingForm(newForm);
+        setIsDirty(false);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const handleDeleteForm = async (id: string, e: React.MouseEvent) => {
@@ -123,6 +169,12 @@ export default function FormsPage() {
 
   const handleSave = async () => {
     if (!editingForm || !isDirty) return;
+
+    if (!editingForm.redirectUrl) {
+      alert("Redirect URL is required.");
+      return;
+    }
+
     setIsSaving(true);
     try {
       const res = await fetch(`/api/forms/${editingForm._id}`, {
@@ -194,6 +246,35 @@ export default function FormsPage() {
     setIsDirty(true);
   };
 
+  const syncToDb = async (key: string, value: any) => {
+    if (!editingForm) return;
+    try {
+      // 1. Update the Form Template
+      await fetch(`/api/forms/${editingForm._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...editingForm, [key]: value }),
+      });
+
+      // 2. If it's a partnerId, update that partner's formId as well
+      if (key === 'partnerId' && value) {
+        await fetch(`/api/partners/${value}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ formId: editingForm._id }),
+        });
+      }
+    } catch (err) {
+      console.error("Auto-sync failed:", err);
+    }
+  };
+
   const updateAppearance = (key: string, value: string | null) => {
     if (!editingForm) return;
     setEditingForm({ ...editingForm, [key]: value || "" });
@@ -235,15 +316,52 @@ export default function FormsPage() {
     );
   }
 
-  // EDITOR VIEW
-  if (editingForm) {
+  const handleCreatePartner = async (data: any) => {
+    if (!data.name || !data.slug) {
+      alert("Please fill name and slug");
+      return;
+    }
+
+    setIsSavingPartner(true);
+    try {
+      const res = await fetch("/api/partners", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...data,
+          formId: editingForm?._id
+        }),
+      });
+
+      if (res.ok) {
+        const newPartner = await res.json();
+        setPartners([newPartner, ...partners]);
+        updateAppearance('partnerId', newPartner._id);
+        syncToDb('partnerId', newPartner._id);
+        setIsAddingPartner(false);
+        setNewPartnerData({ name: '', slug: '' });
+      } else {
+        const error = await res.json();
+        alert(error.error || "Failed to create partner");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error creating partner");
+    } finally {
+      setIsSavingPartner(false);
+    }
+  };
+    if (editingForm) {
     const activeFieldsRaw = [
       ...PREDEFINED_FIELDS,
       ...(editingForm.customFields || []),
     ].filter((f) => (editingForm.activeFields || []).includes(f.key));
 
     return (
-      <div className="mx-auto">
+      <div className="mx-auto pb-20">
         <div className="flex items-center justify-between mb-8">
           <button
             onClick={() => {
@@ -266,7 +384,7 @@ export default function FormsPage() {
               {isSaving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <PlusCircle className="w-4 h-4" />
+                <Check className="w-4 h-4" />
               )}
               Save Changes
             </button>
@@ -302,6 +420,117 @@ export default function FormsPage() {
                     className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500" 
                   />
                 </div>
+
+                <div>
+                  <label className="block text-foreground/70 text-sm font-medium mb-2">Redirect URL <span className="text-red-500">*</span></label>
+                  <input 
+                    value={editingForm.redirectUrl || ''} 
+                    placeholder="https://yourwebsite.com/success"
+                    required
+                    onChange={(e) => updateAppearance('redirectUrl', e.target.value)} 
+                    onBlur={(e) => syncToDb('redirectUrl', e.target.value)}
+                    className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500" 
+                  />
+                  <p className="text-[10px] text-foreground/40 mt-1.5 px-1">Redirect users to this URL after they submit the form. (Required)</p>
+                </div>
+
+                <div>
+                  <label className="block text-foreground/70 text-sm font-medium mb-2">Target Partner</label>
+                  <div className="flex gap-2">
+                    {isAddingPartner ? (
+                      <div className="flex-1 flex gap-2">
+                        <input 
+                          autoFocus
+                          placeholder="Partner Name..."
+                          value={newPartnerData.name}
+                          onChange={(e) => {
+                            const name = e.target.value;
+                            const slug = name.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+                            setNewPartnerData({...newPartnerData, name, slug});
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleCreatePartner({ 
+                                ...newPartnerData, 
+                                companyName: editingForm?.name,
+                                redirectUrl: editingForm?.redirectUrl
+                              });
+                            }
+                            if (e.key === 'Escape') setIsAddingPartner(false);
+                          }}
+                          className="flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium"
+                        />
+                        <button 
+                          onClick={() => handleCreatePartner({ 
+                            ...newPartnerData, 
+                            companyName: editingForm?.name,
+                            redirectUrl: editingForm?.redirectUrl
+                          })}
+                          disabled={isSavingPartner || !newPartnerData.name.trim()}
+                          className="p-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition shadow-lg shadow-orange-500/20 disabled:opacity-50"
+                        >
+                          {isSavingPartner ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-5 h-5" />}
+                        </button>
+                        <button 
+                          onClick={() => setIsAddingPartner(false)}
+                          className="p-3 bg-white/5 border border-border rounded-xl hover:bg-white/10 text-foreground/50 transition"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <select 
+                          value={editingForm.partnerId || ''} 
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateAppearance('partnerId', val);
+                            syncToDb('partnerId', val);
+                          }}
+                          className="flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 appearance-none font-medium"
+                        >
+                          <option value="">Select a Partner</option>
+                          {partners.map(p => (
+                            <option key={p._id} value={p._id}>{p.name}</option>
+                          ))}
+                        </select>
+                        <button 
+                          onClick={() => setIsAddingPartner(true)}
+                          className="p-3 bg-white/5 border border-border rounded-xl hover:bg-white/10 text-orange-500 transition shadow-sm"
+                          title="Create New Partner"
+                        >
+                          <PlusCircle className="w-5 h-5" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-foreground/40 mt-1.5 px-1">{isAddingPartner ? "Press Enter to save or Escape to cancel." : "Select which partner will use this form to generate a copyable link."}</p>
+                </div>
+
+                {editingForm.partnerId && (
+                  <div className="p-4 bg-orange-500/5 border border-orange-500/10 rounded-2xl relative group">
+                    <label className="block text-[10px] uppercase tracking-wider text-orange-500 font-bold mb-2">Partner Link</label>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 text-xs font-mono text-foreground/60 truncate bg-background/50 px-2 py-1.5 rounded-lg border border-border/50">
+                        {`${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}`}
+                      </div>
+                      <button 
+                        onClick={() => {
+                          const slug = partners.find(p => p._id === editingForm.partnerId)?.slug;
+                          const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}`;
+                          navigator.clipboard.writeText(url);
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 2000);
+                        }}
+                        className="p-2 bg-background border border-border rounded-lg hover:text-orange-500 transition shadow-sm active:scale-90"
+                        title="Copy Link"
+                      >
+                        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -351,12 +580,12 @@ export default function FormsPage() {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl  shadow-xl">
+            <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
               <h2 className="text-lg bg-orange-500/10 p-4 font-bold text-white mb-6">
                 Available Fields
               </h2>
 
-              <div className="space-y-4">
+              <div className="p-6 pt-0 space-y-4">
                 {[
                   ...PREDEFINED_FIELDS,
                   ...(editingForm.customFields || []),
@@ -411,40 +640,40 @@ export default function FormsPage() {
                     </div>
                   );
                 })}
-              </div>
 
-              <div className="mt-8 pt-6 border-t border-border">
-                <form
-                  onSubmit={handleAddCustomField}
-                  className="flex flex-col xl:flex-row gap-4 items-center"
-                >
-                  <input
-                    placeholder="New Custom Field..."
-                    value={newCustomFieldName}
-                    onChange={(e) => setNewCustomFieldName(e.target.value)}
-                    className="w-full xl:flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
-                  />
-                  <select
-                    value={newCustomFieldType}
-                    onChange={(e) => setNewCustomFieldType(e.target.value)}
-                    className="w-full xl:w-auto px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
+                <div className="mt-8 pt-6 border-t border-border">
+                  <form
+                    onSubmit={handleAddCustomField}
+                    className="flex flex-col xl:flex-row gap-4 items-center"
                   >
-                    <option value="text">Short Text</option>
-                    <option value="textarea">Long Text</option>
-                    <option value="email">Email</option>
-                    <option value="tel">Phone</option>
-                    <option value="date">Date</option>
-                    <option value="number">Number</option>
-                  </select>
-                  <button
-                    type="submit"
-                    disabled={addingField || !newCustomFieldName.trim()}
-                    className="w-full xl:w-auto px-6 py-3 bg-white/5 border border-border text-foreground rounded-xl font-medium hover:bg-white/10 transition disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    {addingField ? "Adding..." : "Add Field"}
-                  </button>
-                </form>
+                    <input
+                      placeholder="New Custom Field..."
+                      value={newCustomFieldName}
+                      onChange={(e) => setNewCustomFieldName(e.target.value)}
+                      className="w-full xl:flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
+                    />
+                    <select
+                      value={newCustomFieldType}
+                      onChange={(e) => setNewCustomFieldType(e.target.value)}
+                      className="w-full xl:w-auto px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
+                    >
+                      <option value="text">Short Text</option>
+                      <option value="textarea">Long Text</option>
+                      <option value="email">Email</option>
+                      <option value="tel">Phone</option>
+                      <option value="date">Date</option>
+                      <option value="number">Number</option>
+                    </select>
+                    <button
+                      type="submit"
+                      disabled={addingField || !newCustomFieldName.trim()}
+                      className="w-full xl:w-auto px-6 py-3 bg-white/5 border border-border text-foreground rounded-xl font-medium hover:bg-white/10 transition disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      {addingField ? "Adding..." : "Add Field"}
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -511,11 +740,20 @@ export default function FormsPage() {
                     )}
 
                     <div className="pt-6 pb-2">
-                      <div className="w-full py-4 bg-orange-500 border border-orange-500 shadow-lg rounded-xl flex items-center justify-center">
+                      <button 
+                        onClick={() => {
+                          if (editingForm.redirectUrl) {
+                            window.location.href = editingForm.redirectUrl;
+                          } else {
+                            alert("Please enter a Redirect URL first.");
+                          }
+                        }}
+                        className="w-full py-4 bg-orange-500 border border-orange-500 shadow-lg rounded-xl flex items-center justify-center hover:bg-orange-600 transition group active:scale-95"
+                      >
                         <span className="text-foreground font-semibold flex items-center gap-2">
                           Submit Application
                         </span>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -523,13 +761,14 @@ export default function FormsPage() {
             </div>
           </div>
         </div>
+        
       </div>
     );
   }
 
   // LIST VIEW
   return (
-    <div className="  mx-auto">
+    <div className="mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Forms</h1>
@@ -538,50 +777,14 @@ export default function FormsPage() {
           </p>
         </div>
         <button
-          onClick={() => setShowCreateData(!showCreateData)}
-          className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition flex items-center gap-2"
+          onClick={handleCreateForm}
+          disabled={saving}
+          className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition flex items-center gap-2 shadow-lg shadow-orange-500/20 active:scale-95 disabled:opacity-50"
         >
-          <PlusCircle className="w-4 h-4" />
-          Create Form
+          {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <PlusCircle className="w-4 h-4" />}
+          Create New Form
         </button>
       </div>
-
-      {showCreateData && (
-        <div className="bg-card border border-border rounded-2xl p-6 mb-8 shadow-xl">
-          <form
-            onSubmit={handleCreateForm}
-            className="flex flex-col sm:flex-row gap-4 items-center"
-          >
-            <input
-              placeholder="Form Name (e.g. Car Sales Campaign)"
-              value={newFormName}
-              onChange={(e) => setNewFormName(e.target.value)}
-              className="w-full sm:flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition shadow-inner"
-              required
-              autoFocus
-            />
-            <div className="flex w-full sm:w-auto gap-3">
-              <button
-                type="submit"
-                disabled={saving || !newFormName.trim()}
-                className="flex-1 sm:flex-none px-6 py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition disabled:opacity-50"
-              >
-                {saving ? "Creating..." : "Create"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCreateData(false);
-                  setNewFormName("");
-                }}
-                className="flex-1 sm:flex-none px-6 py-3 bg-transparent border border-border text-foreground rounded-xl font-medium hover:bg-white/5 transition"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
 
       <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {forms.length === 0 ? (

@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const partnerSlug = searchParams.get('partnerSlug');
+    const formId = searchParams.get('formId');
 
     if (!partnerSlug) {
       return NextResponse.json({ error: 'Missing partnerSlug' }, { status: 400 });
@@ -26,15 +27,19 @@ export async function GET(request: NextRequest) {
     let heading = 'Claim Your Offer';
     let theme = 'dark';
     let backgroundImage = null;
+    let redirectUrl = null;
     
-    if (partner.formId) {
-      const template = await FormTemplate.findById(partner.formId);
+    const targetFormId = formId || partner.formId;
+
+    if (targetFormId) {
+      const template = await FormTemplate.findById(targetFormId);
       if (template) {
         if (template.activeFields) activeFields = template.activeFields;
         if (template.customFields) customFields = template.customFields;
         if (template.heading) heading = template.heading;
         if (template.theme) theme = template.theme;
         if (template.backgroundImage) backgroundImage = template.backgroundImage;
+        if (template.redirectUrl) redirectUrl = template.redirectUrl;
       }
     }
 
