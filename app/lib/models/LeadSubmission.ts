@@ -23,6 +23,5 @@ const LeadSubmissionSchema = new Schema<ILeadSubmission>({
 });
 
 LeadSubmissionSchema.index({ partnerId: 1 });
-LeadSubmissionSchema.index({ token: 1 });
 
 export default mongoose.models.LeadSubmission || mongoose.model<ILeadSubmission>('LeadSubmission', LeadSubmissionSchema);

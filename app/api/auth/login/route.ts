@@ -28,7 +28,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       token,
-      admin: { name: admin.name, email: admin.email, role: admin.role },
+      admin: { 
+        name: admin.name, 
+        email: admin.email, 
+        role: admin.role,
+        adminId: admin._id.toString()
+      },
     });
   } catch (error) {
     console.error('Login error:', error);

@@ -80,6 +80,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               </Link>
             );
           })}
+
+          {admin?.role === 'superadmin' && (
+            <Link
+              href="/admin/superadmin/overview"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 mt-4 hover:bg-orange-500/20 transition-all animate-pulse"
+            >
+              <Zap className="w-5 h-5" />
+              Superadmin Panel
+            </Link>
+          )}
         </nav>
 
         <div className="p-4 border-t border-white/[0.06]">

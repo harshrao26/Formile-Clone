@@ -103,15 +103,16 @@ Be specific, actionable, and data-driven. If data is zero or minimal, focus on o
     }
 
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.7,
+            temperature: 0.1,
             maxOutputTokens: 2048,
+            response_mime_type: "application/json",
           },
         }),
       }
@@ -119,17 +120,31 @@ Be specific, actionable, and data-driven. If data is zero or minimal, focus on o
 
     const geminiData = await geminiRes.json();
 
-    let reportText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    
-    // Clean markdown code fences if present
-    reportText = reportText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    if (geminiData.error) {
+      console.error('Gemini API Error:', geminiData.error);
+      return NextResponse.json({ error: `AI Error: ${geminiData.error.message}` }, { status: 500 });
+    }
 
+    if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      console.error('Gemini No Candidates Error. Response:', JSON.stringify(geminiData));
+      return NextResponse.json({ error: 'AI returned no results' }, { status: 500 });
+    }
+
+    let reportText = geminiData.candidates[0].content.parts[0].text || '';
+    
     let report;
     try {
+      // Remove any potential non-JSON prefix/suffix
+      const jsonStart = reportText.indexOf('{');
+      const jsonEnd = reportText.lastIndexOf('}');
+      if (jsonStart !== -1 && jsonEnd !== -1) {
+        reportText = reportText.substring(jsonStart, jsonEnd + 1);
+      }
       report = JSON.parse(reportText);
     } catch {
+      console.error('Gemini Parse Error. Raw Text:', reportText);
       report = {
-        platformSummary: reportText || 'Unable to parse AI response. Please try again.',
+        platformSummary: "Failed to generate structured report. Analyzing raw insight: " + (reportText.substring(0, 500) || "Empty response"),
         growthOpportunities: [],
         anomalyAlerts: [],
         actionableDecisions: [],

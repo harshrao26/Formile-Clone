@@ -49,15 +49,15 @@ export default function AiInsightsPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      if (data.error) {
-        setError(data.error);
+      if (!res.ok || data.error) {
+        setError(data.error || 'Failed to generate report');
       } else {
         setReport(data.report);
         setSnapshot(data.dataSnapshot);
         setGeneratedAt(data.generatedAt);
       }
-    } catch {
-      setError('Failed to connect to AI engine');
+    } catch (err: any) {
+      setError('Connection error: ' + (err.message || 'unknown error'));
     } finally {
       setLoading(false);
     }

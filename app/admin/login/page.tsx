@@ -34,7 +34,11 @@ export default function AdminLoginPage() {
       }
 
       login(data.token, data.admin);
-      router.push('/admin/dashboard');
+      if (data.admin.role === 'superadmin') {
+        router.push('/admin/superadmin/overview');
+      } else {
+        router.push('/admin/dashboard');
+      }
     } catch {
       setError('Something went wrong');
     } finally {
