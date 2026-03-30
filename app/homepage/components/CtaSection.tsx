@@ -21,7 +21,7 @@ export default function CtaSection() {
               Your next lead is <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-yellow-400">one click away</span>
             </h2>
-            <p className="text-white/40 text-lg md:text-xl max-w-xl mx-auto leading-relaxed">
+            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto leading-relaxed">
               Join thousands of sales teams using Genforge Studio to close more deals. No credit card required for the Pro trial.
             </p>
           </div>
@@ -36,13 +36,13 @@ export default function CtaSection() {
             </Link>
             <Link
               href="/admin/login"
-              className="px-10 py-5 rounded-full font-bold text-lg border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition-all"
+              className="px-10 py-5 rounded-full font-bold text-lg border border-border text-white/70 hover:text-white hover:border-white/20 transition-all"
             >
               Sign In
             </Link>
           </div>
 
-          <p className="text-white/20 text-xs">
+          <p className="text-white/30 text-xs">
             14-day free trial on Pro plan · No credit card required · Cancel anytime
           </p>
         </div>

@@ -63,20 +63,20 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-md mx-4">
-        <div className="bg-[#141414] border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-card border border-border rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow-orange-500/20">
-              <KeyRound className="w-8 h-8 text-white" />
+              <KeyRound className="w-8 h-8 text-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Reset Password</h1>
-            <p className="text-white/50 mt-1">Recover your admin account access</p>
+            <h1 className="text-2xl font-bold text-foreground">Reset Password</h1>
+            <p className="text-foreground/60 mt-1">Recover your admin account access</p>
           </div>
 
           {error && (
@@ -94,12 +94,12 @@ export default function ForgotPasswordPage() {
           {step === 1 ? (
             <form onSubmit={handleRequestReset} className="space-y-5">
               <div>
-                <label className="block text-white/70 text-sm font-medium mb-2">Account Email</label>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">Account Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   placeholder="admin@example.com"
                   required
                 />
@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
               </button>
 
               <div className="text-center">
-                <Link href="/admin/login" className="text-white/40 text-sm hover:text-white inline-flex items-center gap-2 transition">
+                <Link href="/admin/login" className="text-foreground/50 text-sm hover:text-foreground inline-flex items-center gap-2 transition">
                   <ArrowLeft className="w-4 h-4" />
                   Back to Login
                 </Link>
@@ -123,30 +123,30 @@ export default function ForgotPasswordPage() {
           ) : (
             <form onSubmit={handleResetPassword} className="space-y-5">
               <div className="text-center mb-6">
-                <p className="text-white/70">Enter the code sent to</p>
+                <p className="text-foreground/70">Enter the code sent to</p>
                 <p className="text-orange-400 font-medium">{email}</p>
               </div>
 
               <div>
-                <label className="block text-white/70 text-sm font-medium mb-2">Verification Code</label>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">Verification Code</label>
                 <input
                   type="text"
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-4 py-4 bg-[#1a1a1a] border border-white/10 rounded-xl text-white text-center text-3xl font-bold tracking-[10px] focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+                  className="w-full px-4 py-4 bg-background border border-border rounded-xl text-foreground text-center text-3xl font-bold tracking-[10px] focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                   placeholder="000000"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-white/70 text-sm font-medium mb-2">New Password</label>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">New Password</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                   placeholder="••••••••"
                   required
                 />
@@ -163,7 +163,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-full flex items-center justify-center gap-2 text-white/50 text-sm hover:text-white transition"
+                className="w-full flex items-center justify-center gap-2 text-foreground/60 text-sm hover:text-foreground transition"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Wait, I entered wrong email

@@ -5,6 +5,7 @@ import Partner from '@/app/lib/models/Partner';
 import Company from '@/app/lib/models/Company';
 import Person from '@/app/lib/models/Person';
 import FormField from '@/app/lib/models/FormField';
+import Admin from '@/app/lib/models/Admin';
 import { verifyAuth } from '@/app/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -14,6 +15,9 @@ export async function GET(request: NextRequest) {
   try {
     await dbConnect();
     const filter = auth.role === 'superadmin' ? {} : { adminId: auth.adminId };
+
+    // Fetch admin subscription details
+    const currentAdmin = await Admin.findById(auth.adminId).select('plan subscriptionStatus expiryDate createdAt').lean();
 
     const [
       totalLeads,
@@ -44,6 +48,12 @@ export async function GET(request: NextRequest) {
         totalCompanies,
         totalPersons,
         totalFields,
+      },
+      subscription: {
+        plan: currentAdmin?.plan || 'free',
+        status: currentAdmin?.subscriptionStatus || 'inactive',
+        expiryDate: currentAdmin?.expiryDate,
+        createdAt: currentAdmin?.createdAt,
       },
       recentLeads: recentLeadsResults,
     });

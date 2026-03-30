@@ -67,13 +67,13 @@ export default function FeaturesSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Why Genforge Studio</span>
+            <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Why Genforge Studio</span>
           </div>
           <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95]">
             Everything you need to <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-500">close more leads</span>
           </h2>
-          <p className="text-white/40 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             One platform. Every tool your sales and marketing team needs to generate, manage, and convert leads at scale.
           </p>
         </div>
@@ -82,13 +82,13 @@ export default function FeaturesSection() {
           {features.map((f, i) => (
             <div
               key={i}
-              className="group p-7 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 cursor-default"
+              className="group p-7 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-border transition-all duration-500 cursor-default"
             >
               <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
                 <f.icon className={`w-6 h-6 ${f.iconColor}`} />
               </div>
               <h3 className="text-white font-semibold text-lg mb-3 leading-snug">{f.title}</h3>
-              <p className="text-white/40 text-sm leading-relaxed">{f.description}</p>
+              <p className="text-white/50 text-sm leading-relaxed">{f.description}</p>
             </div>
           ))}
         </div>

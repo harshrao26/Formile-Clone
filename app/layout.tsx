@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   description: "Advanced lead generation and management platform for high-growth companies.",
 };
 
+ import { ThemeProvider2 } from "@/app/components/ThemeProvider2";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,10 +24,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${genforgeFont.variable} h-full antialiased font-[family-name:var(--font-genforge)]`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider2 attribute="class" defaultTheme="dark" enableSystem={false}>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider2>
       </body>
     </html>
   );

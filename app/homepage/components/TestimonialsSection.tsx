@@ -51,7 +51,7 @@ export default function TestimonialsSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Loved by Teams</span>
+            <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Loved by Teams</span>
           </div>
           <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95]">
             Real results, <br />
@@ -63,7 +63,7 @@ export default function TestimonialsSection() {
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="p-8 rounded-[28px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 flex flex-col gap-6"
+              className="p-8 rounded-[28px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-border transition-all duration-500 flex flex-col gap-6"
             >
               <p className="text-white/70 text-base leading-relaxed flex-1">"{t.text}"</p>
               <div className="flex items-center gap-4">
@@ -72,7 +72,7 @@ export default function TestimonialsSection() {
                 </div>
                 <div>
                   <div className="text-white font-semibold text-sm">{t.name}</div>
-                  <div className="text-white/30 text-xs">{t.role}</div>
+                  <div className="text-white/40 text-xs">{t.role}</div>
                 </div>
               </div>
             </div>

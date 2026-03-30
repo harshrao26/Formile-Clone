@@ -124,11 +124,11 @@ export default function PartnersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-white">Partners</h1>
+        <h1 className="text-3xl font-bold text-foreground">Partners</h1>
         <div className="flex items-center gap-3">
           <button
             onClick={() => exportLeads()}
-            className="px-4 py-2 bg-white/5 border border-white/10 text-white rounded-xl text-sm font-medium hover:bg-white/10 transition flex items-center gap-2"
+            className="px-4 py-2 bg-white/5 border border-border text-foreground rounded-xl text-sm font-medium hover:bg-white/10 transition flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
             Export All Leads
@@ -153,24 +153,24 @@ export default function PartnersPage() {
       </div>
 
       {showForm && (
-        <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-6">
-          <h2 className="text-lg font-semibold text-white mb-4">{editId ? 'Edit' : 'Add'} Partner</h2>
+        <div className="bg-card border border-border rounded-2xl p-6 mb-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">{editId ? 'Edit' : 'Add'} Partner</h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <input placeholder="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
-            <input placeholder="Email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
-            <input placeholder="Slug (URL identifier)" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+            <input placeholder="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+            <input placeholder="Email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+            <input placeholder="Slug (URL identifier)" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
             
-            <select value={formData.companyId} onChange={(e) => setFormData({ ...formData, companyId: e.target.value })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-              <option value="" className="bg-[#1a1a1a]">Select Company</option>
+            <select value={formData.companyId} onChange={(e) => setFormData({ ...formData, companyId: e.target.value })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+              <option value="" className="bg-background">Select Company</option>
               {companies.map((c) => (
-                <option key={c._id} value={c._id} className="bg-[#1a1a1a]">{c.name}</option>
+                <option key={c._id} value={c._id} className="bg-background">{c.name}</option>
               ))}
             </select>
 
-            <select value={formData.formId} onChange={(e) => setFormData({ ...formData, formId: e.target.value })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-              <option value="" className="bg-[#1a1a1a]">Select Form Template</option>
+            <select value={formData.formId} onChange={(e) => setFormData({ ...formData, formId: e.target.value })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+              <option value="" className="bg-background">Select Form Template</option>
               {forms.map((f) => (
-                <option key={f._id} value={f._id} className="bg-[#1a1a1a]">{f.name}</option>
+                <option key={f._id} value={f._id} className="bg-background">{f.name}</option>
               ))}
             </select>
 
@@ -181,43 +181,43 @@ export default function PartnersPage() {
         </div>
       )}
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {partners.length === 0 ? (
-          <p className="text-white/30 text-center py-12">No partners yet. Add one to get started!</p>
+          <p className="text-foreground/40 text-center py-12">No partners yet. Add one to get started!</p>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Name</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Analytics (Hits / Leads / Conv%)</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Slug / Link</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Company</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Form</th>
-                <th className="text-right text-white/50 text-sm font-medium py-3 px-6">Actions</th>
+              <tr className="border-b border-border">
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Name</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Analytics (Hits / Leads / Conv%)</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Slug / Link</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Company</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Form</th>
+                <th className="text-right text-foreground/60 text-sm font-medium py-3 px-6">Actions</th>
               </tr>
             </thead>
             <tbody>
               {partners.map((p) => (
                 <tr key={p._id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition">
                   <td className="py-4 px-6">
-                    <div className="text-white font-medium">{p.name}</div>
-                    <div className="text-white/30 text-xs mt-0.5">{p.email}</div>
+                    <div className="text-foreground font-medium">{p.name}</div>
+                    <div className="text-foreground/40 text-xs mt-0.5">{p.email}</div>
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-4">
                       <div className="text-center">
-                        <div className="text-white font-semibold text-sm">{p.views || 0}</div>
-                        <div className="text-[10px] text-white/30 uppercase font-bold tracking-tighter">Hits</div>
+                        <div className="text-foreground font-semibold text-sm">{p.views || 0}</div>
+                        <div className="text-[10px] text-foreground/40 uppercase font-bold tracking-tighter">Hits</div>
                       </div>
-                      <div className="text-center border-l border-white/10 pl-4">
+                      <div className="text-center border-l border-border pl-4">
                         <div className="text-orange-400 font-semibold text-sm">{p.leadsCount || 0}</div>
-                        <div className="text-[10px] text-white/30 uppercase font-bold tracking-tighter">Leads</div>
+                        <div className="text-[10px] text-foreground/40 uppercase font-bold tracking-tighter">Leads</div>
                       </div>
-                      <div className="text-center border-l border-white/10 pl-4">
+                      <div className="text-center border-l border-border pl-4">
                         <div className="text-green-400 font-semibold text-sm">
                           {p.views > 0 ? ((p.leadsCount / p.views) * 100).toFixed(1) : '0'}%
                         </div>
-                        <div className="text-[10px] text-white/30 uppercase font-bold tracking-tighter">Conv</div>
+                        <div className="text-[10px] text-foreground/40 uppercase font-bold tracking-tighter">Conv</div>
                       </div>
                     </div>
                   </td>
@@ -233,14 +233,14 @@ export default function PartnersPage() {
                       </button>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-white/40 text-sm">{p.companyId?.name || '-'}</td>
+                  <td className="py-4 px-6 text-foreground/50 text-sm">{p.companyId?.name || '-'}</td>
                   <td className="py-4 px-6">
                     {p.formId ? (
-                      <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/5 text-white/70 text-xs border border-white/10">
+                      <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/5 text-foreground/70 text-xs border border-border">
                         {p.formId.name}
                       </span>
                     ) : (
-                      <span className="text-white/20 text-sm">-</span>
+                      <span className="text-foreground/30 text-sm">-</span>
                     )}
                   </td>
                   <td className="py-4 px-6 text-right">

@@ -107,14 +107,14 @@ export default function FieldsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Form Fields</h1>
-          <p className="text-white/40 mt-1">Manage the fields that appear on lead capture forms</p>
+          <h1 className="text-3xl font-bold text-foreground">Form Fields</h1>
+          <p className="text-foreground/50 mt-1">Manage the fields that appear on lead capture forms</p>
         </div>
 
       </div>
 
       {showForm && (
-        <div className="max-w-xl mx-auto bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-6 shadow-xl">
+        <div className="max-w-xl mx-auto bg-card border border-border rounded-2xl p-6 mb-6 shadow-xl">
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 items-center">
             <input 
               placeholder="Field Name (e.g. City, Budget)" 
@@ -125,7 +125,7 @@ export default function FieldsPage() {
                 fieldKey: formData.fieldKey || e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''),
                 type: 'text'
               })} 
-              className="w-full sm:flex-1 px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition shadow-inner" 
+              className="w-full sm:flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition shadow-inner" 
               required 
               autoFocus
             />
@@ -140,7 +140,7 @@ export default function FieldsPage() {
               <button 
                 type="button" 
                 onClick={() => { setShowForm(false); setEditId(null); setFormData({ label: '', fieldKey: '', type: 'text', placeholder: '', required: false, order: 0, isActive: true, options: '' }); }}
-                className="flex-1 sm:flex-none px-6 py-3 bg-transparent border border-white/10 text-white rounded-xl font-medium hover:bg-white/5 transition"
+                className="flex-1 sm:flex-none px-6 py-3 bg-transparent border border-border text-foreground rounded-xl font-medium hover:bg-white/5 transition"
               >
                 Cancel
               </button>
@@ -150,22 +150,22 @@ export default function FieldsPage() {
       )}
 
       {!showForm && (
-        <div className="max-w-xl bg-[#141414] border border-white/[0.06] rounded-2xl p-6 lg:p-8">
-          <h2 className="text-xl font-bold text-white mb-6">Active Form Fields</h2>
+        <div className="max-w-xl bg-card border border-border rounded-2xl p-6 lg:p-8">
+          <h2 className="text-xl font-bold text-foreground mb-6">Active Form Fields</h2>
           {fields.length === 0 ? (
-            <p className="text-white/30 text-center py-6">No form fields yet.</p>
+            <p className="text-foreground/40 text-center py-6">No form fields yet.</p>
           ) : (
             <div className="space-y-4">
               {fields.sort((a, b) => a.order - b.order).map(f => (
                 <div key={f._id} className="flex items-center justify-between p-4 rounded-xl border border-white/[0.03] bg-white/[0.01]">
                   <div className="flex flex-col">
                     <div className="flex items-center gap-3">
-                      <span className="text-white font-medium text-lg">{f.label}</span>
+                      <span className="text-foreground font-medium text-lg">{f.label}</span>
                       {f.required && (
                         <span className="text-[10px] uppercase tracking-wider text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full font-bold">Required</span>
                       )}
                     </div>
-                    <span className="text-xs text-white/30 mt-1 font-mono">{f.fieldKey}</span>
+                    <span className="text-xs text-foreground/40 mt-1 font-mono">{f.fieldKey}</span>
                   </div>
                   
                   <div className="flex items-center gap-4">
@@ -185,10 +185,10 @@ export default function FieldsPage() {
             </div>
           )}
 
-          <div className="mt-8 pt-6 border-t border-white/[0.06]">
+          <div className="mt-8 pt-6 border-t border-border">
             <button 
               onClick={() => { setShowForm(true); setEditId(null); setFormData({ label: '', fieldKey: '', type: 'text', placeholder: '', required: false, order: 0, isActive: true, options: '' }); }}
-              className="px-6 py-4 border border-white/20 text-white rounded-xl font-medium hover:bg-white/5 transition flex items-center gap-2 justify-center w-full shadow-sm"
+              className="px-6 py-4 border border-white/20 text-foreground rounded-xl font-medium hover:bg-white/5 transition flex items-center gap-2 justify-center w-full shadow-sm"
             >
               <PlusCircle className="w-5 h-5" />
               Create Field

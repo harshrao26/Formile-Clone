@@ -4,6 +4,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
 import Link from 'next/link';
+import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { 
   BarChart3, 
   Building2, 
@@ -40,7 +41,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin h-10 w-10 border-4 border-orange-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -49,15 +50,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   if (!token) return null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex">
+    <div className="min-h-screen bg-background flex text-foreground">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#111111] border-r border-white/[0.06] flex flex-col">
-        <div className="p-6 border-b border-white/[0.06]">
+      <aside className="w-64 bg-card border-r border-border flex flex-col">
+        <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3 px-2">
-            <div className="w-8 h-8 rounded-lg bg-[#0a0a0a] flex items-center justify-center border border-white/5">
+            <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center border border-border">
               <img src="/logo.png" alt="Genforge" className="w-5 h-5 object-contain" />
             </div>
-            <span className="font-bold text-lg tracking-tight text-white uppercase">Genforge Studio</span>
+            <span className="font-bold text-lg tracking-tight uppercase">Genforge Studio</span>
           </div>
         </div>
 
@@ -71,11 +72,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-orange-500/15 text-orange-400 border border-orange-500/20'
-                    : 'text-white/50 hover:text-white hover:bg-white/5'
+                    ? 'bg-orange-500/15 text-orange-500 border border-orange-500/20'
+                    : 'text-foreground/60 hover:text-foreground hover:bg-foreground/5'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-orange-400' : 'text-white/50'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-orange-500' : 'text-foreground/50'}`} />
                 {item.label}
               </Link>
             );
@@ -84,7 +85,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           {admin?.role === 'superadmin' && (
             <Link
               href="/admin/superadmin/overview"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 mt-4 hover:bg-orange-500/20 transition-all animate-pulse"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-orange-500 bg-orange-500/10 border border-orange-500/20 mt-4 hover:bg-orange-500/20 transition-all animate-pulse"
             >
               <Zap className="w-5 h-5" />
               Superadmin Panel
@@ -92,19 +93,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           )}
         </nav>
 
-        <div className="p-4 border-t border-white/[0.06]">
-          <div className="flex items-center gap-3 mb-3 px-2">
-            <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold">
-              {admin?.name?.charAt(0) || 'A'}
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center justify-between mb-3 px-2">
+            <div className="flex items-center gap-3 min-w-0 pr-2">
+              <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                {admin?.name?.charAt(0) || 'A'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{admin?.name}</p>
+                <p className="text-foreground/50 text-xs truncate">{admin?.email}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">{admin?.name}</p>
-              <p className="text-white/30 text-xs truncate">{admin?.email}</p>
-            </div>
+            <ThemeToggle />
           </div>
           <button
             onClick={() => { logout(); router.push('/admin/login'); }}
-            className="w-full px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition flex items-center justify-center gap-2"
           >
             <LogOut className="w-4 h-4" />
             Sign Out

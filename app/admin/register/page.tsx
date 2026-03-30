@@ -62,20 +62,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-md mx-4">
-        <div className="bg-[#141414] border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-card border border-border rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow-orange-500/20">
-              <Zap className="w-8 h-8 text-white fill-white" />
+              <Zap className="w-8 h-8 text-foreground fill-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Create Admin Account</h1>
-            <p className="text-white/50 mt-1">Start your 10x lead generation journey</p>
+            <h1 className="text-2xl font-bold text-foreground">Create Admin Account</h1>
+            <p className="text-foreground/60 mt-1">Start your 10x lead generation journey</p>
           </div>
 
           {error && (
@@ -87,34 +87,34 @@ export default function RegisterPage() {
           {step === 1 ? (
             <form onSubmit={handleRequestOTP} className="space-y-5">
               <div>
-                <label className="block text-white/70 text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">Full Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   placeholder="John Doe"
                   required
                 />
               </div>
               <div>
-                <label className="block text-white/70 text-sm font-medium mb-2">Email Address</label>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">Email Address</label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   placeholder="john@example.com"
                   required
                 />
               </div>
               <div>
-                <label className="block text-white/70 text-sm font-medium mb-2">Password</label>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">Password</label>
                 <input
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   placeholder="••••••••"
                   required
                 />
@@ -128,7 +128,7 @@ export default function RegisterPage() {
                 {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Get Verification Code'}
               </button>
 
-              <p className="text-center text-white/40 text-sm">
+              <p className="text-center text-foreground/50 text-sm">
                 Already have an account?{' '}
                 <Link href="/admin/login" className="text-orange-500 hover:text-orange-400 font-medium">
                   Sign In
@@ -138,7 +138,7 @@ export default function RegisterPage() {
           ) : (
             <div className="space-y-6">
               <div className="text-center">
-                <p className="text-white/70 mb-2">We've sent a 6-digit code to</p>
+                <p className="text-foreground/70 mb-2">We've sent a 6-digit code to</p>
                 <p className="text-orange-500 font-semibold">{formData.email}</p>
               </div>
 
@@ -148,7 +148,7 @@ export default function RegisterPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-4 py-4 bg-[#1a1a1a] border border-white/10 rounded-xl text-white text-center text-3xl font-bold tracking-[10px] focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+                  className="w-full px-4 py-4 bg-background border border-border rounded-xl text-foreground text-center text-3xl font-bold tracking-[10px] focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                   placeholder="000000"
                   required
                 />
@@ -164,7 +164,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="w-full flex items-center justify-center gap-2 text-white/50 text-sm hover:text-white transition"
+                  className="w-full flex items-center justify-center gap-2 text-foreground/60 text-sm hover:text-foreground transition"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Change Email

@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0 right-0">
         <img 
@@ -58,13 +58,13 @@ export default function AdminLoginPage() {
        </div>
 
       <div className="relative w-full max-w-md mx-4 z-10">
-        <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-10 shadow-2xl">
+        <div className="bg-white/[0.03] backdrop-blur-2xl border border-border rounded-[32px] p-10 shadow-2xl">
           <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-[#0a0a0a] rounded-2xl flex items-center justify-center border border-white/5 shadow-2xl mb-4 group hover:border-orange-500/30 transition-all duration-500">
+          <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center border border-white/5 shadow-2xl mb-4 group hover:border-orange-500/30 transition-all duration-500">
             <img src="/logo.png" alt="Genforge" className="w-10 h-10 object-contain" />
           </div>
-            <h1 className="text-2xl font-bold text-white">Genforge Studio</h1>
-            <p className="text-white/50 mt-1">Sign in to your admin panel</p>
+            <h1 className="text-2xl font-bold text-foreground">Genforge Studio</h1>
+            <p className="text-foreground/60 mt-1">Sign in to your admin panel</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -75,24 +75,24 @@ export default function AdminLoginPage() {
             )}
 
             <div>
-              <label className="block text-white/70 text-sm font-medium mb-2">Email</label>
+              <label className="block text-foreground/70 text-sm font-medium mb-2">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 placeholder="admin@genforge.studio"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-white/70 text-sm font-medium mb-2">Password</label>
+              <label className="block text-foreground/70 text-sm font-medium mb-2">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 placeholder="••••••••"
                 required
               />
@@ -122,7 +122,7 @@ export default function AdminLoginPage() {
               )}
             </button>
 
-            <p className="text-center text-white/40 text-sm">
+            <p className="text-center text-foreground/50 text-sm">
               Don't have an account?{' '}
               <Link href="/admin/register" className="text-orange-500 hover:text-orange-400 font-medium">
                 Create Account

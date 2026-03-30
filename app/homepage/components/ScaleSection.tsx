@@ -55,7 +55,7 @@ export default function ScaleSection() {
           </div>
 
           {/* Card 2: Preview */}
-          <div className="relative z-10 w-full max-w-[320px] aspect-square bg-[#101010]/90 rounded-[32px] border border-white/5 p-8 flex flex-col gap-6 shadow-2xl backdrop-blur-xl md:-mx-4 scale-110 border-white/10">
+          <div className="relative z-10 w-full max-w-[320px] aspect-square bg-[#101010]/90 rounded-[32px] border border-white/5 p-8 flex flex-col gap-6 shadow-2xl backdrop-blur-xl md:-mx-4 scale-110 border-border">
              <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/10" />
                 <div className="h-2 w-24 bg-white/10 rounded-full" />
@@ -87,7 +87,7 @@ export default function ScaleSection() {
              <div className="flex items-center justify-between">
                 <div className="space-y-2 text-left">
                    <div className="text-white font-bold text-xl">12.4k</div>
-                   <div className="text-white/30 text-[10px] uppercase font-bold tracking-widest">Leads this week</div>
+                   <div className="text-white/40 text-[10px] uppercase font-bold tracking-widest">Leads this week</div>
                 </div>
                 <TrendingUp className="w-6 h-6 text-green-400" />
              </div>

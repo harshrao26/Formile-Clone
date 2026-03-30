@@ -122,8 +122,8 @@ export default function LeadsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Leads</h1>
-          <p className="text-white/40 mt-1">{pagination.total} total captures</p>
+          <h1 className="text-3xl font-bold text-foreground">Leads</h1>
+          <p className="text-foreground/50 mt-1">{pagination.total} total captures</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -141,7 +141,7 @@ export default function LeadsPage() {
           <button
             onClick={() => handleDownload('csv')}
             disabled={downloading}
-            className="px-4 py-2 bg-[#1a1a1a] text-white/70 border border-white/[0.06] rounded-xl text-sm font-medium hover:bg-[#222] transition disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 bg-background text-foreground/70 border border-border rounded-xl text-sm font-medium hover:bg-foreground/5 transition disabled:opacity-50 flex items-center gap-2"
           >
             <FileText className="w-4 h-4" />
             Download CSV
@@ -149,17 +149,17 @@ export default function LeadsPage() {
         </div>
       </div>
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-6">
+      <div className="bg-card border border-border rounded-2xl p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="space-y-2">
-            <label className="text-white/50 text-xs font-medium uppercase tracking-wider flex items-center gap-2">
+            <label className="text-foreground/60 text-xs font-medium uppercase tracking-wider flex items-center gap-2">
               <Filter className="w-3 h-3" />
               By Company
             </label>
             <select
               value={filterCompany}
               onChange={(e) => { setFilterCompany(e.target.value); setFilterPartner(''); }}
-              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+              className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
             >
               <option value="">All Companies</option>
               {companies.map((c) => (
@@ -169,14 +169,14 @@ export default function LeadsPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-white/50 text-xs font-medium uppercase tracking-wider flex items-center gap-2">
+            <label className="text-foreground/60 text-xs font-medium uppercase tracking-wider flex items-center gap-2">
               <Filter className="w-3 h-3" />
               By Partner
             </label>
             <select
               value={filterPartner}
               onChange={(e) => { setFilterPartner(e.target.value); setFilterCompany(''); }}
-              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+              className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
             >
               <option value="">All Partners</option>
               {partners.map((p) => (
@@ -186,42 +186,42 @@ export default function LeadsPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-white/50 text-xs font-medium uppercase tracking-wider">Start Date</label>
+            <label className="text-foreground/60 text-xs font-medium uppercase tracking-wider">Start Date</label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition [color-scheme:dark]"
+              className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition dark:[color-scheme:dark]"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-white/50 text-xs font-medium uppercase tracking-wider">End Date</label>
+            <label className="text-foreground/60 text-xs font-medium uppercase tracking-wider">End Date</label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition [color-scheme:dark]"
+              className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition dark:[color-scheme:dark]"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {leads.length === 0 ? (
-          <p className="text-white/30 text-center py-12">No leads captured yet.</p>
+          <p className="text-foreground/40 text-center py-12">No leads captured yet.</p>
         ) : (
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/[0.06]">
-                    <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Token</th>
-                    <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Partner</th>
-                    <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Person</th>
-                    <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Form Data</th>
-                    <th className="text-left text-white/50 text-sm font-medium py-3 px-6">IP</th>
-                    <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Time</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Token</th>
+                    <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Partner</th>
+                    <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Person</th>
+                    <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Form Data</th>
+                    <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">IP</th>
+                    <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Time</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -230,17 +230,17 @@ export default function LeadsPage() {
                       <td className="py-4 px-6">
                         <span className="text-orange-400 font-mono text-xs">{lead.token.substring(0, 12)}...</span>
                       </td>
-                      <td className="py-4 px-6 text-white/70 text-sm">{lead.partnerId?.name || '-'}</td>
-                      <td className="py-4 px-6 text-white/70 text-sm">{lead.personId?.name || '-'}</td>
-                      <td className="py-4 px-6 text-white/50 text-xs max-w-xs">
+                      <td className="py-4 px-6 text-foreground/70 text-sm">{lead.partnerId?.name || '-'}</td>
+                      <td className="py-4 px-6 text-foreground/70 text-sm">{lead.personId?.name || '-'}</td>
+                      <td className="py-4 px-6 text-foreground/60 text-xs max-w-xs">
                         <div className="space-y-1">
                           {Object.entries(lead.formData || {}).map(([k, v]) => (
-                            <div key={k}><span className="text-white/30">{k}:</span> {v}</div>
+                            <div key={k}><span className="text-foreground/40">{k}:</span> {v}</div>
                           ))}
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-white/40 text-xs font-mono">{lead.ipAddress}</td>
-                      <td className="py-4 px-6 text-white/40 text-xs">{new Date(lead.submittedAt).toLocaleString()}</td>
+                      <td className="py-4 px-6 text-foreground/50 text-xs font-mono">{lead.ipAddress}</td>
+                      <td className="py-4 px-6 text-foreground/50 text-xs">{new Date(lead.submittedAt).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -248,7 +248,7 @@ export default function LeadsPage() {
             </div>
 
             {pagination.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 p-4 border-t border-white/[0.06]">
+              <div className="flex items-center justify-center gap-2 p-4 border-t border-border">
                 {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
                   <button
                     key={page}
@@ -256,7 +256,7 @@ export default function LeadsPage() {
                     className={`w-8 h-8 rounded-lg text-sm transition ${
                       page === pagination.page
                         ? 'bg-orange-500 text-white'
-                        : 'text-white/40 hover:bg-white/[0.05]'
+                        : 'text-foreground/50 hover:bg-white/[0.05]'
                     }`}
                   >
                     {page}

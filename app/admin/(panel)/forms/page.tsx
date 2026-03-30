@@ -41,6 +41,8 @@ export default function FormsPage() {
   const [newCustomFieldType, setNewCustomFieldType] = useState("text");
   const [addingField, setAddingField] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchForms = async () => {
     const res = await fetch("/api/forms", {
@@ -55,6 +57,17 @@ export default function FormsPage() {
   useEffect(() => {
     if (token) fetchForms();
   }, [token]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
 
   const handleCreateForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,20 +116,36 @@ export default function FormsPage() {
       ? currentActive.filter((k) => k !== fieldKey)
       : [...currentActive, fieldKey];
 
-    // Optimistic UI update
+    // Local UI update
     setEditingForm({ ...editingForm, activeFields: newActiveFields });
+    setIsDirty(true);
+  };
 
-    // API update
-    await fetch(`/api/forms/${editingForm._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ activeFields: newActiveFields }),
-    });
+  const handleSave = async () => {
+    if (!editingForm || !isDirty) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/forms/${editingForm._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(editingForm),
+      });
 
-    fetchForms(); // sync list in background
+      if (res.ok) {
+        setIsDirty(false);
+        fetchForms();
+      } else {
+        alert("Failed to save changes");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving form");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleAddCustomField = async (e: React.FormEvent) => {
@@ -139,23 +168,11 @@ export default function FormsPage() {
       customFields: updatedCustomFields,
       activeFields: newActiveFields,
     });
-
-    await fetch(`/api/forms/${editingForm._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        customFields: updatedCustomFields,
-        activeFields: newActiveFields,
-      }),
-    });
+    setIsDirty(true);
 
     setNewCustomFieldName("");
     setNewCustomFieldType("text");
     setAddingField(false);
-    fetchForms();
   };
 
   const deleteCustomField = async (fieldKey: string) => {
@@ -174,40 +191,13 @@ export default function FormsPage() {
       customFields: updatedCustomFields,
       activeFields: updatedActiveFields,
     });
-
-    await fetch(`/api/forms/${editingForm._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        customFields: updatedCustomFields,
-        activeFields: updatedActiveFields,
-      }),
-    });
-
-    fetchForms();
+    setIsDirty(true);
   };
 
-  const updateAppearanceLocal = (key: string, value: string) => {
+  const updateAppearance = (key: string, value: string | null) => {
     if (!editingForm) return;
-    setEditingForm({ ...editingForm, [key]: value });
-  };
-
-  const updateAppearanceApi = async (key: string, value: string | null) => {
-    if (!editingForm) return;
-    await fetch(`/api/forms/${editingForm._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ [key]: value })
-    });
-    fetchForms();
-  };
-
-  const updateAppearance = async (key: string, value: string | null) => {
-    updateAppearanceLocal(key, value || "");
-    await updateAppearanceApi(key, value);
+    setEditingForm({ ...editingForm, [key]: value || "" });
+    setIsDirty(true);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -254,13 +244,34 @@ export default function FormsPage() {
 
     return (
       <div className="mx-auto">
-        <button
-          onClick={() => setEditingForm(null)}
-          className="flex items-center gap-2 text-white/50 hover:text-white mb-6 transition"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Forms
-        </button>
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={() => {
+              if (isDirty && !confirm("You have unsaved changes. Are you sure you want to go back?")) return;
+              setEditingForm(null);
+              setIsDirty(false);
+            }}
+            className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Forms
+          </button>
+
+          {isDirty && (
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="px-6 py-2 bg-orange-500 text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition flex items-center gap-2 shadow-lg shadow-orange-500/20 active:scale-95"
+            >
+              {isSaving ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <PlusCircle className="w-4 h-4" />
+              )}
+              Save Changes
+            </button>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* LEFT COLUMN: Builder */}
@@ -268,45 +279,43 @@ export default function FormsPage() {
             <div className="mb-8">
               <input 
                 value={editingForm.name}
-                onChange={(e) => updateAppearanceLocal('name', e.target.value)}
-                onBlur={(e) => updateAppearanceApi('name', e.target.value)}
-                className="w-full text-3xl font-bold bg-transparent border-0 text-white mb-2 p-0 focus:ring-0 focus:outline-none placeholder-white/20"
+                onChange={(e) => updateAppearance('name', e.target.value)}
+                className="w-full text-3xl font-bold bg-transparent border-0 text-foreground mb-2 p-0 focus:ring-0 focus:outline-none placeholder-white/20"
                 placeholder="Form Name"
               />
-              <p className="text-white/40">
+              <p className="text-foreground/50">
                 Customize branding and select the fields you want to collect for this form.
               </p>
             </div>
 
             {/* NEW APPEARANCE SECTION */}
-            <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 lg:p-8 shadow-xl mb-8">
-              <h2 className="text-lg font-bold text-white mb-6">Appearance & Branding</h2>
+            <div className="bg-card border border-border rounded-2xl p-6 lg:p-8 shadow-xl mb-8">
+              <h2 className="text-lg font-bold text-foreground mb-6">Appearance & Branding</h2>
               
               <div className="space-y-6">
                 <div>
-                  <label className="block text-white/70 text-sm font-medium mb-2">Form Heading</label>
+                  <label className="block text-foreground/70 text-sm font-medium mb-2">Form Heading</label>
                   <input 
                     value={editingForm.heading || ''} 
                     placeholder="Claim Your Offer"
-                    onChange={(e) => updateAppearanceLocal('heading', e.target.value)} 
-                    onBlur={(e) => updateAppearanceApi('heading', e.target.value)}
-                    className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500" 
+                    onChange={(e) => updateAppearance('heading', e.target.value)} 
+                    className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500" 
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-white/70 text-sm font-medium mb-2">Theme</label>
-                    <div className="flex bg-[#1a1a1a] border border-white/[0.06] rounded-xl p-1">
+                    <label className="block text-foreground/70 text-sm font-medium mb-2">Theme</label>
+                    <div className="flex bg-background border border-border rounded-xl p-1">
                       <button 
                         onClick={() => updateAppearance('theme', 'dark')}
-                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${editingForm.theme !== 'light' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'}`}
+                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${editingForm.theme !== 'light' ? 'bg-orange-500/20 text-orange-500' : 'text-foreground/50 hover:text-foreground/70'}`}
                       >
                         <Moon className="w-4 h-4" /> Dark
                       </button>
                       <button 
                         onClick={() => updateAppearance('theme', 'light')}
-                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${editingForm.theme === 'light' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'}`}
+                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${editingForm.theme === 'light' ? 'bg-orange-500/20 text-orange-500' : 'text-foreground/50 hover:text-foreground/70'}`}
                       >
                         <Sun className="w-4 h-4" /> Light
                       </button>
@@ -314,12 +323,12 @@ export default function FormsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/70 text-sm font-medium mb-2">Background Image</label>
+                    <label className="block text-foreground/70 text-sm font-medium mb-2">Background Image</label>
                     {editingForm.backgroundImage ? (
-                      <div className="relative w-full h-12 bg-[#1a1a1a] rounded-xl border border-white/[0.06] overflow-hidden group">
+                      <div className="relative w-full h-12 bg-background rounded-xl border border-border overflow-hidden group">
                         <img src={editingForm.backgroundImage} alt="Background" className="w-full h-full object-cover opacity-50" />
                         <div className="absolute inset-0 flex items-center justify-between px-4">
-                          <span className="text-xs text-white uppercase tracking-wider font-semibold">Image Set</span>
+                          <span className="text-xs text-foreground uppercase tracking-wider font-semibold">Image Set</span>
                           <button 
                             onClick={() => updateAppearance('backgroundImage', null)}
                             className="p-1.5 bg-red-500/20 text-red-400 rounded-md opacity-0 group-hover:opacity-100 transition"
@@ -329,10 +338,10 @@ export default function FormsPage() {
                         </div>
                       </div>
                     ) : (
-                      <label className={`flex items-center justify-center w-full h-12 px-4 border-2 border-dashed rounded-xl cursor-pointer transition ${isUploading ? 'border-orange-500 bg-orange-500/5' : 'border-white/10 hover:border-white/30 bg-[#1a1a1a]'}`}>
+                      <label className={`flex items-center justify-center w-full h-12 px-4 border-2 border-dashed rounded-xl cursor-pointer transition ${isUploading ? 'border-orange-500 bg-orange-500/5' : 'border-border hover:border-white/30 bg-background'}`}>
                         <div className="flex items-center gap-2">
-                          <Upload className={`w-4 h-4 ${isUploading ? 'text-orange-500 animate-bounce' : 'text-white/40'}`} />
-                          <span className="text-sm font-medium text-white/50">{isUploading ? 'Uploading...' : 'Upload Image'}</span>
+                          <Upload className={`w-4 h-4 ${isUploading ? 'text-orange-500 animate-bounce' : 'text-foreground/50'}`} />
+                          <span className="text-sm font-medium text-foreground/60">{isUploading ? 'Uploading...' : 'Upload Image'}</span>
                         </div>
                         <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} />
                       </label>
@@ -342,7 +351,7 @@ export default function FormsPage() {
               </div>
             </div>
 
-            <div className="bg-[#141414] border border-white/[0.06] rounded-2xl  shadow-xl">
+            <div className="bg-card border border-border rounded-2xl  shadow-xl">
               <h2 className="text-lg bg-orange-500/10 p-4 font-bold text-white mb-6">
                 Available Fields
               </h2>
@@ -360,11 +369,11 @@ export default function FormsPage() {
                   return (
                     <div
                       key={field.key}
-                      className="flex items-center justify-between p-4 rounded-xl border border-white/[0.03] bg-white/[0.01] group"
+                      className="flex items-center justify-between p-4 rounded-xl border border-border bg-foreground/[0.02] group"
                     >
                       <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                          <span className="text-white font-medium text-lg">
+                          <span className="text-foreground font-medium text-lg">
                             {field.label}
                           </span>
                           {isCustom && (
@@ -373,7 +382,7 @@ export default function FormsPage() {
                             </span>
                           )}
                         </div>
-                        <span className="text-xs text-white/30 mt-1 font-mono">
+                        <span className="text-xs text-foreground/40 mt-1 font-mono">
                           {field.key}
                         </span>
                       </div>
@@ -382,7 +391,7 @@ export default function FormsPage() {
                         {isCustom && (
                           <button
                             onClick={() => deleteCustomField(field.key)}
-                            className="p-2 text-white/20 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-2 text-foreground/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                             title="Delete Custom Field"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -404,7 +413,7 @@ export default function FormsPage() {
                 })}
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/[0.06]">
+              <div className="mt-8 pt-6 border-t border-border">
                 <form
                   onSubmit={handleAddCustomField}
                   className="flex flex-col xl:flex-row gap-4 items-center"
@@ -413,12 +422,12 @@ export default function FormsPage() {
                     placeholder="New Custom Field..."
                     value={newCustomFieldName}
                     onChange={(e) => setNewCustomFieldName(e.target.value)}
-                    className="w-full xl:flex-1 px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
+                    className="w-full xl:flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
                   />
                   <select
                     value={newCustomFieldType}
                     onChange={(e) => setNewCustomFieldType(e.target.value)}
-                    className="w-full xl:w-auto px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
+                    className="w-full xl:w-auto px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-inner"
                   >
                     <option value="text">Short Text</option>
                     <option value="textarea">Long Text</option>
@@ -430,7 +439,7 @@ export default function FormsPage() {
                   <button
                     type="submit"
                     disabled={addingField || !newCustomFieldName.trim()}
-                    className="w-full xl:w-auto px-6 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-medium hover:bg-white/10 transition disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
+                    className="w-full xl:w-auto px-6 py-3 bg-white/5 border border-border text-foreground rounded-xl font-medium hover:bg-white/10 transition disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
                   >
                     <PlusCircle className="w-4 h-4" />
                     {addingField ? "Adding..." : "Add Field"}
@@ -443,10 +452,10 @@ export default function FormsPage() {
           {/* RIGHT COLUMN: Live Preview */}
           <div className="hidden lg:block relative">
             <div className="sticky top-8">
-              <h2 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-4">
+              <h2 className="text-sm font-semibold text-foreground/60 uppercase tracking-widest mb-4">
                 Live Interface Preview
               </h2>
-              <div className={`border border-white/[0.06] rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden ring-8 ring-white/[0.02] ${editingForm.theme === 'light' ? 'bg-[#f4f4f5]' : 'bg-[#0a0a0a]'}`}>
+              <div className={`border border-border rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden ring-8 ring-white/[0.02] ${editingForm.theme === 'light' ? 'bg-[#f4f4f5]' : 'bg-[#0a0a0a]'}`}>
                 {editingForm.backgroundImage && (
                   <div className="absolute inset-0 z-0">
                     <img src={editingForm.backgroundImage} alt="Background Preview" className="w-full h-full object-cover opacity-30" />
@@ -459,7 +468,7 @@ export default function FormsPage() {
                   <h3 className={`text-3xl font-bold mb-2 ${editingForm.theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     {editingForm.heading || 'Claim Your Offer'}
                   </h3>
-                  <p className={`text-base mb-8 ${editingForm.theme === 'light' ? 'text-gray-600' : 'text-white/50'}`}>
+                  <p className={`text-base mb-8 ${editingForm.theme === 'light' ? 'text-gray-600' : 'text-white/60'}`}>
                     Please fill out the details below to complete your
                     registration.
                   </p>
@@ -478,14 +487,14 @@ export default function FormsPage() {
                         </label>
 
                         {field.type === "textarea" || field.key === "notes" ? (
-                          <div className={`w-full h-28 border rounded-xl flex items-start p-4 ${editingForm.theme === 'light' ? 'bg-white border-gray-200 shadow-sm' : 'bg-[#1a1a1a] border-white/[0.06]'}`}>
-                            <span className={`text-sm ${editingForm.theme === 'light' ? 'text-gray-400' : 'text-white/20'}`}>
+                          <div className={`w-full h-28 border rounded-xl flex items-start p-4 ${editingForm.theme === 'light' ? 'bg-white border-gray-200 shadow-sm' : 'bg-[#141414] border-white/10'}`}>
+                            <span className={`text-sm ${editingForm.theme === 'light' ? 'text-gray-400' : 'text-white/30'}`}>
                               Type your message here...
                             </span>
                           </div>
                         ) : (
-                          <div className={`w-full h-12 border rounded-xl flex items-center px-4 ${editingForm.theme === 'light' ? 'bg-white border-gray-200 shadow-sm' : 'bg-[#1a1a1a] border-white/[0.06]'}`}>
-                            <span className={`text-sm ${editingForm.theme === 'light' ? 'text-gray-400' : 'text-white/20'}`}>
+                          <div className={`w-full h-12 border rounded-xl flex items-center px-4 ${editingForm.theme === 'light' ? 'bg-white border-gray-200 shadow-sm' : 'bg-[#141414] border-white/10'}`}>
+                            <span className={`text-sm ${editingForm.theme === 'light' ? 'text-gray-400' : 'text-white/30'}`}>
                               Enter {field.label.toLowerCase()}...
                             </span>
                           </div>
@@ -494,8 +503,8 @@ export default function FormsPage() {
                     ))}
 
                     {activeFieldsRaw.length === 0 && (
-                      <div className={`py-8 text-center border-2 border-dashed rounded-2xl ${editingForm.theme === 'light' ? 'border-gray-300 bg-white/50' : 'border-white/10 bg-white/[0.01]'}`}>
-                        <p className={`text-sm font-medium ${editingForm.theme === 'light' ? 'text-gray-400' : 'text-white/30'}`}>
+                      <div className={`py-8 text-center border-2 border-dashed rounded-2xl ${editingForm.theme === 'light' ? 'border-gray-300 bg-white/50' : 'border-border bg-white/[0.01]'}`}>
+                        <p className={`text-sm font-medium ${editingForm.theme === 'light' ? 'text-gray-400' : 'text-foreground/40'}`}>
                           Turn on fields to see preview
                         </p>
                       </div>
@@ -503,7 +512,7 @@ export default function FormsPage() {
 
                     <div className="pt-6 pb-2">
                       <div className="w-full py-4 bg-orange-500 border border-orange-500 shadow-lg rounded-xl flex items-center justify-center">
-                        <span className="text-white font-semibold flex items-center gap-2">
+                        <span className="text-foreground font-semibold flex items-center gap-2">
                           Submit Application
                         </span>
                       </div>
@@ -523,8 +532,8 @@ export default function FormsPage() {
     <div className="  mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Forms</h1>
-          <p className="text-white/40 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Forms</h1>
+          <p className="text-foreground/50 mt-1">
             Manage multiple form templates for your campaigns
           </p>
         </div>
@@ -538,7 +547,7 @@ export default function FormsPage() {
       </div>
 
       {showCreateData && (
-        <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-8 shadow-xl">
+        <div className="bg-card border border-border rounded-2xl p-6 mb-8 shadow-xl">
           <form
             onSubmit={handleCreateForm}
             className="flex flex-col sm:flex-row gap-4 items-center"
@@ -547,7 +556,7 @@ export default function FormsPage() {
               placeholder="Form Name (e.g. Car Sales Campaign)"
               value={newFormName}
               onChange={(e) => setNewFormName(e.target.value)}
-              className="w-full sm:flex-1 px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition shadow-inner"
+              className="w-full sm:flex-1 px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition shadow-inner"
               required
               autoFocus
             />
@@ -565,7 +574,7 @@ export default function FormsPage() {
                   setShowCreateData(false);
                   setNewFormName("");
                 }}
-                className="flex-1 sm:flex-none px-6 py-3 bg-transparent border border-white/10 text-white rounded-xl font-medium hover:bg-white/5 transition"
+                className="flex-1 sm:flex-none px-6 py-3 bg-transparent border border-border text-foreground rounded-xl font-medium hover:bg-white/5 transition"
               >
                 Cancel
               </button>
@@ -574,9 +583,9 @@ export default function FormsPage() {
         </div>
       )}
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {forms.length === 0 ? (
-          <p className="text-white/30 text-center py-12">
+          <p className="text-foreground/40 text-center py-12">
             No forms yet. Create one to capture leads.
           </p>
         ) : (
@@ -585,29 +594,32 @@ export default function FormsPage() {
               <div
                 key={form._id}
                 className="p-6 flex items-center justify-between hover:bg-white/[0.02] cursor-pointer transition group"
-                onClick={() => setEditingForm(form)}
+                onClick={() => {
+                  setEditingForm(form);
+                  setIsDirty(false);
+                }}
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
                     <FileText className="w-5 h-5 text-orange-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-white group-hover:text-orange-400 transition">
+                    <h3 className="text-lg font-medium text-foreground group-hover:text-orange-400 transition">
                       {form.name}
                     </h3>
-                    <p className="text-sm text-white/40 mt-0.5">
+                    <p className="text-sm text-foreground/50 mt-0.5">
                       {form.activeFields?.length || 0} Active Fields
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <span className="text-sm text-white/30 group-hover:text-orange-500 transition hidden sm:block">
+                  <span className="text-sm text-foreground/40 group-hover:text-orange-500 transition hidden sm:block">
                     Click to configure fields
                   </span>
                   <button
                     onClick={(e) => handleDeleteForm(form._id, e)}
-                    className="p-2 text-white/20 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-2 text-foreground/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                     title="Delete Form"
                   >
                     <Trash2 className="w-5 h-5" />

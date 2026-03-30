@@ -89,7 +89,7 @@ export default function CompaniesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-white">Companies</h1>
+        <h1 className="text-3xl font-bold text-foreground">Companies</h1>
         <button
           onClick={() => { setShowForm(!showForm); setEditId(null); setFormData({ name: '', originalUrl: '' }); }}
           className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition flex items-center gap-2"
@@ -109,21 +109,21 @@ export default function CompaniesPage() {
       </div>
 
       {showForm && (
-        <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-6">
-          <h2 className="text-lg font-semibold text-white mb-4">{editId ? 'Edit' : 'Add'} Company</h2>
+        <div className="bg-card border border-border rounded-2xl p-6 mb-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">{editId ? 'Edit' : 'Add'} Company</h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               placeholder="Company Name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
             <input
               placeholder="Original URL (https://...)"
               value={formData.originalUrl}
               onChange={(e) => setFormData({ ...formData, originalUrl: e.target.value })}
-              className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
             <button
@@ -137,29 +137,29 @@ export default function CompaniesPage() {
         </div>
       )}
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {companies.length === 0 ? (
-          <p className="text-white/30 text-center py-12">No companies yet. Add one to get started!</p>
+          <p className="text-foreground/40 text-center py-12">No companies yet. Add one to get started!</p>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Name</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">URL</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Created</th>
-                <th className="text-right text-white/50 text-sm font-medium py-3 px-6">Actions</th>
+              <tr className="border-b border-border">
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Name</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">URL</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Created</th>
+                <th className="text-right text-foreground/60 text-sm font-medium py-3 px-6">Actions</th>
               </tr>
             </thead>
             <tbody>
               {companies.map((company) => (
                 <tr key={company._id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition">
-                  <td className="py-4 px-6 text-white font-medium">{company.name}</td>
+                  <td className="py-4 px-6 text-foreground font-medium">{company.name}</td>
                   <td className="py-4 px-6">
                     <a href={company.originalUrl} target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:text-orange-300 text-sm">
                       {company.originalUrl}
                     </a>
                   </td>
-                  <td className="py-4 px-6 text-white/40 text-sm">{new Date(company.createdAt).toLocaleDateString()}</td>
+                  <td className="py-4 px-6 text-foreground/50 text-sm">{new Date(company.createdAt).toLocaleDateString()}</td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button 

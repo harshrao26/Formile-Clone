@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     // Get all non-superadmin admins
     const admins = await Admin.find({ role: { $ne: 'superadmin' } })
-      .select('name email createdAt')
+      .select('name email createdAt plan subscriptionStatus expiryDate')
       .sort({ createdAt: -1 })
       .lean();
 
@@ -46,6 +46,9 @@ export async function GET(request: NextRequest) {
           companyCount,
           isActive: recentLeadCount > 0,
           recentLeadCount,
+          plan: admin.plan || 'free',
+          subscriptionStatus: admin.subscriptionStatus || 'inactive',
+          expiryDate: admin.expiryDate,
         };
       })
     );

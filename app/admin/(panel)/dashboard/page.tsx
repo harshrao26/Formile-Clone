@@ -9,7 +9,8 @@ import {
   UserCircle, 
   FileText,
   ArrowUpRight,
-  Download
+  Download,
+  CheckCircle2
 } from 'lucide-react';
 
 interface Stats {
@@ -29,9 +30,17 @@ interface RecentLead {
   submittedAt: string;
 }
 
+interface Subscription {
+  plan: string;
+  status: string;
+  expiryDate?: string;
+  createdAt: string;
+}
+
 export default function DashboardPage() {
   const { token, admin } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [recentLeads, setRecentLeads] = useState<(RecentLead & { adminId?: { name: string; email: string } })[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +52,7 @@ export default function DashboardPage() {
       .then((res) => res.json())
       .then((data) => {
         setStats(data.stats);
+        setSubscription(data.subscription);
         setRecentLeads(data.recentLeads || []);
       })
       .finally(() => setLoading(false));
@@ -80,16 +90,40 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <p className="text-white/40 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-foreground/50 mt-1">
             {isSuperadmin 
               ? 'Platform-wide overview and global statistics' 
               : 'Overview of your lead generation performance'}
           </p>
         </div>
-        {isSuperadmin && (
+        {isSuperadmin ? (
           <div className="px-4 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-full">
             <span className="text-orange-500 text-xs font-bold tracking-wider uppercase">Superadmin View</span>
+          </div>
+        ) : subscription && (
+          <div className={`px-4 py-2 rounded-2xl border flex items-center gap-4 ${
+            subscription.status === 'active' 
+              ? 'bg-green-500/5 border-green-500/10' 
+              : 'bg-red-500/5 border-red-500/10'
+          }`}>
+            <div className="flex flex-col items-end">
+              <span className={`text-[10px] font-bold uppercase tracking-widest ${
+                subscription.status === 'active' ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {subscription.plan} Plan · {subscription.status}
+              </span>
+              <span className="text-foreground/40 text-[11px]">
+                {subscription.expiryDate 
+                  ? `Valid until ${new Date(subscription.expiryDate).toLocaleDateString()}`
+                  : `Started ${new Date(subscription.createdAt).toLocaleDateString()}`}
+              </span>
+            </div>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+              subscription.status === 'active' ? 'bg-green-500/10' : 'bg-red-500/10'
+            }`}>
+               <CheckCircle2 className={`w-5 h-5 ${subscription.status === 'active' ? 'text-green-400' : 'text-red-400'}`} />
+            </div>
           </div>
         )}
       </div>
@@ -98,42 +132,42 @@ export default function DashboardPage() {
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="bg-[#141414] border border-white/[0.06] rounded-2xl p-5 hover:border-white/10 transition group">
+            <div key={card.label} className="bg-card border border-border rounded-2xl p-5 hover:border-border transition group">
               <div className="flex items-center justify-between mb-3">
-                <Icon className={`w-6 h-6 text-white group-hover:text-orange-400 transition-colors`} />
+                <Icon className={`w-6 h-6 text-foreground group-hover:text-orange-400 transition-colors`} />
                 <div className={`w-8 h-8 rounded-lg ${card.color} opacity-20`} />
               </div>
-              <p className="text-3xl font-bold text-white">{card.value}</p>
-              <p className="text-white/40 text-sm mt-1">{card.label}</p>
+              <p className="text-3xl font-bold text-foreground">{card.value}</p>
+              <p className="text-foreground/50 text-sm mt-1">{card.label}</p>
             </div>
           );
         })}
       </div>
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6">
+      <div className="bg-card border border-border rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-white">Recent Leads</h2>
+          <h2 className="text-xl font-semibold text-foreground">Recent Leads</h2>
           <button 
             onClick={exportLeads}
-            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg text-xs font-medium text-white/70 hover:text-white transition"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-border hover:bg-white/10 rounded-lg text-xs font-medium text-foreground/70 hover:text-foreground transition"
           >
             <Download className="w-4 h-4" />
             {isSuperadmin ? 'Export Global Data' : 'Export All Leads'}
           </button>
         </div>
         {recentLeads.length === 0 ? (
-          <p className="text-white/30 text-center py-8">No leads yet. Share your partner links to start capturing leads!</p>
+          <p className="text-foreground/40 text-center py-8">No leads yet. Share your partner links to start capturing leads!</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Token</th>
-                  {isSuperadmin && <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Admin (Owner)</th>}
-                  <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Partner</th>
-                  <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Person</th>
-                  <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Data</th>
-                  <th className="text-left text-white/50 text-sm font-medium py-3 px-4">Time</th>
+                <tr className="border-b border-border">
+                  <th className="text-left text-foreground/60 text-sm font-medium py-3 px-4">Token</th>
+                  {isSuperadmin && <th className="text-left text-foreground/60 text-sm font-medium py-3 px-4">Admin (Owner)</th>}
+                  <th className="text-left text-foreground/60 text-sm font-medium py-3 px-4">Partner</th>
+                  <th className="text-left text-foreground/60 text-sm font-medium py-3 px-4">Person</th>
+                  <th className="text-left text-foreground/60 text-sm font-medium py-3 px-4">Data</th>
+                  <th className="text-left text-foreground/60 text-sm font-medium py-3 px-4">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -145,17 +179,17 @@ export default function DashboardPage() {
                     {isSuperadmin && (
                       <td className="py-3 px-4">
                         <div className="flex flex-col">
-                          <span className="text-white/80 text-sm">{lead.adminId?.name || 'Unknown'}</span>
-                          <span className="text-white/30 text-[10px]">{lead.adminId?.email || '-'}</span>
+                          <span className="text-foreground/80 text-sm">{lead.adminId?.name || 'Unknown'}</span>
+                          <span className="text-foreground/40 text-[10px]">{lead.adminId?.email || '-'}</span>
                         </div>
                       </td>
                     )}
-                    <td className="py-3 px-4 text-white/70 text-sm">{lead.partnerId?.name || '-'}</td>
-                    <td className="py-3 px-4 text-white/70 text-sm">{lead.personId?.name || '-'}</td>
-                    <td className="py-3 px-4 text-white/50 text-xs text-ellipsis overflow-hidden max-w-[200px] whitespace-nowrap">
+                    <td className="py-3 px-4 text-foreground/70 text-sm">{lead.partnerId?.name || '-'}</td>
+                    <td className="py-3 px-4 text-foreground/70 text-sm">{lead.personId?.name || '-'}</td>
+                    <td className="py-3 px-4 text-foreground/60 text-xs text-ellipsis overflow-hidden max-w-[200px] whitespace-nowrap">
                       {Object.entries(lead.formData || {}).slice(0, 2).map(([k, v]) => `${k}: ${v}`).join(', ')}
                     </td>
-                    <td className="py-3 px-4 text-white/40 text-xs">{new Date(lead.submittedAt).toLocaleString()}</td>
+                    <td className="py-3 px-4 text-foreground/50 text-xs">{new Date(lead.submittedAt).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

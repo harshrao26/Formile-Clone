@@ -18,7 +18,7 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
         <h1 className="text-5xl md:text-[90px] font-bold tracking-tighter mb-10 leading-[0.9] max-w-5xl mx-auto">
-          <span className="block opacit90">Forge better leads,</span>
+          <span className="block opacity-90">Forge better leads,</span>
           <span className="flex items-center justify-center gap-x-4 flex-wrap">
             convert 
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-white-500 to-black/70">at scale</span>

@@ -46,7 +46,7 @@ export default function FaqSection() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-24 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">FAQ</span>
+            <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">FAQ</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-bold tracking-tighter text-white leading-[0.95]">
             Questions we <br />
@@ -59,7 +59,7 @@ export default function FaqSection() {
             <div
               key={i}
               className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                open === i ? 'border-white/10 bg-white/[0.04]' : 'border-white/5 bg-white/[0.02]'
+                open === i ? 'border-border bg-white/[0.04]' : 'border-white/5 bg-white/[0.02]'
               }`}
             >
               <button
@@ -74,13 +74,13 @@ export default function FaqSection() {
                 }`}>
                   {open === i
                     ? <Minus className="w-3 h-3 text-white/70" />
-                    : <Plus className="w-3 h-3 text-white/40" />
+                    : <Plus className="w-3 h-3 text-white/50" />
                   }
                 </div>
               </button>
               {open === i && (
                 <div className="px-7 pb-7">
-                  <p className="text-white/50 text-sm leading-relaxed">{faq.a}</p>
+                  <p className="text-white/60 text-sm leading-relaxed">{faq.a}</p>
                 </div>
               )}
             </div>

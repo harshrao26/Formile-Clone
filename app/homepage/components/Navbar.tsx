@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { Zap } from 'lucide-react';
 
+import { ThemeToggle } from '@/app/components/ThemeToggle';
+
 export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-6">
@@ -12,7 +14,7 @@ export default function Navbar() {
             <img src="/logo.png" alt="Genforge Studio Logo" className="w-8 h-8 object-contain" />
             <span className="text-white font-bold text-lg tracking-tight uppercase">Genforge Studio</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-white/50">
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-white/60">
             <a href="#" className="hover:text-white transition-colors">Docs</a>
             <a href="#" className="hover:text-white transition-colors">Support</a>
           </div>

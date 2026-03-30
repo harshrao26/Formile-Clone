@@ -93,13 +93,13 @@ export default function PersonsPage() {
         <div>
           <button 
             onClick={() => router.push('/admin/partners')} 
-            className="text-white/40 hover:text-white text-sm mb-2 flex items-center gap-1 transition-colors group"
+            className="text-foreground/50 hover:text-foreground text-sm mb-2 flex items-center gap-1 transition-colors group"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Partners
           </button>
-          <h1 className="text-3xl font-bold text-white">Persons</h1>
-          <p className="text-white/40 mt-1">Under partner: <span className="text-orange-400 font-mono">/p/{partnerSlug}</span></p>
+          <h1 className="text-3xl font-bold text-foreground">Persons</h1>
+          <p className="text-foreground/50 mt-1">Under partner: <span className="text-orange-400 font-mono">/p/{partnerSlug}</span></p>
         </div>
         <button
           onClick={() => { setShowForm(!showForm); setFormData({ name: '', slug: '' }); }}
@@ -120,10 +120,10 @@ export default function PersonsPage() {
       </div>
 
       {showForm && (
-        <div className="bg-[#141414] border border-white/[0.06] rounded-2xl p-6 mb-6">
+        <div className="bg-card border border-border rounded-2xl p-6 mb-6">
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input placeholder="Person Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
-            <input placeholder="Slug" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="px-4 py-3 bg-[#1a1a1a] border border-white/[0.06] rounded-xl text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+            <input placeholder="Person Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+            <input placeholder="Slug" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} className="px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
             <button type="submit" disabled={saving} className="px-6 py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition disabled:opacity-50">
               {saving ? 'Saving...' : 'Create'}
             </button>
@@ -131,23 +131,23 @@ export default function PersonsPage() {
         </div>
       )}
 
-      <div className="bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {persons.length === 0 ? (
-          <p className="text-white/30 text-center py-12">No persons under this partner yet.</p>
+          <p className="text-foreground/40 text-center py-12">No persons under this partner yet.</p>
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Name</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Link</th>
-                <th className="text-left text-white/50 text-sm font-medium py-3 px-6">Created</th>
-                <th className="text-right text-white/50 text-sm font-medium py-3 px-6">Actions</th>
+              <tr className="border-b border-border">
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Name</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Link</th>
+                <th className="text-left text-foreground/60 text-sm font-medium py-3 px-6">Created</th>
+                <th className="text-right text-foreground/60 text-sm font-medium py-3 px-6">Actions</th>
               </tr>
             </thead>
             <tbody>
               {persons.map((p) => (
                 <tr key={p._id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition">
-                  <td className="py-4 px-6 text-white font-medium">{p.name}</td>
+                  <td className="py-4 px-6 text-foreground font-medium">{p.name}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
                       <span className="text-orange-400 font-mono text-sm">/p/{partnerSlug}/{p.slug}</span>
@@ -160,7 +160,7 @@ export default function PersonsPage() {
                       </button>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-white/40 text-sm">{new Date(p.createdAt).toLocaleDateString()}</td>
+                  <td className="py-4 px-6 text-foreground/50 text-sm">{new Date(p.createdAt).toLocaleDateString()}</td>
                   <td className="py-4 px-6 text-right">
                     <button 
                       onClick={() => handleDelete(p._id)}
