@@ -8,6 +8,7 @@ import Link from 'next/link';
 export default function RegisterPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,10 @@ export default function RegisterPage() {
 
   const handleRequestOTP = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedTerms) {
+      setError('Please accept the Terms and Privacy Policy to continue.');
+      return;
+    }
     setError('');
     setLoading(true);
 
@@ -68,13 +73,22 @@ export default function RegisterPage() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl" />
       </div>
 
+
+      <div className="absolute inset-0 z-0 right-0">
+        <img 
+          src="/bg2.avif" 
+          alt="background" 
+          className="w-full h-full object-cover blur-[8px]  "
+        />
+       </div>
+
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-card border border-border rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow-orange-500/20">
               <Zap className="w-8 h-8 text-foreground fill-white" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Create Admin Account</h1>
+            <h1 className="text-2xl font-bold text-foreground">Create   Account</h1>
             <p className="text-foreground/60 mt-1">Start your 10x lead generation journey</p>
           </div>
 
@@ -120,10 +134,31 @@ export default function RegisterPage() {
                 />
               </div>
 
+              <div className="flex items-start gap-3 mt-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-border bg-background text-orange-500 focus:ring-orange-500"
+                  required
+                />
+                <label htmlFor="terms" className="text-sm text-foreground/70 leading-snug cursor-pointer select-none">
+                  I agree to the{' '}
+                  <Link href="/terms-conditions" target="_blank" className="text-orange-500 hover:text-orange-400 underline underline-offset-4">
+                    Terms & Conditions
+                  </Link>{' '}
+                  and{' '}
+                  <Link href="/privacy-policy" target="_blank" className="text-orange-500 hover:text-orange-400 underline underline-offset-4">
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
+
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full py-3 px-4 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                disabled={loading || !acceptedTerms}
+                className="w-full py-3 px-4 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Get Verification Code'}
               </button>

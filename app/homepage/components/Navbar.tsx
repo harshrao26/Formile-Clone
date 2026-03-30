@@ -12,12 +12,9 @@ export default function Navbar() {
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2 group cursor-pointer">
             <img src="/logo.png" alt="Genforge Studio Logo" className="w-8 h-8 object-contain" />
-            <span className="text-white font-bold text-lg tracking-tight uppercase">Genforge Studio</span>
+            <span className="text-white font-bold text-lg tracking-tight  ">Genforge Studio</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-white/60">
-            <a href="#" className="hover:text-white transition-colors">Docs</a>
-            <a href="#" className="hover:text-white transition-colors">Support</a>
-          </div>
+           
         </div>
         <div className="flex items-center gap-4">
           <Link 

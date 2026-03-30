@@ -49,11 +49,11 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0 right-0">
+      <div className="absolute rotate-180  inset-0 z-0 right-0">
         <img 
           src="/bg2.avif" 
           alt="background" 
-          className="w-full h-full object-cover blur-[8px]  "
+          className="w-full h-full rotate-180 object-cover blur-[8px]  "
         />
        </div>
 
