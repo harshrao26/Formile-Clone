@@ -14,13 +14,27 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing partnerSlug' }, { status: 400 });
     }
 
-    const partner = await Partner.findOne({ slug: partnerSlug.toLowerCase() });
-    if (!partner) {
-      return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
-    }
+    let adminId = null;
+    let companyId = null;
+    let partnerId = null;
 
-    // Increment views atomically
-    await Partner.updateOne({ _id: partner._id }, { $inc: { views: 1 } });
+    const lowerSlug = partnerSlug.toLowerCase();
+    if (lowerSlug === 'generic' || lowerSlug === 'platform') {
+      if (!formId) return NextResponse.json({ error: 'formId is required for generic links' }, { status: 400 });
+      const template = await FormTemplate.findById(formId);
+      if (!template) return NextResponse.json({ error: 'Form not found' }, { status: 404 });
+      adminId = template.adminId;
+    } else {
+      const partner = await Partner.findOne({ slug: lowerSlug });
+      if (!partner) {
+        return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
+      }
+      // Increment views atomically
+      await Partner.updateOne({ _id: partner._id }, { $inc: { views: 1 } });
+      adminId = partner.adminId;
+      companyId = partner.companyId;
+      partnerId = partner._id;
+    }
 
     let activeFields = ['full_name', 'email', 'phone'];
     let customFields: any[] = [];
@@ -29,7 +43,9 @@ export async function GET(request: NextRequest) {
     let backgroundImage = null;
     let redirectUrl = null;
     
-    const targetFormId = formId || partner.formId;
+    // If we have a direct formId, prioritize it. 
+    // Otherwise fallback to partner's assigned form if available.
+    const targetFormId = formId || (partnerId ? (await Partner.findById(partnerId))?.formId : null);
 
     if (targetFormId) {
       const template = await FormTemplate.findById(targetFormId);
@@ -73,7 +89,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ 
       fields: resolvedFields, 
-      companyId: partner.companyId,
+      companyId: companyId,
       heading,
       theme,
       backgroundImage

@@ -51,9 +51,9 @@ export async function GET(
       { $group: { _id: '$partnerId', count: { $sum: 1 } } },
     ]);
 
-    const partnersWithLeads = partners.map((p: Record<string, unknown>) => {
+    const partnersWithLeads = partners.map((p: any) => {
       const found = partnerLeadCounts.find(
-        (plc: { _id: unknown; count: number }) => plc._id?.toString() === (p._id as { toString(): string })?.toString()
+        (plc: { _id: unknown; count: number }) => plc._id?.toString() === p._id?.toString()
       );
       return { ...p, leadCount: found ? found.count : 0 };
     });

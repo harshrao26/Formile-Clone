@@ -508,29 +508,33 @@ export default function FormsPage() {
                   <p className="text-[10px] text-foreground/40 mt-1.5 px-1">{isAddingPartner ? "Press Enter to save or Escape to cancel." : "Select which partner will use this form to generate a copyable link."}</p>
                 </div>
 
-                {editingForm.partnerId && (
-                  <div className="p-4 bg-orange-500/5 border border-orange-500/10 rounded-2xl relative group">
-                    <label className="block text-[10px] uppercase tracking-wider text-orange-500 font-bold mb-2">Partner Link</label>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 text-xs font-mono text-foreground/60 truncate bg-background/50 px-2 py-1.5 rounded-lg border border-border/50">
-                        {`${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}`}
-                      </div>
-                      <button 
-                        onClick={() => {
-                          const slug = partners.find(p => p._id === editingForm.partnerId)?.slug;
-                          const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}`;
-                          navigator.clipboard.writeText(url);
-                          setCopied(true);
-                          setTimeout(() => setCopied(false), 2000);
-                        }}
-                        className="p-2 bg-background border border-border rounded-lg hover:text-orange-500 transition shadow-sm active:scale-90"
-                        title="Copy Link"
-                      >
-                        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                      </button>
+                <div className="p-4 bg-orange-500/5 border border-orange-500/10 rounded-2xl relative group">
+                  <label className="block text-[10px] uppercase tracking-wider text-orange-500 font-bold mb-2">
+                    {editingForm.partnerId ? "Partner Link" : "Generic Link (Platform)"}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 text-xs font-mono text-foreground/60 truncate bg-background/50 px-2 py-1.5 rounded-lg border border-border/50">
+                      {editingForm.partnerId 
+                        ? `${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}`
+                        : `${window.location.origin}/p/generic?f=${editingForm._id}`
+                      }
                     </div>
+                    <button 
+                      onClick={() => {
+                        const slug = editingForm.partnerId 
+                          ? partners.find(p => p._id === editingForm.partnerId)?.slug 
+                          : 'generic';
+                        const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}`;
+                        navigator.clipboard.writeText(url);
+                        alert("Link copied to clipboard!");
+                      }}
+                      className="p-2 bg-background border border-border rounded-lg hover:border-orange-500/50 hover:bg-orange-500/5 text-foreground/50 hover:text-orange-500 transition-all shadow-sm"
+                      title="Copy Link"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
                   </div>
-                )}
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>

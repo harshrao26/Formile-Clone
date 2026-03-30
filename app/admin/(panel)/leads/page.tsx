@@ -62,21 +62,36 @@ export default function LeadsPage() {
     if (startDate) url += `&startDate=${startDate}`;
     if (endDate) url += `&endDate=${endDate}`;
     
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    const data = await res.json();
-    setLeads(data.leads);
-    setPagination(data.pagination);
-    setLoading(false);
+    try {
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      setLeads(data.leads || []);
+      if (data.pagination) setPagination(data.pagination);
+    } catch (error) {
+      console.error('Fetch leads error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchPartners = async () => {
-    const res = await fetch('/api/partners', { headers: { Authorization: `Bearer ${token}` } });
-    setPartners(await res.json());
+    try {
+      const res = await fetch('/api/partners', { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      setPartners(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Fetch partners error:', error);
+    }
   };
 
   const fetchCompanies = async () => {
-    const res = await fetch('/api/companies', { headers: { Authorization: `Bearer ${token}` } });
-    setCompanies(await res.json());
+    try {
+      const res = await fetch('/api/companies', { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      setCompanies(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Fetch companies error:', error);
+    }
   };
 
   useEffect(() => {

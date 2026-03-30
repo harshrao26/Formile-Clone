@@ -12,18 +12,38 @@ export async function POST(request: NextRequest) {
 
     const { partnerSlug, personSlug, formData, sourceUrl } = await request.json();
 
-    if (!partnerSlug || !formData) {
-      return NextResponse.json({ error: 'partnerSlug and formData are required' }, { status: 400 });
-    }
+    let adminId = null;
+    let partnerId = null;
+    let partnerEmail = '';
+    let partnerName = 'Generic';
 
-    const partner = await Partner.findOne({ slug: partnerSlug.toLowerCase() });
-    if (!partner) {
-      return NextResponse.json({ error: 'Invalid partner link' }, { status: 404 });
+    const lowerSlug = (partnerSlug || 'generic').toLowerCase();
+    
+    if (lowerSlug === 'generic' || lowerSlug === 'platform') {
+      const FormTemplate = (await import('@/app/lib/models/FormTemplate')).default;
+      const fId = new URL(sourceUrl || '', 'http://local').searchParams.get('f');
+
+      if (!fId) return NextResponse.json({ error: 'formId not found in source URL' }, { status: 400 });
+      
+      const template = await FormTemplate.findById(fId);
+      if (!template) return NextResponse.json({ error: 'Form template not found' }, { status: 404 });
+      
+      adminId = template.adminId;
+      partnerEmail = 'support@genforgestudio.com'; // Default admin contact
+    } else {
+      const partner = await Partner.findOne({ slug: lowerSlug });
+      if (!partner) {
+        return NextResponse.json({ error: 'Invalid partner link' }, { status: 404 });
+      }
+      adminId = partner.adminId;
+      partnerId = partner._id;
+      partnerEmail = partner.email;
+      partnerName = partner.name;
     }
 
     let person = null;
-    if (personSlug) {
-      person = await Person.findOne({ partnerId: partner._id, slug: personSlug.toLowerCase() });
+    if (personSlug && partnerId) {
+      person = await Person.findOne({ partnerId: partnerId, slug: personSlug.toLowerCase() });
     }
 
     const token = crypto.randomBytes(16).toString('hex');
@@ -35,30 +55,51 @@ export async function POST(request: NextRequest) {
 
     const lead = await LeadSubmission.create({
       token,
-      adminId: partner.adminId,
-      partnerId: partner._id,
+      adminId: adminId,
+      partnerId: partnerId,
       personId: person?._id || null,
       formData,
       sourceUrl: sourceUrl || '',
       ipAddress,
     });
 
-    // Get the company's original URL and form heading
-    await partner.populate(['companyId', 'formId']);
-    const template = partner.formId as any;
-    
-    // Legacy scrub: replace formile.com with genforgestudio.com
-    let fallbackUrl = (partner.companyId as any)?.originalUrl || 'https://genforgestudio.com';
-    if (fallbackUrl.includes('formile.com')) {
-      fallbackUrl = 'https://genforgestudio.com';
+    // Get the redirect URL and form heading
+    let redirectUrl = '';
+    let formHeading = 'Claim Your Offer';
+
+    const fId = new URL(sourceUrl || '', 'http://local').searchParams.get('f');
+    if (fId) {
+      const FormTemplate = (await import('@/app/lib/models/FormTemplate')).default;
+      const template = await FormTemplate.findById(fId);
+      if (template) {
+        formHeading = template.heading || 'Claim Your Offer';
+        
+        // Final Redirect Decision: 
+        // 1. Form Specific Redirect 
+        // 2. Company Original URL (if partner exists)
+        // 3. Platform Default
+        if (template.redirectUrl) {
+          redirectUrl = template.redirectUrl;
+        } else if (partnerId) {
+          const PartnerModel = (await import('@/app/lib/models/Partner')).default;
+          const fullPartner = await PartnerModel.findById(partnerId).populate('companyId');
+          redirectUrl = (fullPartner?.companyId as any)?.originalUrl || 'https://genforgestudio.com';
+        } else {
+          redirectUrl = 'https://genforgestudio.com';
+        }
+      }
     }
 
-    const redirectUrl = template?.redirectUrl || fallbackUrl;
-    const formHeading = template?.heading || 'Claim Your Offer';
+    // Legacy scrub: replace formile.com with genforgestudio.com
+    if (redirectUrl.includes('formile.com')) {
+      redirectUrl = 'https://genforgestudio.com';
+    }
 
     // Trigger Email Notifications (Non-blocking or at least error-safe)
     try {
-      await sendLeadNotification(partner.email, partner.name, formData);
+      if (partnerEmail) {
+        await sendLeadNotification(partnerEmail, partnerName, formData);
+      }
       
       const userEmail = formData.email || formData.Email || formData['Email'] || formData['email'];
       if (userEmail) {
