@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 export interface ILeadSubmission extends Document {
   adminId: Types.ObjectId;
   token: string;
-  partnerId: Types.ObjectId;
+  partnerId?: Types.ObjectId;
   formId?: Types.ObjectId;
   personId?: Types.ObjectId;
   formData: Record<string, string>;
@@ -15,7 +15,7 @@ export interface ILeadSubmission extends Document {
 const LeadSubmissionSchema = new Schema<ILeadSubmission>({
   adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   token: { type: String, required: true, unique: true },
-  partnerId: { type: Schema.Types.ObjectId, ref: 'Partner', required: true },
+  partnerId: { type: Schema.Types.ObjectId, ref: 'Partner', default: null },
   formId: { type: Schema.Types.ObjectId, ref: 'FormTemplate', default: null },
   personId: { type: Schema.Types.ObjectId, ref: 'Person', default: null },
   formData: { type: Schema.Types.Mixed, required: true },

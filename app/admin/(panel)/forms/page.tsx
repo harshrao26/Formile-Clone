@@ -858,10 +858,10 @@ export default function FormsPage() {
                   
                   <button
                     onClick={(e) => handleDownloadFormLeads(form._id, form.name, e)}
-                    className="p-2 text-foreground/50 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-all duration-200"
+                    className="p-2 text-foreground/40 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-all duration-200 group-hover:opacity-100 opacity-0"
                     title="Download Form Leads (Excel)"
                   >
-                    <FileSpreadsheet className="w-5 h-5 transition-transform hover:scale-110" />
+                    <FileSpreadsheet className="w-5 h-5 transition-transform group-hover:scale-110" />
                   </button>
 
                   <button
@@ -869,20 +869,20 @@ export default function FormsPage() {
                     className={`p-2 rounded-lg transition-all duration-200 ${
                       copiedId === form._id 
                         ? 'text-green-400 bg-green-500/10' 
-                        : 'text-foreground/50 hover:text-orange-400 hover:bg-orange-500/10'
+                        : 'text-foreground/40 hover:text-orange-400 hover:bg-orange-500/10 group-hover:opacity-100 opacity-0'
                     }`}
                     title="Copy Generic Form Link"
                   >
                     {copiedId === form._id ? (
                       <Check className="w-5 h-5 animate-in zoom-in duration-300" />
                     ) : (
-                      <Copy className="w-5 h-5 transition-transform hover:scale-110" />
+                      <Copy className="w-5 h-5 transition-transform group-hover:scale-110" />
                     )}
                   </button>
 
                   <button
                     onClick={(e) => handleDeleteForm(form._id, e)}
-                    className="p-2 text-foreground/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
+                    className="p-2 text-foreground/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
                     title="Delete Form"
                   >
                     <Trash2 className="w-5 h-5 transition-transform hover:rotate-12" />
