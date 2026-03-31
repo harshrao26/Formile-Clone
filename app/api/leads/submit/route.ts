@@ -53,10 +53,14 @@ export async function POST(request: NextRequest) {
       request.headers.get('x-real-ip') ||
       'unknown';
 
+    const urlObj = new URL(sourceUrl || '', 'http://local');
+    const fId = urlObj.searchParams.get('f');
+
     const lead = await LeadSubmission.create({
       token,
       adminId: adminId,
       partnerId: partnerId,
+      formId: fId || null,
       personId: person?._id || null,
       formData,
       sourceUrl: sourceUrl || '',
@@ -67,7 +71,6 @@ export async function POST(request: NextRequest) {
     let redirectUrl = '';
     let formHeading = 'Claim Your Offer';
 
-    const fId = new URL(sourceUrl || '', 'http://local').searchParams.get('f');
     if (fId) {
       const FormTemplate = (await import('@/app/lib/models/FormTemplate')).default;
       const template = await FormTemplate.findById(fId);

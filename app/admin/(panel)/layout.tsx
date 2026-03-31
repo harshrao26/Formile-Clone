@@ -18,7 +18,6 @@ import {
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/companies', label: 'Companies', icon: Building2 },
   { href: '/admin/partners', label: 'Partners', icon: Users },
   { href: '/admin/forms', label: 'Forms', icon: FileText },
   { href: '/admin/leads', label: 'Leads', icon: Inbox },

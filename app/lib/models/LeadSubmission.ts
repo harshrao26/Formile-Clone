@@ -4,6 +4,7 @@ export interface ILeadSubmission extends Document {
   adminId: Types.ObjectId;
   token: string;
   partnerId: Types.ObjectId;
+  formId?: Types.ObjectId;
   personId?: Types.ObjectId;
   formData: Record<string, string>;
   sourceUrl: string;
@@ -15,6 +16,7 @@ const LeadSubmissionSchema = new Schema<ILeadSubmission>({
   adminId: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   token: { type: String, required: true, unique: true },
   partnerId: { type: Schema.Types.ObjectId, ref: 'Partner', required: true },
+  formId: { type: Schema.Types.ObjectId, ref: 'FormTemplate', default: null },
   personId: { type: Schema.Types.ObjectId, ref: 'Person', default: null },
   formData: { type: Schema.Types.Mixed, required: true },
   sourceUrl: { type: String, default: '' },
@@ -23,5 +25,6 @@ const LeadSubmissionSchema = new Schema<ILeadSubmission>({
 });
 
 LeadSubmissionSchema.index({ partnerId: 1 });
+LeadSubmissionSchema.index({ formId: 1 });
 
 export default mongoose.models.LeadSubmission || mongoose.model<ILeadSubmission>('LeadSubmission', LeadSubmissionSchema);

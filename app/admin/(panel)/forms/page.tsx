@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/AuthContext";
-import { PlusCircle, Trash2, ArrowLeft, FileText, Moon, Sun, Upload, Copy, Check, ExternalLink, X } from "lucide-react";
+import { PlusCircle, Trash2, ArrowLeft, FileText, Moon, Sun, Upload, Copy, Check, ExternalLink, X, FileSpreadsheet } from "lucide-react";
 
 interface FormTemplate {
   _id: string;
@@ -50,6 +50,8 @@ export default function FormsPage() {
 
   // Editor View State
   const [editingForm, setEditingForm] = useState<FormTemplate | null>(null);
+  const [formPartners, setFormPartners] = useState<Record<string, string>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [partners, setPartners] = useState<Partner[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [newCustomFieldName, setNewCustomFieldName] = useState("");
@@ -354,7 +356,36 @@ export default function FormsPage() {
       setIsSavingPartner(false);
     }
   };
-    if (editingForm) {
+    const handleCopyLink = (formId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const baseUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = `${baseUrl}/p/generic?f=${formId}`;
+    navigator.clipboard.writeText(url);
+    setCopiedId(formId);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleDownloadFormLeads = async (formId: string, formName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch(`/api/leads/download?formId=${formId}&format=xlsx`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Failed to download");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${formName.replace(/\s+/g, '_')}_leads.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("Error downloading leads");
+    }
+  };
+
+  if (editingForm) {
     const activeFieldsRaw = [
       ...PREDEFINED_FIELDS,
       ...(editingForm.customFields || []),
@@ -820,16 +851,41 @@ export default function FormsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-foreground/40 group-hover:text-orange-500 transition hidden sm:block">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-foreground/40 group-hover:text-orange-500 transition hidden sm:block mr-4">
                     Click to configure fields
                   </span>
+                  
+                  <button
+                    onClick={(e) => handleDownloadFormLeads(form._id, form.name, e)}
+                    className="p-2 text-foreground/50 hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-all duration-200"
+                    title="Download Form Leads (Excel)"
+                  >
+                    <FileSpreadsheet className="w-5 h-5 transition-transform hover:scale-110" />
+                  </button>
+
+                  <button
+                    onClick={(e) => handleCopyLink(form._id, e)}
+                    className={`p-2 rounded-lg transition-all duration-200 ${
+                      copiedId === form._id 
+                        ? 'text-green-400 bg-green-500/10' 
+                        : 'text-foreground/50 hover:text-orange-400 hover:bg-orange-500/10'
+                    }`}
+                    title="Copy Generic Form Link"
+                  >
+                    {copiedId === form._id ? (
+                      <Check className="w-5 h-5 animate-in zoom-in duration-300" />
+                    ) : (
+                      <Copy className="w-5 h-5 transition-transform hover:scale-110" />
+                    )}
+                  </button>
+
                   <button
                     onClick={(e) => handleDeleteForm(form._id, e)}
-                    className="p-2 text-foreground/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-2 text-foreground/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                     title="Delete Form"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5 transition-transform hover:rotate-12" />
                   </button>
                 </div>
               </div>

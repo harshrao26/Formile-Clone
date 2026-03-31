@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const partnerId = searchParams.get('partnerId');
+    const formId = searchParams.get('formId');
     const companyId = searchParams.get('companyId');
     const personId = searchParams.get('personId');
     const startDate = searchParams.get('startDate');
@@ -23,6 +24,8 @@ export async function GET(request: NextRequest) {
 
     const filter: Record<string, any> = {};
     if (auth.role !== 'superadmin') filter.adminId = auth.adminId;
+
+    if (formId) filter.formId = formId;
 
     if (partnerId) {
       filter.partnerId = partnerId;
