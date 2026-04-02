@@ -8,6 +8,7 @@ export interface ILeadSubmission extends Document {
   personId?: Types.ObjectId;
   formData: Record<string, string>;
   sourceUrl: string;
+  trackingToken?: string;
   ipAddress: string;
   submittedAt: Date;
 }
@@ -20,6 +21,7 @@ const LeadSubmissionSchema = new Schema<ILeadSubmission>({
   personId: { type: Schema.Types.ObjectId, ref: 'Person', default: null },
   formData: { type: Schema.Types.Mixed, required: true },
   sourceUrl: { type: String, default: '' },
+  trackingToken: { type: String, default: '' },
   ipAddress: { type: String, default: '' },
   submittedAt: { type: Date, default: Date.now },
 });

@@ -91,6 +91,9 @@ export async function POST(request: NextRequest) {
     }
 
     const existingPartner = await Partner.findOne({ slug: slug.toLowerCase() });
+    if (!name || !slug || (!formId && !redirectUrl)) {
+      return NextResponse.json({ error: 'Name, Slug, and either Form ID or Redirect URL are required' }, { status: 400 });
+    }
     if (existingPartner) {
       return NextResponse.json({ error: 'Slug already exists' }, { status: 400 });
     }
@@ -100,7 +103,8 @@ export async function POST(request: NextRequest) {
       email: email || '', 
       slug: slug.toLowerCase(), 
       companyId, 
-      formId,
+      formId: formId || null,
+      redirectUrl: redirectUrl || null,
       adminId: auth.adminId
     });
     return NextResponse.json(partner, { status: 201 });

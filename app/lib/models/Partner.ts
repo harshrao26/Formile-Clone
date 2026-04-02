@@ -7,6 +7,7 @@ export interface IPartner extends Document {
   slug: string;
   companyId: Types.ObjectId;
   formId: Types.ObjectId;
+  redirectUrl?: string;
   views: number;
   createdAt: Date;
 }
@@ -18,6 +19,7 @@ const PartnerSchema = new Schema<IPartner>({
   slug: { type: String, required: true, unique: true, lowercase: true },
   companyId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   formId: { type: Schema.Types.ObjectId, ref: 'FormTemplate' },
+  redirectUrl: { type: String, required: false },
   views: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });

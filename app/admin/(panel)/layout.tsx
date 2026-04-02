@@ -21,6 +21,7 @@ const navItems = [
   { href: '/admin/partners', label: 'Partners', icon: Users },
   { href: '/admin/forms', label: 'Forms', icon: FileText },
   { href: '/admin/leads', label: 'Leads', icon: Inbox },
+  { href: '/admin/generator', label: 'Generator', icon: Zap },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

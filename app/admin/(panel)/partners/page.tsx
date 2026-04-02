@@ -92,10 +92,14 @@ export default function PartnersPage() {
     setShowForm(true);
   };
 
-  const copyLink = (slug: string) => {
+  const copyLink = (p: Partner) => {
     const baseUrl = window.location.origin;
-    navigator.clipboard.writeText(`${baseUrl}/p/${slug}`);
-    setCopyMsg(slug);
+    const fId = (p.formId as any)?._id || p.formId || '';
+    const trackingParam = `aff_sub1=${p.slug}`;
+    const url = `${baseUrl}/p/${p.slug}?f=${fId}&${trackingParam}`;
+    
+    navigator.clipboard.writeText(url);
+    setCopyMsg(p.slug);
     setTimeout(() => setCopyMsg(''), 2000);
   };
 
@@ -225,7 +229,7 @@ export default function PartnersPage() {
                     <div className="flex items-center gap-2">
                       <span className="text-orange-400 font-mono text-sm">/p/{p.slug}</span>
                       <button 
-                        onClick={() => copyLink(p.slug)} 
+                        onClick={() => copyLink(p)} 
                         className="p-1.5 text-orange-400/70 hover:text-orange-300 hover:bg-orange-500/10 rounded-md transition-colors"
                         title="Copy Public Link"
                       >

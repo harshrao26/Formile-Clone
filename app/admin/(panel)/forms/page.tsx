@@ -359,7 +359,7 @@ export default function FormsPage() {
     const handleCopyLink = (formId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    const url = `${baseUrl}/p/generic?f=${formId}`;
+    const url = `${baseUrl}/p/generic?f=${formId}&aff_sub1=generic`;
     navigator.clipboard.writeText(url);
     setCopiedId(formId);
     setTimeout(() => setCopiedId(null), 2000);
@@ -546,8 +546,8 @@ export default function FormsPage() {
                   <div className="flex items-center gap-2">
                     <div className="flex-1 text-xs font-mono text-foreground/60 truncate bg-background/50 px-2 py-1.5 rounded-lg border border-border/50">
                       {editingForm.partnerId 
-                        ? `${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}`
-                        : `${window.location.origin}/p/generic?f=${editingForm._id}`
+                        ? `${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}&aff_sub1=${partners.find(p => p._id === editingForm.partnerId)?.slug}`
+                        : `${window.location.origin}/p/generic?f=${editingForm._id}&aff_sub1=generic`
                       }
                     </div>
                     <button 
@@ -555,7 +555,7 @@ export default function FormsPage() {
                         const slug = editingForm.partnerId 
                           ? partners.find(p => p._id === editingForm.partnerId)?.slug 
                           : 'generic';
-                        const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}`;
+                        const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}&aff_sub1=${slug}`;
                         navigator.clipboard.writeText(url);
                         alert("Link copied to clipboard!");
                       }}

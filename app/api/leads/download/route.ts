@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
 
       const row: Record<string, string> = {
         'Token': lead.token,
+        'Tracking Token': (lead as any).trackingToken || '',
         'Partner Name': partnerInfo?.name || '',
         'Partner Slug': partnerInfo?.slug || '',
         'Partner Email': partnerInfo?.email || '',

@@ -32,6 +32,7 @@ export default function PersonsPage() {
   const [formData, setFormData] = useState({ name: '', slug: '' });
   const [saving, setSaving] = useState(false);
   const [partnerSlug, setPartnerSlug] = useState('');
+  const [partnerFormId, setPartnerFormId] = useState('');
   const [copyMsg, setCopyMsg] = useState('');
 
   const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -44,6 +45,7 @@ export default function PersonsPage() {
     setPersons(await personsRes.json());
     const partnerData = await partnerRes.json();
     setPartnerSlug(partnerData.slug || '');
+    setPartnerFormId(partnerData.formId?._id || partnerData.formId || '');
     setLoading(false);
   };
 
@@ -74,7 +76,8 @@ export default function PersonsPage() {
 
   const copyLink = (personSlug: string) => {
     const baseUrl = window.location.origin;
-    navigator.clipboard.writeText(`${baseUrl}/p/${partnerSlug}/${personSlug}`);
+    const url = `${baseUrl}/p/${partnerSlug}/${personSlug}?f=${partnerFormId}&aff_sub1=${personSlug}`;
+    navigator.clipboard.writeText(url);
     setCopyMsg(personSlug);
     setTimeout(() => setCopyMsg(''), 2000);
   };

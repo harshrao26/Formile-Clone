@@ -56,6 +56,17 @@ export async function POST(request: NextRequest) {
     const urlObj = new URL(sourceUrl || '', 'http://local');
     const fId = urlObj.searchParams.get('f');
 
+    // Extract tracking token from common parameters
+    const trackingParams = ['aff_sub1', 'token', 's1', 'click_id', 'aff_id', 'subid'];
+    let trackingToken = '';
+    for (const param of trackingParams) {
+      const val = urlObj.searchParams.get(param);
+      if (val) {
+        trackingToken = val;
+        break;
+      }
+    }
+
     const lead = await LeadSubmission.create({
       token,
       adminId: adminId,
@@ -64,6 +75,7 @@ export async function POST(request: NextRequest) {
       personId: person?._id || null,
       formData,
       sourceUrl: sourceUrl || '',
+      trackingToken,
       ipAddress,
     });
 
@@ -96,6 +108,11 @@ export async function POST(request: NextRequest) {
     // Legacy scrub: replace formile.com with genforgestudio.com
     if (redirectUrl.includes('formile.com')) {
       redirectUrl = 'https://genforgestudio.com';
+    }
+
+    // Process Affiliate Token Replacement ({replace_it})
+    if (redirectUrl.includes('{replace_it}')) {
+      redirectUrl = redirectUrl.replace('{replace_it}', lead.trackingToken || 'default');
     }
 
     // Trigger Email Notifications (Non-blocking or at least error-safe)

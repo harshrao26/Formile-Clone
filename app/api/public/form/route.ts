@@ -92,7 +92,8 @@ export async function GET(request: NextRequest) {
       companyId: companyId,
       heading,
       theme,
-      backgroundImage
+      backgroundImage,
+      redirectUrl: redirectUrl || (partnerId ? (await Partner.findById(partnerId))?.redirectUrl : null)
     });
   } catch (error) {
     console.error('Public fetch form error:', error);

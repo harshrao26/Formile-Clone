@@ -42,6 +42,15 @@ export default function LeadCaptureForm() {
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
+        if (data.redirectUrl) {
+          // Automatic redirection for external tracking
+          let finalUrl = data.redirectUrl;
+          finalUrl = finalUrl.replace(/{aff_sub1}/g, partnerSlug);
+          finalUrl = finalUrl.replace(/{replace_it}/g, partnerSlug);
+          window.location.replace(finalUrl);
+          return;
+        }
+
         if(data.fields) {
           setFields(data.fields);
           setHeading(data.heading || 'Claim Your Offer');
@@ -55,7 +64,11 @@ export default function LeadCaptureForm() {
         }
       })
       .catch(() => setError('Failed to load form'))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Only stop loading if we are NOT redirecting
+        // But window.location.replace is async-ish, so we can stop loading for UI sanity
+        setLoading(false);
+      });
   }, [partnerSlug]);
 
   const handleSubmit = async (e: React.FormEvent) => {
