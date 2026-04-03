@@ -42,8 +42,8 @@ export default function LeadCaptureForm() {
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
-        if (data.redirectUrl) {
-          // Automatic redirection for external tracking
+        // Only perform automatic redirection if the API explicitly signals a direct redirect link
+        if (data.directRedirect && data.redirectUrl) {
           let finalUrl = data.redirectUrl;
           finalUrl = finalUrl.replace(/{aff_sub1}/g, partnerSlug);
           finalUrl = finalUrl.replace(/{replace_it}/g, partnerSlug);

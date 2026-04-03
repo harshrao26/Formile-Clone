@@ -55,7 +55,17 @@ export async function GET(request: NextRequest) {
         if (template.heading) heading = template.heading;
         if (template.theme) theme = template.theme;
         if (template.backgroundImage) backgroundImage = template.backgroundImage;
-        if (template.redirectUrl) redirectUrl = template.redirectUrl;
+        // This is a target URL for post-submission, not immediate redirect
+        redirectUrl = template.redirectUrl;
+      }
+    } else if (partnerId) {
+      // If no formId, but partner has a direct redirect URL, we can skip the form
+      const partnerObj = await Partner.findById(partnerId);
+      if (partnerObj?.redirectUrl) {
+        return NextResponse.json({ 
+          redirectUrl: partnerObj.redirectUrl,
+          directRedirect: true 
+        });
       }
     }
 
@@ -93,7 +103,8 @@ export async function GET(request: NextRequest) {
       heading,
       theme,
       backgroundImage,
-      redirectUrl: redirectUrl || (partnerId ? (await Partner.findById(partnerId))?.redirectUrl : null)
+      redirectUrl, // This is now only for post-submission if targetFormId was present
+      directRedirect: false
     });
   } catch (error) {
     console.error('Public fetch form error:', error);
