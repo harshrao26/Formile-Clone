@@ -110,9 +110,26 @@ export async function POST(request: NextRequest) {
       redirectUrl = 'https://genforgestudio.com';
     }
 
-    // Process Affiliate Token Replacement ({replace_it})
+    // === Affiliate Token Replacement ===
+    // The lead's unique token serves as the Click ID / Sub-Affiliate ID
+    const leadToken = lead.token;
+    
+    // 1. Replace {token} placeholder (e.g., sub_aff_id={token})
+    if (redirectUrl.includes('{token}')) {
+      redirectUrl = redirectUrl.replace(/\{token\}/g, leadToken);
+    }
+    // 2. Replace {click_id} placeholder
+    if (redirectUrl.includes('{click_id}')) {
+      redirectUrl = redirectUrl.replace(/\{click_id\}/g, leadToken);
+    }
+    // 3. Legacy: Replace {replace_it} placeholder (old format)
     if (redirectUrl.includes('{replace_it}')) {
-      redirectUrl = redirectUrl.replace('{replace_it}', lead.trackingToken || 'default');
+      redirectUrl = redirectUrl.replace(/\{replace_it\}/g, lead.trackingToken || leadToken);
+    }
+    // 4. Auto-append: If URL ends with '=' (e.g., &sub_aff_id=), automatically append token
+    // This handles the pattern: https://network.com/c?o=123&sub_aff_id=
+    if (redirectUrl.endsWith('=')) {
+      redirectUrl = redirectUrl + leadToken;
     }
 
     // Trigger Email Notifications (Non-blocking or at least error-safe)

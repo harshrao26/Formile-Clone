@@ -359,7 +359,7 @@ export default function FormsPage() {
     const handleCopyLink = (formId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    const url = `${baseUrl}/p/generic?f=${formId}&aff_sub1=generic`;
+    const url = `${baseUrl}/p/generic?f=${formId}`;
     navigator.clipboard.writeText(url);
     setCopiedId(formId);
     setTimeout(() => setCopiedId(null), 2000);
@@ -462,7 +462,26 @@ export default function FormsPage() {
                     onBlur={(e) => syncToDb('redirectUrl', e.target.value)}
                     className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500" 
                   />
-                  <p className="text-[10px] text-foreground/40 mt-1.5 px-1">Redirect users to this URL after they submit the form. (Required)</p>
+                  <div className="mt-2 space-y-2">
+                    <p className="text-[10px] text-foreground/40 px-1">After form submission, user is redirected to this URL. <span className="text-orange-400">Use <code className="bg-orange-500/10 px-1 rounded">{'{token}'}</code> or end with <code className="bg-orange-500/10 px-1 rounded">=</code> to auto-append the click ID.</span></p>
+                    {editingForm.redirectUrl && (() => {
+                      const sampleToken = 'a1b2c3d4e5f6sample';
+                      let previewUrl = editingForm.redirectUrl;
+                      if (previewUrl.includes('{token}')) {
+                        previewUrl = previewUrl.replace(/\{token\}/g, sampleToken);
+                      } else if (previewUrl.includes('{click_id}')) {
+                        previewUrl = previewUrl.replace(/\{click_id\}/g, sampleToken);
+                      } else if (previewUrl.endsWith('=')) {
+                        previewUrl = previewUrl + sampleToken;
+                      }
+                      return (
+                        <div className="bg-green-500/5 border border-green-500/15 rounded-lg p-2.5">
+                          <p className="text-[10px] text-green-400 font-medium mb-1">✅ Preview — Final URL after submission:</p>
+                          <p className="text-[10px] text-foreground/50 font-mono break-all">{previewUrl}</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
 
                 <div>
@@ -546,8 +565,8 @@ export default function FormsPage() {
                   <div className="flex items-center gap-2">
                     <div className="flex-1 text-xs font-mono text-foreground/60 truncate bg-background/50 px-2 py-1.5 rounded-lg border border-border/50">
                       {editingForm.partnerId 
-                        ? `${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}&aff_sub1=${partners.find(p => p._id === editingForm.partnerId)?.slug}`
-                        : `${window.location.origin}/p/generic?f=${editingForm._id}&aff_sub1=generic`
+                        ? `${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}`
+                        : `${window.location.origin}/p/generic?f=${editingForm._id}`
                       }
                     </div>
                     <button 
@@ -555,7 +574,7 @@ export default function FormsPage() {
                         const slug = editingForm.partnerId 
                           ? partners.find(p => p._id === editingForm.partnerId)?.slug 
                           : 'generic';
-                        const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}&aff_sub1=${slug}`;
+                        const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}`;
                         navigator.clipboard.writeText(url);
                         alert("Link copied to clipboard!");
                       }}
