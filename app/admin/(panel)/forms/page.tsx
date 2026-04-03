@@ -356,11 +356,15 @@ export default function FormsPage() {
       setIsSavingPartner(false);
     }
   };
-    const handleCopyLink = (formId: string, e: React.MouseEvent) => {
+    // Shared URL builder — always generates generic link
+  const buildFormUrl = (formId: string) => {
+    const origin = `${window.location.protocol}//${window.location.host}`;
+    return `${origin}/p/generic?f=${formId}`;
+  };
+
+  const handleCopyLink = (formId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    const url = `${baseUrl}/p/generic?f=${formId}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(buildFormUrl(formId));
     setCopiedId(formId);
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -560,28 +564,30 @@ export default function FormsPage() {
 
                 <div className="p-4 bg-orange-500/5 border border-orange-500/10 rounded-2xl relative group">
                   <label className="block text-[10px] uppercase tracking-wider text-orange-500 font-bold mb-2">
-                    {editingForm.partnerId ? "Partner Link" : "Generic Link (Platform)"}
+                    Generic Link (Platform)
                   </label>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 text-xs font-mono text-foreground/60 truncate bg-background/50 px-2 py-1.5 rounded-lg border border-border/50">
-                      {editingForm.partnerId 
-                        ? `${window.location.origin}/p/${partners.find(p => p._id === editingForm.partnerId)?.slug}?f=${editingForm._id}`
-                        : `${window.location.origin}/p/generic?f=${editingForm._id}`
-                      }
+                      {editingForm._id ? buildFormUrl(editingForm._id) : '—'}
                     </div>
                     <button 
                       onClick={() => {
-                        const slug = editingForm.partnerId 
-                          ? partners.find(p => p._id === editingForm.partnerId)?.slug 
-                          : 'generic';
-                        const url = `${window.location.origin}/p/${slug}?f=${editingForm._id}`;
-                        navigator.clipboard.writeText(url);
-                        alert("Link copied to clipboard!");
+                        if (!editingForm._id) return;
+                        navigator.clipboard.writeText(buildFormUrl(editingForm._id));
+                        setCopiedId(editingForm._id);
+                        setTimeout(() => setCopiedId(null), 2000);
                       }}
-                      className="p-2 bg-background border border-border rounded-lg hover:border-orange-500/50 hover:bg-orange-500/5 text-foreground/50 hover:text-orange-500 transition-all shadow-sm"
-                      title="Copy Link"
+                      className={`p-2 border rounded-lg transition-all shadow-sm ${
+                        copiedId === editingForm._id
+                          ? 'bg-green-500/10 border-green-500/40 text-green-500'
+                          : 'bg-background border-border text-foreground/50 hover:border-orange-500/50 hover:bg-orange-500/5 hover:text-orange-500'
+                      }`}
+                      title="Copy Generic Link"
                     >
-                      <Copy className="w-4 h-4" />
+                      {copiedId === editingForm._id
+                        ? <Check className="w-4 h-4" />
+                        : <Copy className="w-4 h-4" />
+                      }
                     </button>
                   </div>
                 </div>

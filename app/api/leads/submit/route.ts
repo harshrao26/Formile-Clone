@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       person = await Person.findOne({ partnerId: partnerId, slug: personSlug.toLowerCase() });
     }
 
-    const token = crypto.randomBytes(16).toString('hex');
+    const token = crypto.randomBytes(6).toString('hex');
 
     const ipAddress =
       request.headers.get('x-forwarded-for') ||
