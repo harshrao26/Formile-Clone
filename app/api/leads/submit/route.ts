@@ -46,7 +46,15 @@ export async function POST(request: NextRequest) {
       person = await Person.findOne({ partnerId: partnerId, slug: personSlug.toLowerCase() });
     }
 
-    const token = crypto.randomBytes(6).toString('hex');
+    const now = new Date();
+    const timeNum = now.getFullYear().toString().slice(-2) + 
+                    String(now.getMonth() + 1).padStart(2, '0') + 
+                    String(now.getDate()).padStart(2, '0') + 
+                    String(now.getHours()).padStart(2, '0') + 
+                    String(now.getMinutes()).padStart(2, '0') + 
+                    String(now.getSeconds()).padStart(2, '0');
+    const randNum = Math.floor(100 + Math.random() * 900); // 3-digit random
+    const token = `${timeNum}${randNum}`;
 
     const ipAddress =
       request.headers.get('x-forwarded-for') ||
