@@ -18,22 +18,9 @@ import Script from 'next/script';
 // Pricing data
 const PLANS = [
   {
-    id: 'trial',
-    name: 'Starter Trial',
-    price: 1,
-    period: '3 days',
-    features: [
-      '3 Days Pro Access',
-      'Unlimited Links',
-      'Full Analytics',
-      'Email Support'
-    ],
-    recommended: false
-  },
-  {
     id: 'monthly',
     name: 'Monthly Plan',
-    price: 599,
+    price: 499,
     period: 'month',
     features: [
       'Unlimited Lead Capture',
@@ -47,11 +34,11 @@ const PLANS = [
   {
     id: 'yearly',
     name: 'Yearly Plan',
-    price: 5750,
+    price: 4790,
     period: 'year',
     features: [
       'Everything in Monthly',
-      '20% Discount (Save ₹1,438)',
+      '20% Discount (Save ₹1,198)',
       'Priority Email Support',
       'Custom Form Styling',
       'Whitelabel Lead Routing'
@@ -59,6 +46,7 @@ const PLANS = [
     recommended: true
   }
 ];
+
 
 declare global {
   interface Window {
