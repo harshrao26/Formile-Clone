@@ -25,7 +25,7 @@ export default function TermsConditions() {
             <section>
               <h2 className="text-2xl font-bold mb-4 text-orange-500">1. Agreement to Terms</h2>
               <p className="text-white/70 leading-relaxed">
-                By accessing or using Genforge Studio, you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you may not access the platform.
+                By accessing or using ZeeOffer, you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you may not access the platform.
               </p>
             </section>
 
@@ -55,7 +55,7 @@ export default function TermsConditions() {
                 <li>In any way that violates any applicable national or international law or regulation.</li>
                 <li>For the purpose of exploiting, harming, or attempting to exploit or harm minors.</li>
                 <li>To transmit, or procure the sending of, any advertising or promotional material (spam).</li>
-                <li>To impersonate or attempt to impersonate Genforge, a Genforge employee, or another user.</li>
+                <li>To impersonate or attempt to impersonate ZeeOffer, a ZeeOffer employee, or another user.</li>
               </ul>
             </section>
 
@@ -68,7 +68,7 @@ export default function TermsConditions() {
 
             <section className="pt-8 border-t border-white/5">
               <p className="text-white/50 text-sm">
-                For any disputes or inquiries regarding these terms, please contact legal@genforge.studio
+                For any disputes or inquiries regarding these terms, please contact legal@zeeoffer.com
               </p>
             </section>
           </div>

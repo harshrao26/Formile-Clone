@@ -5,8 +5,8 @@ import { Plus, Minus } from 'lucide-react';
 
 const faqs = [
   {
-    q: 'What is Genforge Studio?',
-    a: 'Genforge Studio is a multi-tenant SaaS platform for AI-powered lead generation. It lets you create custom forms, manage partner networks, and capture high-quality leads — all secured under enterprise-grade role-based access control.',
+    q: 'What is ZeeOffer?',
+    a: 'ZeeOffer is a multi-tenant SaaS platform for AI-powered lead generation. It lets you create custom forms, manage partner networks, and capture high-quality leads — all secured under enterprise-grade role-based access control.',
   },
   {
     q: 'How does the partner URL system work?',
@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: 'Is my data isolated from other companies on the platform?',
-    a: 'Yes, completely. Genforge Studio is built with Row-Level Security (RLS) enforced at every API layer. Company A can never see, access, or interfere with Company B\'s lead data. Each admin account is fully siloed.',
+    a: 'Yes, completely. ZeeOffer is built with Row-Level Security (RLS) enforced at every API layer. Company A can never see, access, or interfere with Company B\'s lead data. Each admin account is fully siloed.',
   },
   {
     q: 'How does OTP verification help lead quality?',
@@ -42,45 +42,47 @@ export default function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="py-40 px-6">
+    <section className="py-40 px-6 bg-white border-t border-zinc-100">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-24 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-            <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">FAQ</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-100 border border-zinc-200/50 rounded-full">
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">FAQ</span>
           </div>
-          <h2 className="text-5xl md:text-6xl font-bold tracking-tighter text-white leading-[0.95]">
+          <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter text-zinc-900 leading-[0.95]">
             Questions we <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white/60 to-white/20">hear all the time</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-zinc-400 to-zinc-600">hear all the time</span>
           </h2>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                open === i ? 'border-white/10 bg-white/[0.04]' : 'border-white/5 bg-white/[0.02]'
+              className={`rounded-[24px] border transition-all duration-300 overflow-hidden ${
+                open === i 
+                  ? 'border-zinc-200 bg-zinc-50/50 shadow-sm' 
+                  : 'border-zinc-100 bg-white hover:border-zinc-200 hover:bg-zinc-50/30'
               }`}
             >
               <button
-                className="w-full flex items-center justify-between p-7 text-left gap-6"
+                className="w-full flex items-center justify-between p-7 text-left gap-6 group"
                 onClick={() => setOpen(open === i ? null : i)}
               >
-                <span className={`font-semibold text-base transition-colors ${open === i ? 'text-white' : 'text-white/70'}`}>
+                <span className={`font-bold text-lg transition-colors ${open === i ? 'text-zinc-900' : 'text-zinc-700'}`}>
                   {faq.q}
                 </span>
-                <div className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border transition-all ${
-                  open === i ? 'border-white/20 bg-white/10' : 'border-white/5'
+                <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center border transition-all ${
+                  open === i ? 'border-orange-500 bg-orange-500 text-white' : 'border-zinc-200 bg-white group-hover:border-zinc-300'
                 }`}>
                   {open === i
-                    ? <Minus className="w-3 h-3 text-white/70" />
-                    : <Plus className="w-3 h-3 text-white/50" />
+                    ? <Minus className="w-3.5 h-3.5" />
+                    : <Plus className="w-3.5 h-3.5 text-zinc-400" />
                   }
                 </div>
               </button>
               {open === i && (
-                <div className="px-7 pb-7">
-                  <p className="text-white/60 text-sm leading-relaxed">{faq.a}</p>
+                <div className="px-7 pb-7 -mt-2 animate-in slide-in-from-top-2 duration-300">
+                  <p className="text-zinc-500 text-base leading-relaxed font-medium">{faq.a}</p>
                 </div>
               )}
             </div>

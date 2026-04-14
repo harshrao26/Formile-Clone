@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-2xl font-bold mb-4 text-orange-500">1. Introduction</h2>
               <p className="text-white/70 leading-relaxed">
-                Welcome to Genforge Studio. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us.
+                Welcome to ZeeOffer. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us.
               </p>
             </section>
 
@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
 
             <section className="pt-8 border-t border-white/5">
               <p className="text-white/50 text-sm">
-                If you have questions or comments about this policy, you may email us at privacy@genforge.studio
+                If you have questions or comments about this policy, you may email us at privacy@zeeoffer.com
               </p>
             </section>
           </div>

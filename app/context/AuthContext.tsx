@@ -27,14 +27,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('genforge-token');
-    const savedAdmin = localStorage.getItem('genforge-admin');
+    const savedToken = localStorage.getItem('zeeoffer-token');
+    const savedAdmin = localStorage.getItem('zeeoffer-admin');
     if (savedToken && savedAdmin) {
       setToken(savedToken);
       try {
         setAdmin(JSON.parse(savedAdmin));
       } catch (e) {
-        localStorage.removeItem('genforge-admin');
+        localStorage.removeItem('zeeoffer-admin');
       }
     }
     setIsLoading(false);
@@ -43,15 +43,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (newToken: string, adminData: AuthUser) => {
     setToken(newToken);
     setAdmin(adminData);
-    localStorage.setItem('genforge-token', newToken);
-    localStorage.setItem('genforge-admin', JSON.stringify(adminData));
+    localStorage.setItem('zeeoffer-token', newToken);
+    localStorage.setItem('zeeoffer-admin', JSON.stringify(adminData));
   };
 
   const logout = () => {
     setToken(null);
     setAdmin(null);
-    localStorage.removeItem('genforge-token');
-    localStorage.removeItem('genforge-admin');
+    localStorage.removeItem('zeeoffer-token');
+    localStorage.removeItem('zeeoffer-admin');
   };
 
   return (

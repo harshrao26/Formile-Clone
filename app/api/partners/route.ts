@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         company = await Company.create({ 
           name: companyName, 
           adminId: auth.adminId,
-          originalUrl: redirectUrl || 'https://genforgestudio.com' // Use provided redirect or platform home
+          originalUrl: redirectUrl || 'https://zeeoffer.com' // Use provided redirect or platform home
         });
       }
       companyId = company._id;

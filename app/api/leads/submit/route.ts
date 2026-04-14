@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       if (!template) return NextResponse.json({ error: 'Form template not found' }, { status: 404 });
       
       adminId = template.adminId;
-      partnerEmail = 'support@genforgestudio.com'; // Default admin contact
+      partnerEmail = 'support@zeeoffer.com'; // Default admin contact
     } else {
       const partner = await Partner.findOne({ slug: lowerSlug });
       if (!partner) {
@@ -107,15 +107,16 @@ export async function POST(request: NextRequest) {
           const PartnerModel = (await import('@/app/lib/models/Partner')).default;
           const fullPartner = await PartnerModel.findById(partnerId).populate('companyId');
           redirectUrl = (fullPartner?.companyId as any)?.originalUrl || 'https://genforgestudio.com';
+          redirectUrl = (fullPartner?.companyId as any)?.originalUrl || 'https://zeeoffer.com';
         } else {
-          redirectUrl = 'https://genforgestudio.com';
+          redirectUrl = 'https://zeeoffer.com';
         }
       }
     }
 
-    // Legacy scrub: replace formile.com with genforgestudio.com
-    if (redirectUrl.includes('formile.com')) {
-      redirectUrl = 'https://genforgestudio.com';
+    // Final redirect logic cleanup
+    if (!redirectUrl || redirectUrl.includes('genforgestudio.com') || redirectUrl.includes('formile.com')) {
+      redirectUrl = 'https://zeeoffer.com';
     }
 
     // === Affiliate Token Replacement ===

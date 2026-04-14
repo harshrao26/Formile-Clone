@@ -52,10 +52,10 @@ export default function SuperadminLayout({ children }: { children: ReactNode }) 
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3 px-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-              <img src="/logo.png" alt="Genforge" className="w-6 h-6 object-contain" />
+              <img src="/logo.png" alt="ZeeOffer" className="w-6 h-6 object-contain" />
             </div>
             <div>
-              <span className="font-bold text-sm tracking-tight text-foreground block">Genforge Studio</span>
+              <span className="font-bold text-sm tracking-tight text-foreground block">ZEEOFFER</span>
               <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Superadmin</span>
             </div>
           </div>

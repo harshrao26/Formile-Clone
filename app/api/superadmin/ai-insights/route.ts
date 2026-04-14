@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       : 'No tenant data yet.';
 
     // Build Gemini prompt
-    const prompt = `You are a SaaS platform analytics expert for "Genforge Studio", a lead generation and partner management platform.
+    const prompt = `You are a SaaS platform analytics expert for "ZeeOffer", a lead generation and partner management platform.
 
 Here is the current LIVE platform data:
 

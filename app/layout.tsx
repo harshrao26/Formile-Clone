@@ -10,8 +10,8 @@ const genforgeFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Genforge Studio - Lead Capture & Referral System",
-  description: "Advanced lead generation and management platform for high-growth companies.",
+  title: "ZeeOffer - Lead Capture & Referral System",
+  description: "Enterprise-grade lead generation, form automation, and partner management platform.",
 };
 
  import { ThemeProvider2 } from "@/app/components/ThemeProvider2";

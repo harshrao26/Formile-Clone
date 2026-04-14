@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendLeadNotification = async (partnerEmail: string, partnerName: string, formData: Record<string, string>) => {
   const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
-  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
+  const fromName = process.env.SMTP_FROM_NAME || 'ZeeOffer';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const tableRows = Object.entries(formData)
@@ -56,7 +56,7 @@ export const sendLeadNotification = async (partnerEmail: string, partnerName: st
 };
 
 export const sendUserConfirmation = async (userEmail: string, heading: string) => {
-  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
+  const fromName = process.env.SMTP_FROM_NAME || 'ZeeOffer';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const html = `
@@ -86,7 +86,7 @@ export const sendUserConfirmation = async (userEmail: string, heading: string) =
 };
 
 export const sendOTPEmail = async (userEmail: string, otp: string, type: 'signup' | 'reset') => {
-  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
+  const fromName = process.env.SMTP_FROM_NAME || 'ZeeOffer';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const title = type === 'signup' ? 'Verify Your Email' : 'Reset Your Password';
@@ -123,7 +123,7 @@ export const sendOTPEmail = async (userEmail: string, otp: string, type: 'signup
 };
 
 export const sendSubscriptionActivationEmail = async (userEmail: string, planName: string, expiryDate: Date) => {
-  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
+  const fromName = process.env.SMTP_FROM_NAME || 'ZeeOffer';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   const formattedExpiry = expiryDate.toLocaleDateString('en-IN', {
@@ -148,7 +148,7 @@ export const sendSubscriptionActivationEmail = async (userEmail: string, planNam
           <p style="margin: 5px 0 0; font-size: 24px; font-weight: 700; color: #111827;">${formattedExpiry}</p>
         </div>
 
-        <p>You now have full access to all Genforge Studio features, including unlimited form creation, partner management, and real-time lead tracking.</p>
+        <p>You now have full access to all ZeeOffer features, including unlimited form creation, partner management, and real-time lead tracking.</p>
         
         <div style="margin-top: 35px; text-align: center;">
           <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/dashboard" style="background: #10b981; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">Go to Dashboard</a>

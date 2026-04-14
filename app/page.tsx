@@ -15,25 +15,20 @@ import Footer from './homepage/components/Footer';
 
 export default function HomePage() {
   return (
-    <div className="dark min-h-screen bg-[#000000] text-white selection:bg-orange-500/30 selection:text-orange-200 overflow-x-hidden font-sans relative">
-      {/* Global Background */}
+    <div className="min-h-screen bg-white text-zinc-900 selection:bg-orange-500/10 selection:text-orange-900 overflow-x-hidden font-sans relative">
+      {/* Global Background Accents */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <img
-          src="/bg.avif"
-          alt="background"
-          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
-        />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-orange-600/10 blur-[150px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/5 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-orange-50/50 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[5%] right-[-5%] w-[30%] h-[30%] bg-purple-50/30 blur-[100px] rounded-full" />
       </div>
 
       <Navbar />
       <Hero />
       <FeaturesSection />
-      <ScaleSection />
-      <SecondarySection />
-      <TestimonialsSection />
+      {/* <ScaleSection /> */}
+      {/* <SecondarySection /> */}
       <PricingSection />
+      <TestimonialsSection />
       <FaqSection />
       <CtaSection />
       <Footer />

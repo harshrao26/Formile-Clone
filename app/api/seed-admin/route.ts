@@ -7,14 +7,14 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
 
-    const alreadyExists = await Admin.findOne({ email: 'harsh@genforgestudio.com' });
+    const alreadyExists = await Admin.findOne({ email: 'harsh@zeeoffer.com' });
     if (alreadyExists) {
-      return NextResponse.json({ error: 'Superadmin already exists' }, { status: 400 });
+      return NextResponse.json({ message: 'Default admin already exists' });
     }
 
-    const hashedPassword = await bcryptjs.hash('12345678', 12);
+    const hashedPassword = await bcryptjs.hash(process.env.DEFAULT_ADMIN_PASSWORD || 'ZeeOffer@2024', 12);
     const admin = await Admin.create({
-      email: 'harsh@genforgestudio.com',
+      email: 'harsh@zeeoffer.com',
       password: hashedPassword,
       name: 'Harsh Admin',
       role: 'superadmin',

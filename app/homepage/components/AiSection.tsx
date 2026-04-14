@@ -15,14 +15,13 @@ export default function AiSection() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
             <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">AI Powered</span>
           </div>
-          <h2 className="text-5xl md:text-7xl font-bold   tracking-tighter mb-12">
-            Build with <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">Gemini</span> <br />
-            in Genforge
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+            Intelligent Automation <br /> 
+            <span className="text-orange-500">in ZeeOffer</span>
           </h2>
-          <p className="text-white/50 text-lg md:text-xl leading-relaxed max-w-lg font-medium">
-            Work quickly and efficiently with Gemini in Genforge Studio. Optimize 
-            your lead capture funnels, automate validation, and analyze partner 
-            performance with AI assistance that understands your CRM data.
+          <p className="text-white/60 text-lg md:text-xl max-w-xl leading-relaxed mb-8">
+            Work quickly and efficiently with Gemini in ZeeOffer. Optimize 
+            your lead forms and partner assignments using our AI-driven insights engine.
           </p>
         </div>
         

@@ -6,14 +6,14 @@ const testimonials = [
     role: 'Founder, GrowthLabs India',
     avatar: 'RM',
     color: 'from-orange-500 to-red-500',
-    text: 'Genforge Studio cut our lead setup time from weeks to hours. The partner URL system is genius — our field team can now capture leads without any IT involvement.',
+    text: 'ZeeOffer cut our lead setup time from weeks to hours. The partner URL system is genius — our field team can now capture leads without any IT involvement.',
   },
   {
     name: 'Priya Sharma',
     role: 'Head of Sales, PropEdge',
     avatar: 'PS',
     color: 'from-blue-500 to-purple-500',
-    text: 'We manage 12 different real estate projects across India, and Genforge Studio keeps all the lead data perfectly separated. The superadmin view is exactly what we needed.',
+    text: 'We manage 12 different real estate projects across India, and ZeeOffer keeps all the lead data perfectly separated. The superadmin view is exactly what we needed.',
   },
   {
     name: 'Vikas Agarwal',
@@ -34,7 +34,7 @@ const testimonials = [
     role: 'CEO, FinVest Advisors',
     avatar: 'KB',
     color: 'from-yellow-500 to-orange-500',
-    text: 'The Excel export with date range and company filters is exceptional. Our team runs weekly Monday reports directly from Genforge Studio without any manual data wrangling.',
+    text: 'The Excel export with date range and company filters is exceptional. Our team runs weekly Monday reports directly from ZeeOffer without any manual data wrangling.',
   },
   {
     name: 'Ananya Gupta',
@@ -47,32 +47,30 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-32 px-6 relative overflow-hidden">
+    <section className="pt-32 px-6 relative overflow-hidden bg-white border-t border-zinc-100">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-            <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Loved by Teams</span>
-          </div>
-          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95]">
+          
+          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-zinc-900 leading-[0.95]">
             Real results, <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-600">real customers</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="p-8 rounded-[28px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 flex flex-col gap-6"
+              className="p-8 rounded-[32px] border border-zinc-100 bg-white hover:bg-zinc-50/50 hover:border-zinc-200 hover:shadow-[0_20px_40px_rgba(0,0,0,0.03)] transition-all duration-500 flex flex-col gap-8 group cursor-default"
             >
-              <p className="text-white/70 text-base leading-relaxed flex-1">"{t.text}"</p>
+              <p className="text-zinc-600 text-base leading-relaxed flex-1 font-medium italic">"{t.text}"</p>
               <div className="flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center flex-shrink-0`}>
-                  <span className="text-white text-xs font-bold">{t.avatar}</span>
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                  <span className="text-white text-sm font-bold">{t.avatar}</span>
                 </div>
                 <div>
-                  <div className="text-white font-semibold text-sm">{t.name}</div>
-                  <div className="text-white/40 text-xs">{t.role}</div>
+                  <div className="text-zinc-900 font-bold text-sm tracking-tight">{t.name}</div>
+                  <div className="text-zinc-400 text-xs font-medium uppercase tracking-wider">{t.role}</div>
                 </div>
               </div>
             </div>

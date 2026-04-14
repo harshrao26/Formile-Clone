@@ -20,7 +20,7 @@ export default function ProjectShowcase() {
             <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
             <div className="w-3 h-3 rounded-full bg-[#28c840]" />
             <div className="ml-6 w-80 h-7 bg-black/50 rounded-xl border border-white/5 flex items-center px-4">
-              <span className="text-[11px] text-white/40 truncate">studio.genforge.studio/my-campaign</span>
+              <span className="text-[11px] text-white/40 truncate">studio.zeeoffer.com/my-campaign</span>
             </div>
         </div>
 
@@ -33,7 +33,7 @@ export default function ProjectShowcase() {
               </div>
               <div className="space-y-4">
                   <div className="flex items-center gap-3 text-white/60">
-                    <img src="/logo.png" alt="Genforge" className="w-4 h-4 object-contain" /> <span className="text-sm font-medium">MY-APP</span>
+                    <img src="/logo.png" alt="ZeeOffer" className="w-4 h-4 object-contain" /> <span className="text-sm font-medium">ZEEOFFER</span>
                   </div>
                   <div className="pl-6 space-y-4 text-sm text-white/50 font-medium">
                     <div className="flex items-center gap-3"><span className="text-white/30">›</span> .idx</div>
@@ -69,7 +69,7 @@ export default function ProjectShowcase() {
             <div className="absolute left-10 bottom-10 w-[340px] glass-card rounded-3xl p-8 border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-black/90 backdrop-blur-2xl animate-float">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                  <img src="/logo.png" alt="Genforge" className="w-6 h-6 object-contain" />
+                  <img src="/logo.png" alt="ZeeOffer" className="w-6 h-6 object-contain" />
                 </div>
                 <span className="text-sm font-bold text-white/80">Gemini</span>
               </div>
@@ -100,7 +100,7 @@ export default function ProjectShowcase() {
               <div className="h-full pt-12 flex flex-col items-center justify-center relative bg-gradient-to-br from-[#ff0000] via-[#ff7b00] to-[#ffcc00] p-10">
                   <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
                   <div className="w-32 h-32 bg-white/10 backdrop-blur-md rounded-[32px] flex items-center justify-center shadow-2xl rotate-[10deg] mb-8">
-                    <img src="/logo.png" alt="Genforge" className="w-16 h-16 object-contain" />
+                    <img src="/logo.png" alt="ZeeOffer" className="w-16 h-16 object-contain" />
                   </div>
                   <div className="w-full space-y-4">
                     <div className="w-full h-14 bg-black/10 backdrop-blur-md rounded-2xl border border-white/10" />

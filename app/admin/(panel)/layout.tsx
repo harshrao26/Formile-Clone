@@ -70,9 +70,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3 px-2">
             <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center border border-border">
-              <img src="/logo.png" alt="Genforge" className="w-5 h-5 object-contain" />
+              <img src="/logo.png" alt="ZeeOffer" className="w-6 h-6 object-contain" />
             </div>
-            <span className="font-bold text-lg tracking-tight uppercase">Genforge Studio</span>
+            <span className="font-bold text-sm tracking-tight text-foreground block">ZEEOFFER</span>
           </div>
         </div>
 
@@ -140,7 +140,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               </div>
               <h2 className="text-3xl font-extrabold mb-3">Your Plan has Expired</h2>
               <p className="text-foreground/60 max-w-md mx-auto mb-8">
-                Your subscription to Genforge Studio has ended. All features are currently locked until you renew your plan.
+                Your subscription to ZeeOffer has ended. All features are currently locked until you renew your plan.
               </p>
               <Link 
                 href="/admin/billing"

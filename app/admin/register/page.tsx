@@ -68,25 +68,16 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl" />
-      </div>
+     
 
 
-      <div className="absolute inset-0 z-0 right-0">
-        <img 
-          src="/bg2.avif" 
-          alt="background" 
-          className="w-full h-full object-cover blur-[8px]  "
-        />
-       </div>
+     
 
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-card border border-border rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow-orange-500/20">
-              <Zap className="w-8 h-8 text-foreground fill-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradie nt-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow ">
+             <img src="/logo.png" alt="ZeeOffer" className="w-8 h-8 object-contain" />
             </div>
             <h1 className="text-2xl font-bold text-foreground">Create   Account</h1>
             <p className="text-foreground/60 mt-1">Start your 10x lead generation journey</p>

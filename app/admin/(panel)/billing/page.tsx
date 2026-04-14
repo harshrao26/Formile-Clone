@@ -153,7 +153,7 @@ export default function BillingPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold tracking-tight mb-4">Choose Your Plan</h1>
         <p className="text-foreground/60 max-w-2xl mx-auto">
-          Scale your lead generation with Genforge Studio. Select a plan that fits your business needs.
+          Scale your lead generation with ZeeOffer. Select a plan that fits your business needs.
         </p>
       </div>
 
@@ -171,7 +171,7 @@ export default function BillingPage() {
           </div>
           <div>
             <h3 className="text-lg font-bold text-red-500">Plan Expired</h3>
-            <p className="text-sm text-foreground/60">Your subscription has ended. Please renew to continue using Genforge Studio services.</p>
+            <p className="text-sm text-foreground/60">Your subscription has ended. Please renew to continue using ZeeOffer services.</p>
           </div>
         </div>
       )}

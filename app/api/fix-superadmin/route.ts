@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcryptjs.hash('12345678', 12);
 
     const admin = await Admin.findOneAndUpdate(
-      { email: 'harsh@genforgestudio.com' },
+      { email: 'harsh@email.com' },
       { 
         $set: { 
           role: 'superadmin',

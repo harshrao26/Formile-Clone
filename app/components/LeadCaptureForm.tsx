@@ -229,7 +229,7 @@ export default function LeadCaptureForm() {
           </form>
         </div>
 
-        <p className={`text-center text-xs mt-4 ${isLight ? 'text-gray-400' : 'text-white/15'}`}>Powered by Genforge Studio</p>
+        <p className={`text-center text-xs mt-4 ${isLight ? 'text-gray-400' : 'text-white/15'}`}>Powered by ZeeOffer</p>
       </div>
     </div>
   );
