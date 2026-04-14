@@ -12,12 +12,14 @@ import {
   Inbox,
   LogOut,
   ArrowLeft,
+  Mail,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/admin/superadmin/overview', label: 'Platform Overview', icon: LayoutDashboard },
   { href: '/admin/superadmin/tenants', label: 'Tenant Management', icon: Building2 },
   { href: '/admin/superadmin/leads', label: 'Global Leads', icon: Inbox },
+  { href: '/admin/superadmin/inquiries', label: 'Inquiries', icon: Mail },
   { href: '/admin/superadmin/ai-insights', label: 'AI Insights', icon: Brain },
 ];
 

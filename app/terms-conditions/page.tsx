@@ -68,7 +68,7 @@ export default function TermsConditions() {
 
             <section className="pt-8 border-t border-white/5">
               <p className="text-white/50 text-sm">
-                For any disputes or inquiries regarding these terms, please contact legal@zeeoffer.com
+                For any disputes or inquiries regarding these terms, please contact support@zeeoffer.com
               </p>
             </section>
           </div>

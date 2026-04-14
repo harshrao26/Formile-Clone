@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
 
             <section className="pt-8 border-t border-white/5">
               <p className="text-white/50 text-sm">
-                If you have questions or comments about this policy, you may email us at privacy@zeeoffer.com
+                If you have questions or comments about this policy, you may email us at support@zeeoffer.com
               </p>
             </section>
           </div>

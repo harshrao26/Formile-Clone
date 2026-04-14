@@ -14,6 +14,7 @@ export default function Navbar() {
             <img src="/logo.png" alt="ZeeOffer Logo" className="w-8 h-8 object-contain" />
             <span className="text-zinc-900 font-bold text-lg tracking-tight">ZeeOffer</span>
           </Link>
+         
         </div>
         <div className="flex items-center gap-4">
           <Link 
@@ -22,6 +23,9 @@ export default function Navbar() {
           >
             Sign In
           </Link>
+
+                      <Link href="/contact" className="text-zinc-600 text-sm font-bold transition-colors">Contact Us</Link>
+
         </div>
       </div>
     </nav>

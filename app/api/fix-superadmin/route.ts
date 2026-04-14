@@ -3,7 +3,7 @@ import dbConnect from '@/app/lib/mongodb';
 import Admin from '@/app/lib/models/Admin';
 import bcryptjs from 'bcryptjs';
 
-// One-time fix route: forcefully sets harsh@genforgestudio.com as superadmin
+// One-time fix route: forcefully sets support@zeeoffer.com as superadmin
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcryptjs.hash('12345678', 12);
 
     const admin = await Admin.findOneAndUpdate(
-      { email: 'harsh@email.com' },
+      { email: 'support@zeeoffer.com' },
       { 
         $set: { 
           role: 'superadmin',
