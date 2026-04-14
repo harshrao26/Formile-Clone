@@ -5,6 +5,22 @@ import { Check, Zap } from 'lucide-react';
 
 const plans = [
   {
+    name: 'Starter Trial',
+    price: '₹1',
+    period: '/3 days',
+    description: 'Perfect for quick testing and validation.',
+    highlight: false,
+    badge: 'Limited Offer',
+    features: [
+      '3 Days Full Pro Access',
+      'Unlimited Partner Links',
+      'All Premium Form Templates',
+      'Export 100 Lead Records',
+      'Email Support',
+    ],
+    cta: 'Try Trial Now',
+  },
+  {
     name: 'Standard Pro',
     price: '₹599',
     period: '/month',

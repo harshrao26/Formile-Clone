@@ -11,11 +11,11 @@ export async function POST(req: NextRequest) {
     }
 
     const { planType } = await req.json();
-    if (!['monthly', 'yearly'].includes(planType)) {
+    if (!['monthly', 'yearly', 'trial'].includes(planType)) {
       return NextResponse.json({ error: 'Invalid plan type' }, { status: 400 });
     }
 
-    const amount = planType === 'monthly' ? 599 : 5750;
+    const amount = planType === 'yearly' ? 5750 : planType === 'monthly' ? 599 : 1;
     const orderId = `ORDER_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
     const response = await fetch('https://api.cashfree.com/pg/orders', {

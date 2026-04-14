@@ -33,9 +33,17 @@ export async function POST(req: NextRequest) {
       const adminId = auth.adminId;
       const orderAmount = data.order_amount;
       
-      // Determine plan based on amount (599 vs 5750)
-      const planType = orderAmount >= 5750 ? 'yearly' : 'monthly';
-      const daysToAdd = planType === 'yearly' ? 365 : 30;
+      // Determine plan based on amount (1 vs 599 vs 5750)
+      let planType = 'monthly';
+      let daysToAdd = 30;
+
+      if (orderAmount === 1) {
+        planType = 'trial';
+        daysToAdd = 3;
+      } else if (orderAmount >= 5750) {
+        planType = 'yearly';
+        daysToAdd = 365;
+      }
       
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + daysToAdd);

@@ -18,6 +18,19 @@ import Script from 'next/script';
 // Pricing data
 const PLANS = [
   {
+    id: 'trial',
+    name: 'Starter Trial',
+    price: 1,
+    period: '3 days',
+    features: [
+      '3 Days Pro Access',
+      'Unlimited Links',
+      'Full Analytics',
+      'Email Support'
+    ],
+    recommended: false
+  },
+  {
     id: 'monthly',
     name: 'Monthly Plan',
     price: 599,
@@ -144,7 +157,7 @@ export default function BillingPage() {
                     (authAdmin?.expiryDate && new Date(authAdmin.expiryDate) < new Date());
 
   return (
-    <div className="max-w-5xl mx-auto py-10">
+    <div className="max-w-7xl mx-auto py-10 px-6">
       <Script 
         src="https://sdk.cashfree.com/js/v3/cashfree.js" 
         onLoad={() => console.log('Cashfree loaded')}
@@ -176,7 +189,7 @@ export default function BillingPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {PLANS.map((plan) => (
           <div 
             key={plan.id}
