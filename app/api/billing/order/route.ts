@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         order_meta: {
           // Cashfree Production requires an HTTPS return_url. 
           // Ensure NEXT_PUBLIC_APP_URL is set to your production domain (e.g., https://yourdomain.com)
-          return_url: `${process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || 'https://localhost:3000'}/admin/billing?order_id=${orderId}`,
+          return_url: `${(process.env.NEXT_PUBLIC_APP_URL || req.headers.get('origin') || 'http://localhost:3000').replace(/\/$/, '')}/admin/billing?order_id=${orderId}`,
         },
       }),
     });

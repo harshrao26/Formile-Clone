@@ -35,7 +35,7 @@ export const sendLeadNotification = async (partnerEmail: string, partnerName: st
           ${tableRows}
         </table>
         <div style="margin-top: 25px; text-align: center;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || ''}/admin/dashboard" style="background: #000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View in Dashboard</a>
+          <a href="${(process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '')}/admin/dashboard" style="background: #000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View in Dashboard</a>
         </div>
       </div>
     </div>
@@ -151,7 +151,7 @@ export const sendSubscriptionActivationEmail = async (userEmail: string, planNam
         <p>You now have full access to all ZeeOffer features, including unlimited form creation, partner management, and real-time lead tracking.</p>
         
         <div style="margin-top: 35px; text-align: center;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/dashboard" style="background: #10b981; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">Go to Dashboard</a>
+          <a href="${(process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '')}/admin/dashboard" style="background: #10b981; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">Go to Dashboard</a>
         </div>
       </div>
       <div style="background: #f9fafb; padding: 25px; text-align: center; border-top: 1px solid #eee;">
