@@ -147,10 +147,8 @@ export async function POST(request: NextRequest) {
         await sendLeadNotification(partnerEmail, partnerName, formData);
       }
       
-      const userEmail = formData.email || formData.Email || formData['Email'] || formData['email'];
-      if (userEmail) {
-        await sendUserConfirmation(userEmail, formHeading);
-      }
+      // User confirmation email removed as requested
+
     } catch (emailError) {
       console.error('Notification failed but lead was saved:', emailError);
     }

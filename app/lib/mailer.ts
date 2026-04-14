@@ -36,7 +36,8 @@ export const sendLeadNotification = async (partnerEmail: string, partnerName: st
         </table>
         <div style="margin-top: 25px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
           <a href="${(process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '')}/admin/dashboard" style="background: #000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View in Dashboard</a>
-          <p style="margin-top: 20px; color: #999; font-size: 12px;">
+          <p style="margin-top: 20px; color: #999; font-size: 12px;">© 2026 ${fromName}. All rights reserved.</p>
+          <p style="margin-top: 5px; color: #999; font-size: 12px;">
             A product by <a href="https://www.genforgestudio.com/" style="color: #f97316; font-weight: bold; text-decoration: underline;">GenForge Studio</a>
           </p>
         </div>
@@ -70,9 +71,9 @@ export const sendUserConfirmation = async (userEmail: string, heading: string) =
         Your submission for <b>${heading}</b> was successful. We have received your information and will get back to you shortly.
       </p>
       <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;" />
-      <p style="color: #999; font-size: 12px;">This is an automated confirmation from ${fromName}.</p>
       <div style="margin-top: 20px; pt: 10px; border-top: 1px solid #eee; padding-top: 15px;">
-        <p style="color: #999; font-size: 12px;">
+        <p style="color: #999; font-size: 12px;">© 2026 ${fromName}. All rights reserved.</p>
+        <p style="color: #999; font-size: 12px; margin-top: 5px;">
           A product by <a href="https://www.genforgestudio.com/" style="color: #f97316; font-weight: bold; text-decoration: underline;">GenForge Studio</a>
         </p>
       </div>
@@ -113,9 +114,9 @@ export const sendOTPEmail = async (userEmail: string, otp: string, type: 'signup
         If you didn't request this, please ignore this email.
       </p>
       <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;" />
-      <p style="font-weight: bold; color: #333;">${fromName} Team</p>
       <div style="margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px;">
-        <p style="color: #999; font-size: 11px;">
+        <p style="color: #999; font-size: 11px;">© 2026 ${fromName}. All rights reserved.</p>
+        <p style="color: #999; font-size: 11px; margin-top: 5px;">
           A product by <a href="https://www.genforgestudio.com/" style="color: #f97316; font-weight: bold; text-decoration: underline;">GenForge Studio</a>
         </p>
       </div>
@@ -170,11 +171,11 @@ export const sendSubscriptionActivationEmail = async (userEmail: string, planNam
       <div style="background: #f9fafb; padding: 25px; text-align: center; border-top: 1px solid #eee;">
         <p style="color: #6b7280; font-size: 12px; margin: 0;">If you have any questions, simply reply to this email.</p>
         <div style="margin-top: 15px; border-top: 1px solid #e5e7eb; padding-top: 15px;">
-          <p style="color: #9ca3af; font-size: 11px; margin: 0;">
+          <p style="color: #9ca3af; font-size: 11px; margin: 0;">© 2026 ${fromName}. All rights reserved.</p>
+          <p style="color: #9ca3af; font-size: 11px; margin: 5px 0 0;">
             A product by <a href="https://www.genforgestudio.com/" style="color: #f97316; font-weight: bold; text-decoration: underline;">GenForge Studio</a>
           </p>
         </div>
-        <p style="color: #9ca3af; font-size: 11px; margin: 5px 0 0;">© 2026 ${fromName}. All rights reserved.</p>
       </div>
     </div>
   `;
