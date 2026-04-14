@@ -108,7 +108,7 @@ export default function SuperadminLayout({ children }: { children: ReactNode }) 
             <ThemeToggle />
           </div>
           <button
-            onClick={() => { logout(); router.push('/admin/login'); }}
+            onClick={() => { logout(); router.push('/'); }}
             className="w-full px-4 py-2.5 text-sm text-red-400/60 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition flex items-center justify-center gap-2"
           >
             <LogOut className="w-4 h-4" />

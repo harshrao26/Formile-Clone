@@ -16,7 +16,7 @@ Automate your campaigns with powerful forms designed to capture the right data, 
         </div>
            <div className="flex flex-col md:flex-row gap-8 md:gap-12">
              <div className="flex flex-col gap-4">
-               <p className="text-zinc-900 font-bold uppercase tracking-widest text-[10px]">Company</p>
+               <p className="text-zinc-900 font-bold  text-[10px]">Company</p>
                <a href="/contact" className="hover:text-zinc-900 transition-colors py-1">Contact Us</a>
                <a href="/refund-policy" className="hover:text-zinc-900 transition-colors py-1">Refund Policy</a>
                <a href="/privacy-policy" className="hover:text-zinc-900 transition-colors py-1">Privacy Policy</a>
@@ -25,7 +25,18 @@ Automate your campaigns with powerful forms designed to capture the right data, 
            </div>
       </div>
       <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-zinc-200/50 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-zinc-400 text-xs font-bold uppercase tracking-widest">© 2026 ZeeOffer Inc.</p>
+        <div className="flex flex-col md:flex-row items-center gap-4 text-zinc-400 text-xs font-bold ">
+          <p>© 2026 ZeeOffer</p>
+          <span className="hidden md:block text-zinc-200">|</span>
+          <a 
+            href="https://www.genforgestudio.com/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className=" transition-colors"
+          >
+            A product by <span className="font-bold text-orange-500 underline">GenForge Studio</span>
+          </a>
+        </div>
         <div className="flex gap-6 text-zinc-400">
            {/* Social Icons Placeholder */}
         </div>

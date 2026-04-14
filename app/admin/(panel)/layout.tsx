@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <ThemeToggle />
           </div>
           <button
-            onClick={() => { logout(); router.push('/admin/login'); }}
+            onClick={() => { logout(); router.push('/'); }}
             className="w-full px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition flex items-center justify-center gap-2"
           >
             <LogOut className="w-4 h-4" />
