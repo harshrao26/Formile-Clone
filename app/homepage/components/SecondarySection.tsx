@@ -12,7 +12,7 @@ export default function SecondarySection() {
           in minutes, and monitor performance at a glance. Genforge Studio is <br className="hidden md:block" />
           built for speed and total control over your deployment approach.
         </p>
-        <p className="text-white/50 text-sm italic">
+        <p className="text-white/50 text-sm  ">
           Currently available in preview with 3 workspaces at no cost.
         </p>
       </div>

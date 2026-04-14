@@ -13,7 +13,9 @@ import {
   Inbox, 
   LogOut, 
   Zap,
-  LayoutDashboard
+  LayoutDashboard,
+  CreditCard,
+  AlertTriangle
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +24,7 @@ const navItems = [
   { href: '/admin/forms', label: 'Forms', icon: FileText },
   { href: '/admin/leads', label: 'Leads', icon: Inbox },
   { href: '/admin/generator', label: 'Generator', icon: Zap },
+  { href: '/admin/billing', label: 'Billing', icon: CreditCard },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -48,6 +51,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   if (!token) return null;
+
+  // Subscription Logic
+  const isBillingPage = pathname === '/admin/billing';
+  const isSuperAdmin = admin?.role === 'superadmin';
+  const isExpired = admin?.subscriptionStatus === 'expired' || 
+                    (admin?.expiryDate && new Date(admin.expiryDate) < new Date()) || 
+                    admin?.subscriptionStatus === 'inactive' || 
+                    admin?.subscriptionStatus === 'trial' && (admin?.expiryDate && new Date(admin.expiryDate) < new Date());
+
+  // If expired and not on billing page and not superadmin, show blocked UI
+  const showBlockedUI = isExpired && !isBillingPage && !isSuperAdmin;
 
   return (
     <div className="min-h-screen bg-background flex text-foreground">
@@ -119,7 +133,25 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         <div className="p-8">
-          {children}
+          {showBlockedUI ? (
+            <div className="min-h-[70vh] flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
+              <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 text-red-500">
+                <AlertTriangle className="w-10 h-10" />
+              </div>
+              <h2 className="text-3xl font-extrabold mb-3">Your Plan has Expired</h2>
+              <p className="text-foreground/60 max-w-md mx-auto mb-8">
+                Your subscription to Genforge Studio has ended. All features are currently locked until you renew your plan.
+              </p>
+              <Link 
+                href="/admin/billing"
+                className="bg-orange-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/25 active:scale-95"
+              >
+                Renew Subscription
+              </Link>
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </main>
     </div>

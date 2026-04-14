@@ -122,3 +122,55 @@ export const sendOTPEmail = async (userEmail: string, otp: string, type: 'signup
   }
 };
 
+export const sendSubscriptionActivationEmail = async (userEmail: string, planName: string, expiryDate: Date) => {
+  const fromName = process.env.SMTP_FROM_NAME || 'Genforge Studio';
+  const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+
+  const formattedExpiry = expiryDate.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: white;">
+      <div style="background: #10b981; padding: 40px; text-align: center; color: white;">
+        <div style="font-size: 48px; margin-bottom: 10px;">✨</div>
+        <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">Subscription Activated!</h1>
+        <p style="margin: 10px 0 0; opacity: 0.9; font-size: 16px;">Welcome to the premium experience</p>
+      </div>
+      <div style="padding: 40px; color: #333; line-height: 1.6;">
+        <p style="font-size: 18px; margin-top: 0;">Hi there,</p>
+        <p>Great news! Your payment was successful and your <b>${planName.toUpperCase()}</b> plan is now active.</p>
+        
+        <div style="background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 12px; padding: 25px; margin: 30px 0; text-align: center;">
+          <p style="margin: 0; font-size: 14px; text-transform: uppercase; color: #6b7280; font-weight: 600; letter-spacing: 0.05em;">Valid Until</p>
+          <p style="margin: 5px 0 0; font-size: 24px; font-weight: 700; color: #111827;">${formattedExpiry}</p>
+        </div>
+
+        <p>You now have full access to all Genforge Studio features, including unlimited form creation, partner management, and real-time lead tracking.</p>
+        
+        <div style="margin-top: 35px; text-align: center;">
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin/dashboard" style="background: #10b981; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">Go to Dashboard</a>
+        </div>
+      </div>
+      <div style="background: #f9fafb; padding: 25px; text-align: center; border-top: 1px solid #eee;">
+        <p style="color: #6b7280; font-size: 12px; margin: 0;">If you have any questions, simply reply to this email.</p>
+        <p style="color: #9ca3af; font-size: 11px; margin: 5px 0 0;">© 2026 ${fromName}. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: userEmail,
+      subject: `✨ Plan Activated: ${planName.toUpperCase()} Plan`,
+      html,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Email send error:', error);
+    return { success: false, error };
+  }
+};

@@ -32,7 +32,9 @@ export async function POST(request: NextRequest) {
         name: admin.name, 
         email: admin.email, 
         role: admin.role,
-        adminId: admin._id.toString()
+        adminId: admin._id.toString(),
+        subscriptionStatus: admin.subscriptionStatus,
+        expiryDate: admin.expiryDate
       },
     });
   } catch (error) {

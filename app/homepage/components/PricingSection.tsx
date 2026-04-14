@@ -5,63 +5,23 @@ import { Check, Zap } from 'lucide-react';
 
 const plans = [
   {
-    name: 'Starter',
-    price: '₹499',
+    name: 'Standard Pro',
+    price: '₹599',
     period: '/month',
-    description: 'For freelancers and small teams just ramping up their lead engine.',
-    highlight: false,
-    badge: null,
-    features: [
-      'Up to 3 Partner Links',
-      '500 Lead Submissions/mo',
-      '1 Custom Form Template',
-      'Basic Analytics Dashboard',
-      'OTP Email Verification',
-      'CSV Data Export',
-      'Email Support',
-    ],
-    cta: 'Get Started',
-  },
-  {
-    name: 'Pro',
-    price: '₹999',
-    period: '/month',
-    description: 'For growing businesses scaling their lead generation operations.',
+    description: 'The complete lead generation toolkit for scale.',
     highlight: true,
-    badge: 'Most Popular',
-    features: [
-      'Up to 20 Partner Links',
-      '5,000 Lead Submissions/mo',
-      '5 Custom Form Templates',
-      'Advanced Analytics & Filters',
-      'OTP Email Verification',
-      'Excel & CSV Export',
-      'Date Range & Company Filters',
-      'Priority Email Support',
-      'Custom Form Branding',
-    ],
-    cta: 'Start Free Trial',
-  },
-  {
-    name: 'Ultra',
-    price: '₹1,499',
-    period: '/month',
-    description: 'For enterprises and agencies managing complex multi-tenant pipelines.',
-    highlight: false,
-    badge: 'Best Value',
+    badge: 'Flagship Plan',
     features: [
       'Unlimited Partner Links',
       'Unlimited Lead Submissions',
-      'Unlimited Form Templates',
-      'Superadmin Global Dashboard',
-      'Full Role-Based Access Control',
-      'All Export Formats',
-      'White-Label Public Forms',
-      'Dedicated Slack Support',
-      'Custom Data Retention Policy',
-      'SLA Guarantee',
+      'Custom Form Templates',
+      'Advanced Analytics & Exports',
+      'OTP Email Verification',
+      'Custom Form Branding',
+      'Priority Email Support',
+      'All Export Formats (XLSX, CSV)',
     ],
-    cta: 'Contact Sales',
+    cta: 'Get Started Now',
   },
 ];
 
@@ -84,11 +44,11 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+        <div className="flex justify-center">
           {plans.map((plan, i) => (
             <div
               key={i}
-              className={`relative flex flex-col rounded-[32px] p-8 border transition-all duration-500 ${
+              className={`relative flex flex-col rounded-[32px] p-8 border transition-all duration-500 max-w-md w-full ${
                 plan.highlight
                   ? 'bg-white text-black border-white shadow-[0_0_80px_rgba(255,255,255,0.08)] scale-[1.03]'
                   : 'bg-white/[0.03] text-white border-white/5 hover:border-white/10'

@@ -150,7 +150,7 @@ export default function TenantsPage() {
                     </div>
                   )}
                   {t.expiryDate && (
-                    <span className="text-[9px] text-foreground/30 font-medium italic">
+                    <span className="text-[9px] text-foreground/30 font-medium  ">
                       Expires: {new Date(t.expiryDate).toLocaleDateString()}
                     </span>
                   )}

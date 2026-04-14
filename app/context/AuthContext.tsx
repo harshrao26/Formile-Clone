@@ -7,6 +7,8 @@ interface AuthUser {
   email: string;
   role: 'superadmin' | 'user';
   adminId: string;
+  subscriptionStatus?: string;
+  expiryDate?: string;
 }
 
 interface AuthContextType {
