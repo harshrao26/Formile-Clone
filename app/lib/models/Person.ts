@@ -18,4 +18,8 @@ const PersonSchema = new Schema<IPerson>({
 
 PersonSchema.index({ partnerId: 1, slug: 1 }, { unique: true });
 
-export default mongoose.models.Person || mongoose.model<IPerson>('Person', PersonSchema);
+if (mongoose.models.Person) {
+  delete (mongoose.models as any).Person;
+}
+
+export default mongoose.model<IPerson>('Person', PersonSchema);

@@ -18,4 +18,8 @@ const OTPSchema = new Schema<IOTP>({
 // No, just allow multiple, we check the latest or match exactly.
 OTPSchema.index({ email: 1, type: 1 });
 
-export default mongoose.models.OTP || mongoose.model<IOTP>('OTP', OTPSchema);
+if (mongoose.models.OTP) {
+  delete (mongoose.models as any).OTP;
+}
+
+export default mongoose.model<IOTP>('OTP', OTPSchema);

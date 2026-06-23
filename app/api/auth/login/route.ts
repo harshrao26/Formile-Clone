@@ -34,7 +34,8 @@ export async function POST(request: NextRequest) {
         role: admin.role,
         adminId: admin._id.toString(),
         subscriptionStatus: admin.subscriptionStatus,
-        expiryDate: admin.expiryDate
+        expiryDate: admin.expiryDate,
+        phone: admin.phone
       },
     });
   } catch (error) {

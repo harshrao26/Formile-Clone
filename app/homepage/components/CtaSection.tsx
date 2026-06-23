@@ -17,7 +17,7 @@ export default function CtaSection() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500 border border-orange-500/10 rounded-full">
               <span className="text-[10px] font-bold text-white uppercase tracking-widest">Start Today — Free</span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-zinc-900 leading-[0.9]">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-zinc-900 leading-tight">
               Your next lead is <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-700">one click away</span>
             </h2>

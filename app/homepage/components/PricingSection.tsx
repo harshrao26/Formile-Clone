@@ -27,13 +27,13 @@ const plans = [
 
 export default function PricingSection() {
   return (
-    <section className="pt-40 pb-20 px-6 relative bg-white  ">
+    <section id="pricing" className="pt-40 pb-20 px-6 relative bg-white  ">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-50/20 to-transparent pointer-events-none" />
 
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-24 space-y-6">
           
-          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-zinc-900 leading-[0.95]">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-zinc-900 leading-tight">
             Start free. <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-700">Scale when you're ready.</span>
           </h2>

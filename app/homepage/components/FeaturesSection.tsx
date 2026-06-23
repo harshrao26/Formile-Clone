@@ -35,11 +35,11 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="pt-40 px-6 bg-white b ">
+    <section id="features" className="pt-40 px-6 bg-white b ">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24 space-y-6">
           
-          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-zinc-900 leading-[0.95]">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-zinc-900 leading-tight">
             Everything you need to <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-700">close more leads</span>
           </h2>

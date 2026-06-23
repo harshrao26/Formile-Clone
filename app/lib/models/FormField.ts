@@ -32,4 +32,8 @@ const FormFieldSchema = new Schema<IFormField>({
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.FormField || mongoose.model<IFormField>('FormField', FormFieldSchema);
+if (mongoose.models.FormField) {
+  delete (mongoose.models as any).FormField;
+}
+
+export default mongoose.model<IFormField>('FormField', FormFieldSchema);

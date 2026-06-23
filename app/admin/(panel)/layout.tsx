@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, ReactNode } from 'react';
+import { useEffect, ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { 
@@ -15,7 +15,9 @@ import {
   Zap,
   LayoutDashboard,
   CreditCard,
-  AlertTriangle
+  AlertTriangle,
+  Phone,
+  Loader2
 } from 'lucide-react';
 
 const navItems = [
@@ -28,9 +30,13 @@ const navItems = [
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  const { token, admin, logout, isLoading } = useAuth();
+  const { token, admin, updateAdmin, logout, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [phoneInput, setPhoneInput] = useState('');
+  const [modalError, setModalError] = useState('');
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !token) {
@@ -62,6 +68,49 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   // If expired and not on billing page and not superadmin, show blocked UI
   const showBlockedUI = isExpired && !isBillingPage && !isSuperAdmin;
+
+  // Show phone input modal if tenant is logged in, not a superadmin, and hasn't registered a phone number yet
+  const showPhoneModal = !!token && !!admin && admin.role !== 'superadmin' && !admin.phone;
+
+  const handlePhoneSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalError('');
+    
+    // Frontend validation
+    const trimmed = phoneInput.trim();
+    const allowedCharsRegex = /^\+?[0-9\s\-()]+$/;
+    if (!allowedCharsRegex.test(trimmed)) {
+      setModalError('Invalid characters. Use digits, spaces, dashes, parentheses and optional starting + only.');
+      return;
+    }
+    const digits = trimmed.replace(/\D/g, '');
+    if (digits.length < 10 || digits.length > 15) {
+      setModalError('Mobile number must be between 10 and 15 digits long.');
+      return;
+    }
+
+    setModalLoading(true);
+    try {
+      const res = await fetch('/api/auth/update-phone', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ phone: trimmed })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to update phone number.');
+      }
+      updateAdmin({ phone: data.admin.phone });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      setModalError(message);
+    } finally {
+      setModalLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex text-foreground">
@@ -154,6 +203,71 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           )}
         </div>
       </main>
+
+      {/* Mandatory Phone Verification Modal */}
+      {showPhoneModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="bg-card border border-border rounded-[32px] p-10 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300 relative overflow-hidden text-foreground">
+            {/* Background Glow */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="text-center mb-6 relative z-10">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-4 text-orange-500">
+                <Phone className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">Mobile Number Required</h2>
+              <p className="text-foreground/60 text-sm mt-2">
+                Please provide your mobile number to complete your account setup. This is mandatory for all tenants.
+              </p>
+            </div>
+
+            {modalError && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl p-3 text-center mb-4">
+                {modalError}
+              </div>
+            )}
+
+            <form onSubmit={handlePhoneSubmit} className="space-y-4 relative z-10">
+              <div>
+                <label className="block text-foreground/70 text-xs font-semibold uppercase tracking-wider mb-2 ml-1">
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  value={phoneInput}
+                  onChange={(e) => setPhoneInput(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full px-4 py-3.5 bg-background border border-border rounded-xl text-foreground placeholder-foreground/45 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition text-sm"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={modalLoading}
+                className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200 disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/15"
+              >
+                {modalLoading ? (
+                  <>
+                    <Loader2 className="animate-spin h-5 w-5 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Submit & Continue'
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { logout(); router.push('/'); }}
+                className="w-full text-center text-foreground/40 hover:text-foreground/60 text-xs font-medium pt-2 transition"
+              >
+                Sign Out
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

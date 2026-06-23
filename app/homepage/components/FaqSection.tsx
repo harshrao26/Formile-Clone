@@ -42,13 +42,13 @@ export default function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="py-40 px-6 bg-white border-t border-zinc-100">
+    <section id="faq" className="py-10 px-6 bg-white   border-zinc-100">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-24 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-100 border border-zinc-200/50 rounded-full">
             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">FAQ</span>
           </div>
-          <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter text-zinc-900 leading-[0.95]">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-zinc-900 leading-tight">
             Questions we <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-zinc-400 to-zinc-600">hear all the time</span>
           </h2>

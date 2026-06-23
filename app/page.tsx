@@ -2,14 +2,17 @@
 
 import Navbar from './homepage/components/Navbar';
 import Hero from './homepage/components/Hero';
+import LogoWall from './homepage/components/LogoWall';
 import FeaturesSection from './homepage/components/FeaturesSection';
 import ProjectShowcase from './homepage/components/ProjectShowcase';
 import ScaleSection from './homepage/components/ScaleSection';
 import SecondarySection from './homepage/components/SecondarySection';
-import AiSection from './homepage/components/AiSection';
+import UseCases from './homepage/components/UseCases';
+import BentoGrid from './homepage/components/BentoGrid';
 import TestimonialsSection from './homepage/components/TestimonialsSection';
 import PricingSection from './homepage/components/PricingSection';
 import FaqSection from './homepage/components/FaqSection';
+import ContactSection from './homepage/components/ContactSection';
 import CtaSection from './homepage/components/CtaSection';
 import Footer from './homepage/components/Footer';
 
@@ -24,12 +27,16 @@ export default function HomePage() {
 
       <Navbar />
       <Hero />
+      <LogoWall />
       <FeaturesSection />
+      <UseCases />
+      <BentoGrid />
       {/* <ScaleSection /> */}
       {/* <SecondarySection /> */}
       <PricingSection />
       <TestimonialsSection />
       <FaqSection />
+      <ContactSection />
       <CtaSection />
       <Footer />
     </div>

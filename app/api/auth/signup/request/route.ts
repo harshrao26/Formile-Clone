@@ -3,20 +3,37 @@ import dbConnect from '@/app/lib/mongodb';
 import Admin from '@/app/lib/models/Admin';
 import OTP from '@/app/lib/models/OTP';
 import { sendOTPEmail } from '@/app/lib/mailer';
+import { validatePhone } from '@/app/lib/validation';
 
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
-    const { email } = await request.json();
+    const { email, phone } = await request.json();
 
     if (!email) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
+    if (!phone) {
+      return NextResponse.json({ error: 'Mobile number is required' }, { status: 400 });
+    }
+    if (!validatePhone(phone)) {
+      return NextResponse.json({ error: 'Invalid mobile number format' }, { status: 400 });
+    }
 
-    // 1. Check if user already exists
-    const existingAdmin = await Admin.findOne({ email: email.toLowerCase() });
-    if (existingAdmin) {
-      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+    // 1. Check if user already exists by email
+    const existingAdminByEmail = await Admin.findOne({ email: email.toLowerCase() });
+    if (existingAdminByEmail) {
+      return NextResponse.json({ error: 'Email already registered' }, { status: 400 });
+    }
+
+    // Check if phone number is already registered (check last 10 digits to prevent prefix bypass)
+    const digits = phone.replace(/\D/g, '');
+    const suffix = digits.substring(digits.length - 10);
+    const existingAdminByPhone = await Admin.findOne({
+      phone: { $regex: new RegExp(suffix + '$') }
+    });
+    if (existingAdminByPhone) {
+      return NextResponse.json({ error: 'Mobile number already registered' }, { status: 400 });
     }
 
     // 2. Generate 6-digit OTP

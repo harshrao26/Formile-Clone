@@ -9,12 +9,14 @@ interface AuthUser {
   adminId: string;
   subscriptionStatus?: string;
   expiryDate?: string;
+  phone?: string;
 }
 
 interface AuthContextType {
   token: string | null;
   admin: AuthUser | null;
   login: (token: string, admin: AuthUser) => void;
+  updateAdmin: (updatedData: Partial<AuthUser>) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -30,10 +32,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const savedToken = localStorage.getItem('zeeoffer-token');
     const savedAdmin = localStorage.getItem('zeeoffer-admin');
     if (savedToken && savedAdmin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setToken(savedToken);
       try {
         setAdmin(JSON.parse(savedAdmin));
-      } catch (e) {
+      } catch {
         localStorage.removeItem('zeeoffer-admin');
       }
     }
@@ -47,6 +50,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('zeeoffer-admin', JSON.stringify(adminData));
   };
 
+  const updateAdmin = (updatedData: Partial<AuthUser>) => {
+    setAdmin((currentAdmin) => {
+      if (!currentAdmin) return null;
+      const newAdmin = { ...currentAdmin, ...updatedData };
+      localStorage.setItem('zeeoffer-admin', JSON.stringify(newAdmin));
+      return newAdmin;
+    });
+  };
+
   const logout = () => {
     setToken(null);
     setAdmin(null);
@@ -55,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, admin, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ token, admin, login, updateAdmin, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

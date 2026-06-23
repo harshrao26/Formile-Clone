@@ -52,7 +52,7 @@ export default function ContactPage() {
           {/* Left Side: Info */}
           <div className="space-y-12">
             <div>
-              <h1 className="text-5xl md:text-6xl font-extrabold text-zinc-900 tracking-tight leading-[1.1] mb-6">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-zinc-900 tracking-tight leading-[1.1] mb-6">
                 Let's build the future of <span className="text-orange-500">lead gen</span> together.
               </h1>
               <p className="text-zinc-500 text-lg md:text-xl font-medium leading-relaxed max-w-lg">

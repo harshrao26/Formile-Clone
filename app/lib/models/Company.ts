@@ -14,4 +14,8 @@ const CompanySchema = new Schema<ICompany>({
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.Company || mongoose.model<ICompany>('Company', CompanySchema);
+if (mongoose.models.Company) {
+  delete (mongoose.models as any).Company;
+}
+
+export default mongoose.model<ICompany>('Company', CompanySchema);

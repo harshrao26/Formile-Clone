@@ -28,4 +28,8 @@ InquirySchema.index({ email: 1 });
 InquirySchema.index({ status: 1 });
 InquirySchema.index({ submittedAt: -1 });
 
-export default mongoose.models.Inquiry || mongoose.model<IInquiry>('Inquiry', InquirySchema);
+if (mongoose.models.Inquiry) {
+  delete (mongoose.models as any).Inquiry;
+}
+
+export default mongoose.model<IInquiry>('Inquiry', InquirySchema);

@@ -8,6 +8,7 @@ interface FormTemplate {
   _id: string;
   name: string;
   activeFields: string[];
+  requiredFields?: string[];
   customFields?: { label: string; key: string; type: string }[];
   heading?: string;
   theme?: string;
@@ -127,6 +128,7 @@ export default function FormsPage() {
         body: JSON.stringify({
           name: tempName,
           activeFields: ["full_name", "email", "phone"],
+          requiredFields: ["full_name", "email", "phone"],
         }),
       });
 
@@ -164,8 +166,32 @@ export default function FormsPage() {
       ? currentActive.filter((k) => k !== fieldKey)
       : [...currentActive, fieldKey];
 
+    // Clean up requiredFields if deactivating a field
+    let newRequiredFields = editingForm.requiredFields || ['full_name', 'email', 'phone'];
+    if (isCurrentlyActive) {
+      newRequiredFields = newRequiredFields.filter((k) => k !== fieldKey);
+    }
+
     // Local UI update
-    setEditingForm({ ...editingForm, activeFields: newActiveFields });
+    setEditingForm({ 
+      ...editingForm, 
+      activeFields: newActiveFields,
+      requiredFields: newRequiredFields
+    });
+    setIsDirty(true);
+  };
+
+  const toggleRequiredField = (fieldKey: string) => {
+    if (!editingForm) return;
+
+    const currentRequired = editingForm.requiredFields || ['full_name', 'email', 'phone'];
+    const isCurrentlyRequired = currentRequired.includes(fieldKey);
+
+    const newRequiredFields = isCurrentlyRequired
+      ? currentRequired.filter((k) => k !== fieldKey)
+      : [...currentRequired, fieldKey];
+
+    setEditingForm({ ...editingForm, requiredFields: newRequiredFields });
     setIsDirty(true);
   };
 
@@ -248,7 +274,7 @@ export default function FormsPage() {
     setIsDirty(true);
   };
 
-  const syncToDb = async (key: string, value: any) => {
+  const syncToDb = async (key: string, value: unknown) => {
     if (!editingForm) return;
     try {
       // 1. Update the Form Template
@@ -302,9 +328,10 @@ export default function FormsPage() {
       } else {
         throw new Error(data.error || 'Upload failed');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Upload failed', error);
-      alert(`Failed to upload image: ${error.message}`);
+      const message = error instanceof Error ? error.message : 'Upload failed';
+      alert(`Failed to upload image: ${message}`);
     } finally {
       setIsUploading(false);
     }
@@ -318,7 +345,7 @@ export default function FormsPage() {
     );
   }
 
-  const handleCreatePartner = async (data: any) => {
+  const handleCreatePartner = async (data: { name: string; slug: string; companyName?: string; redirectUrl?: string | null }) => {
     if (!data.name || !data.slug) {
       alert("Please fill name and slug");
       return;
@@ -677,6 +704,21 @@ export default function FormsPage() {
                       </div>
 
                       <div className="flex items-center gap-4">
+                        {isActive && (
+                          <div className="flex items-center gap-2 border-r border-border pr-4 mr-2">
+                            <span className="text-xs text-foreground/50 font-medium">Mandatory</span>
+                            <label className="relative flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={(editingForm.requiredFields || ['full_name', 'email', 'phone']).includes(field.key)}
+                                onChange={() => toggleRequiredField(field.key)}
+                                className="sr-only peer"
+                              />
+                              <div className="w-10 h-5 bg-white/10 rounded-full peer peer-checked:bg-orange-500 peer-focus:ring-2 peer-focus:ring-orange-500/30 transition-colors duration-300"></div>
+                              <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-5"></div>
+                            </label>
+                          </div>
+                        )}
                         {isCustom && (
                           <button
                             onClick={() => deleteCustomField(field.key)}
@@ -770,7 +812,7 @@ export default function FormsPage() {
                       >
                         <label className={`block text-sm font-medium mb-2 ${editingForm.theme === 'light' ? 'text-gray-700' : 'text-white/70'}`}>
                           {field.label}{" "}
-                          {field.key.match(/name|email|phone/) && (
+                          {(editingForm.requiredFields || ['full_name', 'email', 'phone']).includes(field.key) && (
                             <span className="text-orange-500">*</span>
                           )}
                         </label>

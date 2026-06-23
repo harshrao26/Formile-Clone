@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
     }
 
     let activeFields = ['full_name', 'email', 'phone'];
-    let customFields: any[] = [];
+    let requiredFields = ['full_name', 'email', 'phone'];
+    let customFields: { label: string; key: string; type: string }[] = [];
     let heading = 'Claim Your Offer';
     let theme = 'dark';
     let backgroundImage = null;
@@ -52,6 +53,7 @@ export async function GET(request: NextRequest) {
       if (template) {
         if (template.activeFields) activeFields = template.activeFields;
         if (template.customFields) customFields = template.customFields;
+        if (template.requiredFields) requiredFields = template.requiredFields;
         if (template.heading) heading = template.heading;
         if (template.theme) theme = template.theme;
         if (template.backgroundImage) backgroundImage = template.backgroundImage;
@@ -70,7 +72,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Map active fields to UI config
-    const PREDEFINED_FIELDS: Record<string, any> = {
+    const PREDEFINED_FIELDS: Record<string, { key: string; label: string; type: string; placeholder: string; required: boolean }> = {
       'full_name': { key: 'full_name', label: 'Full Name', type: 'text', placeholder: 'Enter your full name', required: true },
       'email': { key: 'email', label: 'Email Address', type: 'email', placeholder: 'you@example.com', required: true },
       'phone': { key: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000', required: true },
@@ -82,16 +84,23 @@ export async function GET(request: NextRequest) {
     };
 
     const resolvedFields = activeFields.map(key => {
-      if (PREDEFINED_FIELDS[key]) return PREDEFINED_FIELDS[key];
+      const isFieldRequired = requiredFields.includes(key);
+
+      if (PREDEFINED_FIELDS[key]) {
+        return {
+          ...PREDEFINED_FIELDS[key],
+          required: isFieldRequired
+        };
+      }
       
-      const customField = customFields.find((cf: any) => cf.key === key);
+      const customField = customFields.find((cf) => cf.key === key);
       if (customField) {
         return {
           key: customField.key,
           label: customField.label,
           type: customField.type || 'text',
           placeholder: `Enter ${customField.label.toLowerCase()}`,
-          required: false
+          required: isFieldRequired
         };
       }
       return null;

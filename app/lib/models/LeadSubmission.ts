@@ -29,4 +29,8 @@ const LeadSubmissionSchema = new Schema<ILeadSubmission>({
 LeadSubmissionSchema.index({ partnerId: 1 });
 LeadSubmissionSchema.index({ formId: 1 });
 
-export default mongoose.models.LeadSubmission || mongoose.model<ILeadSubmission>('LeadSubmission', LeadSubmissionSchema);
+if (mongoose.models.LeadSubmission) {
+  delete (mongoose.models as any).LeadSubmission;
+}
+
+export default mongoose.model<ILeadSubmission>('LeadSubmission', LeadSubmissionSchema);

@@ -7,17 +7,30 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const [step, setStep] = useState<1 | 2>(1);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const validatePhone = (phone: string): boolean => {
+    if (!phone) return false;
+    const trimmed = phone.trim();
+    const allowedCharsRegex = /^\+?[0-9\s\-()]+$/;
+    if (!allowedCharsRegex.test(trimmed)) return false;
+    const digits = trimmed.replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 15;
+  };
+
   const handleRequestOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!acceptedTerms) {
       setError('Please accept the Terms and Privacy Policy to continue.');
+      return;
+    }
+    if (!validatePhone(formData.phone)) {
+      setError('Please enter a valid mobile number (10-15 digits, digits and optional leading + only).');
       return;
     }
     setError('');
@@ -27,15 +40,16 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/signup/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email }),
+        body: JSON.stringify({ email: formData.email, phone: formData.phone }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
 
       setStep(2);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to send OTP';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -59,8 +73,9 @@ export default function RegisterPage() {
       // Success! Redirect to login after 2 seconds
       setStep(2); // Keep step 2 but show success state
       setTimeout(() => router.push('/admin/login'), 2000);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Verification failed';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -110,6 +125,17 @@ export default function RegisterPage() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   placeholder="john@example.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-foreground/70 text-sm font-medium mb-2">Mobile Number</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  placeholder="+91 98765 43210"
                   required
                 />
               </div>
@@ -164,7 +190,7 @@ export default function RegisterPage() {
           ) : (
             <div className="space-y-6">
               <div className="text-center">
-                <p className="text-foreground/70 mb-2">We've sent a 6-digit code to</p>
+                <p className="text-foreground/70 mb-2">We&apos;ve sent a 6-digit code to</p>
                 <p className="text-orange-500 font-semibold">{formData.email}</p>
               </div>
 

@@ -50,9 +50,13 @@ export default function Hero() {
         {/* Interactive Status Badge */}
         <div className="group cursor-default inline-flex items-center gap-2.5 px-3 py-1.5 md:px-4 bg-zinc-50 border border-zinc-200/50 rounded-full mb-8 md:mb-10 hover:bg-white hover:border-zinc-300 hover:shadow-sm transition-all duration-300">
           <div className="flex -space-x-1.5">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-4 h-4 md:w-5 md:h-5 rounded-full border-2 border-white bg-zinc-200 overflow-hidden">
-                <div className="w-full h-full bg-gradient-to-br from-zinc-300 to-zinc-400" />
+            {[
+              '/avatar_rohan.png',
+              '/avatar_priya.png',
+              '/avatar_vikas.png'
+            ].map((src, i) => (
+              <div key={i} className="w-4 h-4 md:w-5 md:h-5 rounded-full border-2 border-white bg-zinc-200 overflow-hidden shrink-0 shadow-sm">
+                <img src={src} alt="User avatar" className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
@@ -84,23 +88,28 @@ export default function Hero() {
 
         </p>
  
-        <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-5 mb-20 md:mb-24 w-full sm:w-auto px-6">
-          <Link
-            href="/admin/login"
-            className="w-full sm:w-auto group relative px-8 md:px-12 py-4 md:py-5 bg-zinc-900 hover:bg-black rounded-full font-bold text-base md:text-xl transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.15)] active:scale-95 text-white overflow-hidden"
-          >
-            <span className="relative z-10 flex items-center justify-center gap-3">
-              Scale Your Business <Zap className="w-5 h-5 fill-current text-orange-400 group-hover:text-white transition-colors" />
-            </span>
-            <div className="absolute inset-0 bg-orange-600 translate-y-20 group-hover:translate-y-0 transition-transform duration-500" />
-          </Link>
-          
-          <Link
-            href="#pricing"
-            className="w-full sm:w-auto group px-8 md:px-12 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-zinc-200 hover:border-zinc-300 rounded-full font-bold text-base md:text-xl transition-all active:scale-95 text-zinc-900 flex items-center justify-center gap-2"
-          >
-            View Demo <MousePointer2 className="w-5 h-5 text-zinc-400 group-hover:text-zinc-900 transition-colors" />
-          </Link>
+        <div className="flex flex-col items-center gap-4 mb-20 md:mb-24 w-full sm:w-auto px-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-5 w-full sm:w-auto">
+            <Link
+              href="/admin/register"
+              className="w-full sm:w-auto group relative px-8 md:px-12 py-4 md:py-5 bg-zinc-900 hover:bg-black rounded-full font-bold text-base md:text-xl transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.15)] active:scale-95 text-white overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Get Started Free <Zap className="w-5 h-5 fill-current text-orange-400 group-hover:text-white transition-colors" />
+              </span>
+              <div className="absolute inset-0 bg-orange-600 translate-y-20 group-hover:translate-y-0 transition-transform duration-500" />
+            </Link>
+            
+            <Link
+              href="#pricing"
+              className="w-full sm:w-auto group px-8 md:px-12 py-4 md:py-5 bg-white/50 backdrop-blur-sm border border-zinc-200 hover:border-zinc-300 rounded-full font-bold text-base md:text-xl transition-all active:scale-95 text-zinc-900 flex items-center justify-center gap-2"
+            >
+              View Demo <MousePointer2 className="w-5 h-5 text-zinc-400 group-hover:text-zinc-900 transition-colors" />
+            </Link>
+          </div>
+          <p className="text-zinc-400 text-xs md:text-sm font-semibold tracking-tight animate-fade-in mt-2 select-none">
+            No credit card required • 14-day free trial • Set up in 2 minutes
+          </p>
         </div>
 
         
