@@ -28,7 +28,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <Link href="/contact" className="text-zinc-500 hover:text-zinc-900 text-sm font-semibold transition-colors">
+          <Link href="#contact" className="text-zinc-500 hover:text-zinc-900 text-sm font-semibold transition-colors">
             Contact Us
           </Link>
           
