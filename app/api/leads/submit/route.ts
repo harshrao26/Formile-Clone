@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
 
     const { partnerSlug, personSlug, formData, sourceUrl } = await request.json();
 
-    let adminId = null;
-    let partnerId = null;
+    let adminId: any = null;
+    let partnerId: any = null;
     let partnerEmail = '';
     let partnerName = 'Generic';
 

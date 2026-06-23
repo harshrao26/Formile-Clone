@@ -3,9 +3,9 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 export interface ILeadSubmission extends Document {
   adminId: Types.ObjectId;
   token: string;
-  partnerId?: Types.ObjectId;
-  formId?: Types.ObjectId;
-  personId?: Types.ObjectId;
+  partnerId?: Types.ObjectId | null;
+  formId?: Types.ObjectId | null;
+  personId?: Types.ObjectId | null;
   formData: Record<string, string>;
   sourceUrl: string;
   trackingToken?: string;

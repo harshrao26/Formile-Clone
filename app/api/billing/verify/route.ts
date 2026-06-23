@@ -53,10 +53,12 @@ export async function POST(req: NextRequest) {
         lastPaymentId: order_id
       }, { new: true });
 
-      // Send Activation Email
-      if (updatedAdmin) {
-        await sendSubscriptionActivationEmail(updatedAdmin.email, planType, expiryDate);
+      if (!updatedAdmin) {
+        return NextResponse.json({ error: 'Admin account not found' }, { status: 404 });
       }
+
+      // Send Activation Email
+      await sendSubscriptionActivationEmail(updatedAdmin.email, planType, expiryDate);
 
       return NextResponse.json({ 
         success: true, 
