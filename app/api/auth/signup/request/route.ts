@@ -5,7 +5,28 @@ import OTP from '@/app/lib/models/OTP';
 import { sendOTPEmail } from '@/app/lib/mailer';
 import { validatePhone } from '@/app/lib/validation';
 
+const ipCache = new Map<string, { count: number; resetTime: number }>();
+
 export async function POST(request: NextRequest) {
+  // IP-based rate limiting (max 5 requests per minute)
+  const ip = request.headers.get('x-forwarded-for') || 'unknown';
+  const now = Date.now();
+  const ipLimit = 5;
+  const windowMs = 60 * 1000;
+
+  let ipData = ipCache.get(ip);
+  if (!ipData || now > ipData.resetTime) {
+    ipCache.set(ip, { count: 1, resetTime: now + windowMs });
+  } else {
+    ipData.count++;
+    if (ipData.count > ipLimit) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait 60 seconds before trying again.' },
+        { status: 429 }
+      );
+    }
+  }
+
   try {
     await dbConnect();
     const { email, phone } = await request.json();
@@ -18,6 +39,18 @@ export async function POST(request: NextRequest) {
     }
     if (!validatePhone(phone)) {
       return NextResponse.json({ error: 'Invalid mobile number format' }, { status: 400 });
+    }
+
+    // Email-based rate limiting (max 1 OTP request per 60 seconds)
+    const existingOTP = await OTP.findOne({ email: email.toLowerCase(), type: 'signup' });
+    if (existingOTP) {
+      const timeSinceCreated = 10 * 60 * 1000 - (existingOTP.expiresAt.getTime() - Date.now());
+      if (timeSinceCreated < 60 * 1000) {
+        return NextResponse.json(
+          { error: 'Please wait 60 seconds before requesting another OTP.' },
+          { status: 429 }
+        );
+      }
     }
 
     // 1. Check if user already exists by email

@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Zap, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Zap, Loader2, ArrowLeft, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
 export default function RegisterPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -141,14 +142,28 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-foreground/70 text-sm font-medium mb-2">Password</label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  placeholder="••••••••"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full pl-4 pr-11 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground transition-colors p-1 rounded-md focus:outline-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-start gap-3 mt-2">
@@ -193,6 +208,17 @@ export default function RegisterPage() {
                 <p className="text-foreground/70 mb-2">We&apos;ve sent a 6-digit code to</p>
                 <p className="text-orange-500 font-semibold">{formData.email}</p>
               </div>
+
+              <p className="text-center text-sm text-foreground/60"> Check your <span>spam</span> folder or{' '}
+                <button
+                  onClick={handleRequestOTP}
+                  disabled={loading}
+                  className="text-orange-500 hover:text-orange-400 font-medium transition-colors"
+                >
+                  resend
+                </button>
+                .
+              </p>
 
               <form onSubmit={handleVerifyOTP} className="space-y-5">
                 <input

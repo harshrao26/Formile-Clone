@@ -30,6 +30,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired OTP' }, { status: 400 });
     }
 
+    // Prevent duplicate email registration
+    const existingAdminByEmail = await Admin.findOne({ email: email.toLowerCase() });
+    if (existingAdminByEmail) {
+      return NextResponse.json({ error: 'Email already registered' }, { status: 400 });
+    }
+
+    // Prevent duplicate mobile number registration (check last 10 digits)
+    const digits = phone.replace(/\D/g, '');
+    const suffix = digits.substring(digits.length - 10);
+    const existingAdminByPhone = await Admin.findOne({
+      phone: { $regex: new RegExp(suffix + '$') }
+    });
+    if (existingAdminByPhone) {
+      return NextResponse.json({ error: 'Mobile number already registered' }, { status: 400 });
+    }
+
     // 2. Clear OTP
     await OTP.deleteMany({ email: email.toLowerCase(), type: 'signup' });
 

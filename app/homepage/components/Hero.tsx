@@ -95,7 +95,7 @@ export default function Hero() {
               className="w-full sm:w-auto group relative px-8 md:px-12 py-4 md:py-5 bg-zinc-900 hover:bg-black rounded-full font-bold text-base md:text-xl transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.15)] active:scale-95 text-white overflow-hidden"
             >
               <span className="relative z-10 flex items-center justify-center gap-3">
-                Get Started Free <Zap className="w-5 h-5 fill-current text-orange-400 group-hover:text-white transition-colors" />
+                Get Started  <Zap className="w-5 h-5 fill-current text-orange-400 group-hover:text-white transition-colors" />
               </span>
               <div className="absolute inset-0 bg-orange-600 translate-y-20 group-hover:translate-y-0 transition-transform duration-500" />
             </Link>

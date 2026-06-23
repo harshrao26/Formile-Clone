@@ -66,7 +66,7 @@ export default function ContactSection() {
           <div className="lg:col-span-5 space-y-12">
             <div className="space-y-6">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.1]">
-                Let's build the future of <br />
+                Let s build the future of <br />
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-700">
                   lead gen
                 </span>{' '}
